@@ -133,6 +133,14 @@
 ;; Custom Key Mappings
 (define-key global-map "\C-co" 'open-config)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "M-h") 'windmove-left)
+(global-set-key (kbd "M-l") 'windmove-right)
+(global-set-key (kbd "M-k") 'windmove-up)
+(global-set-key (kbd "M-j") 'windmove-down)
+(global-set-key (kbd "C-+") 'enlarge-window)
+(global-set-key (kbd "C-=") 'shrink-window)
+(global-set-key (kbd "M-+") 'enlarge-window-horizontally)
+(global-set-key (kbd "M-=") 'shrink-window-horizontally)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
