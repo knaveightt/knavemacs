@@ -140,6 +140,23 @@
   (interactive)
   (find-file "~/.emacs"))
 
+(defun kill-all-dired-buffers ()
+      "Kill all dired buffers."
+      (interactive)
+      (save-excursion
+        (let ((count 0))
+          (dolist (buffer (buffer-list))
+            (set-buffer buffer)
+            (when (equal major-mode 'dired-mode)
+              (setq count (1+ count))
+              (kill-buffer buffer)))
+          (message "Killed %i dired buffer(s)." count))))
+
+(defun kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
 ;; Custom Key Mappings
 (define-key global-map "\C-co" 'open-config)
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
