@@ -79,20 +79,31 @@
     (smartparens-global-mode 1)
     (show-paren-mode t)))
 
-;; Configuring Package: Powerline
+;; Configuring Package: SmartModeLine (w/ Themes)
 (use-package smart-mode-line-powerline-theme
+  :ensure t)
+
+(use-package smart-mode-line-atom-one-dark-theme
   :ensure t)
 
 (use-package smart-mode-line
   :ensure t
   :config
-  (setq sml/theme 'powerline)
+  ;;(setq sml/theme 'powerline)
+  (setq sml/theme 'atom-one-dark)
   (add-hook 'after-init-hook 'sml/setup))
 
 ;; Configuring Package: Evil
 (use-package evil
   :ensure t
   :config
+  (setq evil-normal-state-tag   (propertize " COMMAND " 'face '((:background "dark khaki" :foreground "black")))
+        evil-emacs-state-tag    (propertize "  EMACS  " 'face '((:background "turquoise" :foreground "black")))
+        evil-insert-state-tag   (propertize " INSERT  " 'face '((:background "dark sea green" :foreground "black")))
+        evil-replace-state-tag  (propertize " REPLACE " 'face '((:background "dark orange" :foreground "black")))
+        evil-motion-state-tag   (propertize " MOTION  " 'face '((:background "khaki" :foreground "black")))
+        evil-visual-state-tag   (propertize " VISUAL  " 'face '((:background "light salmon" :foreground "black")))
+        evil-operator-state-tag (propertize " OPERATE " 'face '((:background "sandy brown" :foreground "black"))))
   (evil-mode 1))
 
 ;; Configuring Package: Which Key
