@@ -143,7 +143,12 @@
   ("C-c a" . org-agenda)
   ("C-c c" . org-capture)
   :config
-  (setq org-log-done t))
+  (setq org-log-done t)
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "WAITING(w)" "FUTURE(f)" "|" "DONE(d)" "CANCELED(c)")))
+  (setq org-todo-keyword-faces
+        '(("TODO" . org-warning) ("WAITING" . "yellow")
+          ("FUTURE". "green") ("DONE" . "blue") ("CANCELED" . "purple"))))
 
 ;; Custom Misc Functions
 (defun open-config()
