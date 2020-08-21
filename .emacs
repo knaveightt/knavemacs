@@ -89,7 +89,7 @@
 (use-package smart-mode-line
   :ensure t
   :config
-  ;;(setq sml/theme 'powerline)
+  ;;(setq sml/theme 'powerline) ; different theme options
   (setq sml/theme 'atom-one-dark)
   (add-hook 'after-init-hook 'sml/setup))
 
