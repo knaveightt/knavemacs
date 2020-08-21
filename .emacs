@@ -114,7 +114,16 @@
   (which-key-mode +1))
 
 ;; Configuring Package: magit
+(use-package transient
+  :ensure t
+  :demand t)
+
+(use-package magit-popup
+  :ensure t
+  :demand t)
+
 (use-package magit
+  :ensure t
   :bind (("C-M-g" . magit-status)))
 
 ;; Configuring Package: Helm
@@ -195,7 +204,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" default))
+   '("60940e1f2fa3f4e61e7a7ed9bab9c22676aa25f927d5915c8f0fa3a8bf529821" "84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" default))
  '(package-selected-packages '(use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
