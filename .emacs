@@ -113,6 +113,10 @@
   :config
   (which-key-mode +1))
 
+;; Configuring Package: magit
+(use-package magit
+  :bind (("C-M-g" . magit-status)))
+
 ;; Configuring Package: Helm
 (use-package helm
   :ensure t
