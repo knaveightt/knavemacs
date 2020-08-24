@@ -161,7 +161,8 @@
         '((sequence "TODO(t)" "WAITING(w)" "FUTURE(f)" "|" "DONE(d)" "CANCELED(c)")))
   (setq org-todo-keyword-faces
         '(("TODO" . org-warning) ("WAITING" . "yellow")
-          ("FUTURE". "green") ("DONE" . "blue") ("CANCELED" . "purple"))))
+          ("FUTURE". "green") ("DONE" . "blue") ("CANCELED" . "purple")))
+  (setq org-agenda-files (list "~/.org")))
 
 ;; Custom Misc Functions
 (defun open-config()
