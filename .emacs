@@ -162,7 +162,8 @@
   (setq org-todo-keyword-faces
         '(("TODO" . org-warning) ("WAITING" . "yellow")
           ("FUTURE". "green") ("DONE" . "blue") ("CANCELED" . "purple")))
-  (setq org-agenda-files (list "~/.org")))
+  (setq org-agenda-files (list "~/.org"))
+  (setq org-default-notes-file "~/.org/captured.org"))
 
 ;; Custom Misc Functions
 (defun open-config()
