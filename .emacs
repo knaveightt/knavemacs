@@ -1,10 +1,13 @@
 ;;; Emacs Configuration File
 ;;; Inspired by https://www.sandeepnambiar.com/my-minimal-emacs-setup/
+;;;
 ;;; NOTE: Config file setup for Linux. If using Windows, you may need to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
 ;;; set the git path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
-
+;;;
+;;; NOTE 2: For proper installation of neotree themes - make sure you run all-the-icons-install-fonts
+;;; to unpack / install the fonts and icons 
 
 ;; Who am I - Info
 (setq user-full-name "John Osinski"
@@ -97,6 +100,17 @@
   ;;(setq sml/theme 'powerline) ; different theme options
   (setq sml/theme 'atom-one-dark)
   (add-hook 'after-init-hook 'sml/setup))
+
+;; Configuring Package: Neotree
+(use-package all-the-icons
+  :ensure t)
+
+(use-package neotree
+  :ensure t
+  :bind
+  ("<f8>" . neotree-toggle)
+  :config
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 ;; Configuring Package: Evil
 (use-package evil
@@ -204,6 +218,15 @@
 (global-set-key (kbd "C-=") 'shrink-window)
 (global-set-key (kbd "M-+") 'enlarge-window-horizontally)
 (global-set-key (kbd "M-=") 'shrink-window-horizontally)
+(evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
+(evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
+(evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
+(evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
+(evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
+(evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-next-line)
+(evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
+(evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
+(evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
