@@ -1,7 +1,12 @@
 ;;; Emacs Configuration File
 ;;; Inspired by https://www.sandeepnambiar.com/my-minimal-emacs-setup/
+;;; NOTE: Config file setup for Linux. If using Windows, you may need to
+;;; install transient, magit, and magit-popup from list-packages, and manually
+;;; set the git path like below:
+;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 
-;; Who am I
+
+;; Who am I - Info
 (setq user-full-name "John Osinski"
       user-mail-address "johnosinski80@gmail.com")
 
