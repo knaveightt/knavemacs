@@ -66,7 +66,12 @@
 (eval-when-compile
   (require 'use-package))
 
-;; Configuring Package: doom-themes
+;; Configuring Package: doom-themes w/ solaire
+(use-package solaire-mode
+  :ensure t
+  :config
+  (solaire-global-mode +1))
+
 (use-package doom-themes
   :ensure t
   :config
@@ -116,7 +121,7 @@
 (use-package evil
   :ensure t
   :config
-  (setq evil-normal-state-tag   (propertize " COMMAND " 'face '((:background "dark khaki" :foreground "black")))
+  (setq evil-normal-state-tag   (propertize " NORMAL " 'face '((:background "dark khaki" :foreground "black")))
         evil-emacs-state-tag    (propertize "  EMACS  " 'face '((:background "turquoise" :foreground "black")))
         evil-insert-state-tag   (propertize " INSERT  " 'face '((:background "dark sea green" :foreground "black")))
         evil-replace-state-tag  (propertize " REPLACE " 'face '((:background "dark orange" :foreground "black")))
