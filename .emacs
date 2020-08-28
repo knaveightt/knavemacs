@@ -187,7 +187,9 @@
         '(("TODO" . org-warning) ("WAITING" . "yellow")
           ("FUTURE". "green") ("DONE" . "blue") ("CANCELED" . "purple")))
   (setq org-agenda-files (list "~/.org"))
-  (setq org-default-notes-file "~/.org/captured.org"))
+  (setq org-default-notes-file "~/.org/captured.org")
+  (add-hook 'org-agenda-mode-hook (lambda () ; fix for windmove-left while in agenda mode
+                                    (define-key org-agenda-mode-map (kbd "M-h") 'windmove-left))))
 
 ;; Custom Misc Functions
 (defun open-config()
@@ -232,6 +234,8 @@
 (evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
 (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
 (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
+(evil-global-set-key 'normal (kbd "g j") 'scroll-up-command)
+(evil-global-set-key 'normal (kbd "g k") 'scroll-down-command)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
