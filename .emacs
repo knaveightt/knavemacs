@@ -150,6 +150,18 @@
   :ensure t
   :bind (("C-M-g" . magit-status)))
 
+;; Configuring Package: projectile
+(use-package projectile
+  :ensure t
+  :diminish projectile-mode
+  :bind
+  (("C-c p f" . helm-projectile-find-file)
+   ("C-c p p" . helm-projectile-switch-project)
+   ("C-c p s" . projectile-save-project-buffers))
+  :config
+  (projectile-mode +1)
+  )
+
 ;; Configuring Package: Helm
 (use-package helm
   :ensure t
@@ -171,6 +183,12 @@
   (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
   (define-key helm-map (kbd "C-z") 'helm-select-action)
   )
+
+;; Configuring Package: helm-projectile
+(use-package helm-projectile
+  :ensure t
+  :config
+  (helm-projectile-on))
 
 ;; Configuring Package: Org
 (use-package org
