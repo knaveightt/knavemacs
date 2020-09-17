@@ -1,14 +1,16 @@
-;;; Emacs Configuration File
+;;; dot-emacs -- Emacs Configuration File
+;;; Commentary:
 ;;; Inspired by https://www.sandeepnambiar.com/my-minimal-emacs-setup/
 ;;;
-;;; NOTE: Config file setup for Linux. If using Windows, you may need to
+;;; NOTE: Config file setup for Linux.  If using Windows, you may need to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
 ;;; set the git path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 ;;;
 ;;; NOTE 2: For proper installation of neotree themes - make sure you run all-the-icons-install-fonts
-;;; to unpack / install the fonts and icons 
+;;; to unpack / install the fonts and icons
 
+;;; Code:
 ;; Who am I - Info
 (setq user-full-name "John Osinski"
       user-mail-address "johnosinski80@gmail.com")
@@ -150,6 +152,20 @@
   :ensure t
   :bind (("C-M-g" . magit-status)))
 
+;; Configuring Package: company
+(use-package company
+  :ensure t
+  :diminish company-mode
+  :config
+  (add-hook 'after-init-hook #'global-company-mode))
+
+;; Configuring Package: flycheck
+(use-package flycheck
+  :ensure t
+  :diminish flycheck-mode
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
 ;; Configuring Package: projectile
 (use-package projectile
   :ensure t
@@ -211,7 +227,7 @@
 
 ;; Custom Misc Functions
 (defun open-config()
-  "Opens .emacs configuration file"
+  "Opens .emacs configuration file."
   (interactive)
   (find-file "~/.emacs"))
 
