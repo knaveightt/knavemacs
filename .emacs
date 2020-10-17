@@ -259,6 +259,7 @@
 (global-set-key (kbd "C-=") 'shrink-window)
 (global-set-key (kbd "M-+") 'enlarge-window-horizontally)
 (global-set-key (kbd "M-=") 'shrink-window-horizontally)
+(define-key global-map "\C-cu" 'neotree-toggle)
 (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
 (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
 (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
