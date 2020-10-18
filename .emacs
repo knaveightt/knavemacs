@@ -225,6 +225,14 @@
   (add-hook 'org-agenda-mode-hook (lambda () ; fix for windmove-left while in agenda mode
                                     (define-key org-agenda-mode-map (kbd "M-h") 'windmove-left))))
 
+;; Configuring Package: Markdown-Mode
+(use-package markdown-mode
+  :ensure t)
+
+;; Configuring Package: Yaml-Mode
+(use-package yaml-mode
+  :ensure t)
+
 ;; Custom Misc Functions
 (defun open-config()
   "Opens .emacs configuration file."
