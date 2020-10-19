@@ -4,8 +4,9 @@
 ;;;
 ;;; NOTE: Config file setup for Linux.  If using Windows, you may need to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
-;;; set the git path like below:
+;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
+;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
 ;;;
 ;;; NOTE 2: For proper installation of neotree themes - make sure you run all-the-icons-install-fonts
 ;;; to unpack / install the fonts and icons
