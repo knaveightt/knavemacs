@@ -304,6 +304,8 @@
 (global-set-key (kbd "C-=") 'shrink-window)
 (global-set-key (kbd "M-+") 'enlarge-window-horizontally)
 (global-set-key (kbd "M-=") 'shrink-window-horizontally)
+(global-set-key [f6] 'previous-buffer)
+(global-set-key [f7] 'next-buffer)
 (define-key global-map "\C-cu" 'neotree-toggle)
 (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
 (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
