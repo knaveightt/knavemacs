@@ -2,17 +2,16 @@
 ;;; Commentary:
 ;;; Inspired by https://www.sandeepnambiar.com/my-minimal-emacs-setup/
 ;;;
-;;; NOTE: Config file setup for Linux.  If using Windows, you may need to
+;;; NOTE: For proper installation:
+;;; - for neotree themes - make sure you run all-the-icons-install-fonts
+;;;   to unpack / install the fonts and icons
+;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
+;;;
+;;; NOTE 2: Config file setup for Linux.  If using Windows, you may need to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
 ;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
-;;;
-;;; NOTE 2: For proper installation of neotree themes - make sure you run all-the-icons-install-fonts
-;;; to unpack / install the fonts and icons
-;;;
-;;; NOTE 3: Tweaked Customization Options for Portability Considerations
-;;; - dashboard package: choose a startup banner icon - right now it is a clipart file.
 
 ;;; Code:
 ;; Who am I - Info
@@ -122,6 +121,7 @@
   ("<f8>" . neotree-toggle)
   :config
   (setq neo-window-fixed-size nil)
+  (setq neo-window-width 45)
   (setq neo-theme (if (display-graphic-p) 'icons 'arrow)))
 
 ;; Configuring Package: Evil
@@ -248,7 +248,7 @@
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-banner-logo-title "Knaveightt, they system is ready for you.")
-  (setq dashboard-startup-banner "/home/knaveightt/Pictures/clipart/goldspade-small.png")
+  (setq dashboard-startup-banner "~/.emacs.d/goldspade-small.png")
   ;; (setq dashboard-startup-banner 'logo)
   (setq dashboard-center-content t)
   ;; (setq dashboard-show-shortcuts nil)
