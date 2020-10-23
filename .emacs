@@ -234,6 +234,37 @@
 (use-package yaml-mode
   :ensure t)
 
+;; Configuring Package: Page Break Lines
+(use-package page-break-lines
+  :ensure t)
+
+;; Configuring Package: Dashboard
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-banner-logo-title "Knaveightt, they system is ready for you.")
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts nil)
+  (setq dashboard-items '((recents . 5)
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5)))
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-set-navigator t)
+  (setq dashboard-set-init-info t)
+  ;; Format: "(icon title help action face prefix suffix)"
+  (setq dashboard-navigator-buttons
+      `(;; line1
+        ((,(all-the-icons-octicon "mark-github" :height 1.1 :v-adjust 0.0)
+         "Github"
+         "Browse Github homepage"
+         (lambda (&rest _) (browse-url "http://github.com/knaveightt")))
+        )))
+  )
+
 ;; Custom Misc Functions
 (defun open-config()
   "Opens .emacs configuration file."
