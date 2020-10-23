@@ -251,7 +251,7 @@
   (setq dashboard-startup-banner "/home/knaveightt/Pictures/clipart/goldspade-small.png")
   ;; (setq dashboard-startup-banner 'logo)
   (setq dashboard-center-content t)
-  (setq dashboard-show-shortcuts nil)
+  ;; (setq dashboard-show-shortcuts nil)
   (setq dashboard-items '((recents . 5)
                           (bookmarks . 5)
                           (projects . 5)
@@ -267,7 +267,27 @@
          "Github"
          "Browse Github homepage"
          (lambda (&rest _) (browse-url "http://github.com/knaveightt")))
-        )))
+         )))
+
+  (defun dashboard-goto-recent-files ()
+    "Go to recent files on dashboard screen."
+    (interactive)
+    (funcall (local-key-binding "r"))
+    )
+
+  (defun dashboard-goto-projects ()
+    "Go to projects on dashboard screen."
+    (interactive)
+    (funcall (local-key-binding "p"))
+    )
+  
+  (with-eval-after-load 'evil
+    (evil-define-key 'normal dashboard-mode-map
+      "g" 'dashboard-refresh-buffer
+      "p" 'dashboard-goto-projects
+      "r" 'dashboard-goto-recent-files
+      )
+    )
   )
 
 ;; Custom Misc Functions
