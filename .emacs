@@ -12,6 +12,10 @@
 ;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
+;;;
+;;; Wishlist:
+;;; - Possibly move to Powerline vs smart-mode-line
+;;; - Integrate centaur-tabs
 
 ;;; Code:
 ;; Who am I - Info
@@ -110,6 +114,16 @@
   ;;(setq sml/theme 'powerline) ; different theme options
   (setq sml/theme 'atom-one-dark)
   (add-hook 'after-init-hook 'sml/setup))
+
+;; Configuring Package: Centaur Tabs
+;; (use-package centaur-tabs
+;;  :demand
+;;  :config
+;;  (centaur-tabs-mode t)
+;;  :bind
+;;  ("<f6>" . centaur-tabs-backward)
+;;  ("<f7>" . centaur-tabs-forward)
+;;  )
 
 ;; Configuring Package: Neotree
 (use-package all-the-icons
