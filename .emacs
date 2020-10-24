@@ -144,7 +144,8 @@
   (centaur-tabs-headline-match)
   (setq centaur-tabs-style "chamfer")
   (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-set-bar 'over)
+  (setq centaur-tabs-set-bar 'under)
+  (setq x-underline-at-descent-line t)
   (setq centaur-tabs-set-close-button nil)
   (setq centaur-tabs-set-modified-marker t)
   
