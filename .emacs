@@ -255,7 +255,7 @@
   :ensure t
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-banner-logo-title "Knaveightt, they system is ready for you.")
+  (setq dashboard-banner-logo-title "Knaveightt, the system is ready for you.")
   (setq dashboard-startup-banner "~/.emacs.d/goldspade-small.png")
   ;; (setq dashboard-startup-banner 'logo)
   (setq dashboard-center-content t)
