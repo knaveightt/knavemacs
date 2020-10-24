@@ -14,10 +14,12 @@
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
 ;;;
 ;;; Wishlist:
-;;; - Possibly move to Powerline vs smart-mode-line
 ;;; - Integrate centaur-tabs
 
 ;;; Code:
+;; Defining of free variables for flycheck
+(defvar org-agenda-mode-map)
+(defvar help-move-to-line-cycle-in-source)
 ;; Who am I - Info
 (setq user-full-name "John Osinski"
       user-mail-address "johnosinski80@gmail.com")
@@ -101,19 +103,11 @@
     (smartparens-global-mode 1)
     (show-paren-mode t)))
 
-;; Configuring Package: SmartModeLine (w/ Themes)
-(use-package smart-mode-line-powerline-theme
-  :ensure t)
-
-(use-package smart-mode-line-atom-one-dark-theme
-  :ensure t)
-
-(use-package smart-mode-line
+(use-package telephone-line
   :ensure t
   :config
-  ;;(setq sml/theme 'powerline) ; different theme options
-  (setq sml/theme 'atom-one-dark)
-  (add-hook 'after-init-hook 'sml/setup))
+  (telephone-line-mode 1)
+  )
 
 ;; Configuring Package: Centaur Tabs
 ;; (use-package centaur-tabs
@@ -367,3 +361,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(provide '.emacs)
+;;; .emacs ends here
