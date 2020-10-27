@@ -320,6 +320,13 @@
   (add-hook 'org-agenda-mode-hook (lambda () ; fix for windmove-left while in agenda mode
                                     (define-key org-agenda-mode-map (kbd "M-h") 'windmove-left))))
 
+;; Configuring Package: Org Mode Bullets
+(use-package org-bullets
+  :ensure t
+  :hook
+  (org-mode . org-bullets-mode)
+  )
+
 ;; Configuring Package: Markdown-Mode
 (use-package markdown-mode
   :ensure t)
