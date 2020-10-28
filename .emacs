@@ -12,9 +12,6 @@
 ;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
-;;;
-;;; Wishlist:
-;;; - Integrate centaur-tabs
 
 ;;; Code:
 ;; Defining of free variables for flycheck
@@ -449,6 +446,8 @@
 (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
 (evil-global-set-key 'normal (kbd "g j") 'scroll-up-command)
 (evil-global-set-key 'normal (kbd "g k") 'scroll-down-command)
+(evil-global-set-key 'normal (kbd "j") 'evil-next-visual-line)
+(evil-global-set-key 'normal (kbd "k") 'evil-previous-visual-line)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
