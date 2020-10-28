@@ -383,6 +383,12 @@
     (interactive)
     (funcall (local-key-binding "m"))
     )
+
+  (defun dashboard-goto-agenda()
+    "Go to agenda on dashboard screen."
+    (interactive)
+    (funcall (local-key-binding "a"))
+    )
   
   (with-eval-after-load 'evil
     (evil-define-key 'normal dashboard-mode-map
@@ -390,6 +396,7 @@
       "p" 'dashboard-goto-projects
       "r" 'dashboard-goto-recent-files
       "m" 'dashboard-goto-bookmarks
+      "a" 'dashboard-goto-agenda
       )
     )
   )
