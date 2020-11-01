@@ -1,4 +1,12 @@
-;;; dot-emacs -- Emacs Configuration File
+;;; Knavemacs -- Personal Emacs Configuration File
+;;; 
+;;; |\  \|\  \ |\   ___  \|\   __  \|\  \    /  /|\  ___ \ |\   _ \  _   \|\   __  \|\   ____\|\   ____\
+;;; \ \  \/  /|\ \  \\ \  \ \  \|\  \ \  \  /  / | \   __/|\ \  \\\__\ \  \ \  \|\  \ \  \___|\ \  \___|
+;;;  \ \   ___  \ \  \\ \  \ \   __  \ \  \/  / / \ \  \_|/_\ \  \\|__| \  \ \   __  \ \  \    \ \_____  \
+;;;   \ \  \\ \  \ \  \\ \  \ \  \ \  \ \    / /   \ \  \_|\ \ \  \    \ \  \ \  \ \  \ \  \____\|____|\  \
+;;;    \ \__\\ \__\ \__\\ \__\ \__\ \__\ \__/ /     \ \_______\ \__\    \ \__\ \__\ \__\ \_______\____\_\  \
+;;;    \|__| \|__|\|__| \|__|\|__|\|__|\|__|/       \|_______|\|__|     \|__|\|__|\|__|\|_______|\_________\
+;;;                                                                                             \|_________|
 ;;; Commentary:
 ;;; Inspired by https://www.sandeepnambiar.com/my-minimal-emacs-setup/
 ;;;
@@ -7,7 +15,7 @@
 ;;;   to unpack / install the fonts and icons
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
 ;;;
-;;; NOTE 2: Config file setup for Linux.  If using Windows, you may need to
+;;; NOTE 2: Config file based on my linux setup.  On Windows, I needed to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
 ;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
