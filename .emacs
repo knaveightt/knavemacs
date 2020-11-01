@@ -229,6 +229,8 @@
   :ensure t
   :bind
   ("<f9>" . minimap-mode)
+  :config
+  (setq minimap-window-location 'right)
   )
 
 ;; Configuring Package: Which Key
@@ -464,7 +466,6 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("b5fff23b86b3fd2dd2cc86aa3b27ee91513adaefeaa75adc8af35a45ffb6c499" "bf387180109d222aee6bb089db48ed38403a1e330c9ec69fe1f52460a8936b66" "60940e1f2fa3f4e61e7a7ed9bab9c22676aa25f927d5915c8f0fa3a8bf529821" "84d2f9eeb3f82d619ca4bfffe5f157282f4779732f48a5ac1484d94d5ff5b279" default))
- '(minimap-window-location 'right)
  '(package-selected-packages '(use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
