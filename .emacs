@@ -223,8 +223,8 @@
      )))
   :bind
   (:map evil-normal-state-map
-        ("g b" . centaur-tabs-forward)
-        ("g v" . centaur-tabs-backward)
+        ("g ." . centaur-tabs-forward)
+        ("g ," . centaur-tabs-backward)
         ("g y" . centaur-tabs-group-by-projectile-project)
         ("g Y" . centaur-tabs-group-buffer-groups)
         )
