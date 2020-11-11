@@ -33,6 +33,9 @@
 (setq gc-cons-threshold 50000000)
 (setq large-file-warning-threshold 100000000)
 
+;; Compilation Command Config
+(setq compilation-read-command nil)
+
 ;; File formatting and encoding settings
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
