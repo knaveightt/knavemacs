@@ -451,6 +451,7 @@
 (global-set-key (kbd "M-=") 'shrink-window-horizontally)
 (global-set-key [f6] 'previous-buffer)
 (global-set-key [f7] 'next-buffer)
+(global-set-key [f9] 'compile)
 (define-key global-map "\C-cu" 'neotree-toggle)
 (define-key global-map "\C-ci" 'minimap-mode)
 (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
