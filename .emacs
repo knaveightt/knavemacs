@@ -91,7 +91,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-nord t)
+  (load-theme 'doom-acario-dark t)
   (doom-themes-visual-bell-config))
 
 ;; Configuring Package: Diminish (hides minor modes)
