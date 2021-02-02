@@ -15,8 +15,9 @@
 ;;;   to unpack / install the fonts and icons
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
 ;;; - I am working on a companion package allowing the launching of pre-defined workspace macros,
-;;;   hence I am including a new exec-path to append below.
-;;; (setq exec-path (append exec-path '("~/Prog/knv-project")))
+;;;   which works by defining the .el file that contains the macro functions.  Defaults to nil.
+(defvar knv-workspaces-file nil)
+;;; (defvar knv-workspaces-file "/home/knaveightt/Prog/knv-project/knv-workspaces.el")
 ;;;
 ;;; NOTE 2: Config file based on my linux setup.  On Windows, I needed to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
@@ -473,6 +474,11 @@
 (evil-global-set-key 'normal (kbd "g k") 'scroll-down-command)
 (evil-global-set-key 'normal (kbd "j") 'evil-next-visual-line)
 (evil-global-set-key 'normal (kbd "k") 'evil-previous-visual-line)
+
+;; Custom Loading of minimal "workspaces" defined in a different file
+(if knv-workspaces-file
+    (load knv-workspaces-file)
+    )
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
