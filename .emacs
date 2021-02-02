@@ -14,6 +14,9 @@
 ;;; - for neotree themes - make sure you run all-the-icons-install-fonts
 ;;;   to unpack / install the fonts and icons
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
+;;; - I am working on a companion package allowing the launching of pre-defined workspace macros,
+;;;   hence I am including a new exec-path to append below.
+;;; (setq exec-path (append exec-path '("~/Prog/knv-project")))
 ;;;
 ;;; NOTE 2: Config file based on my linux setup.  On Windows, I needed to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
