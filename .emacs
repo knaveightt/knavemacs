@@ -16,8 +16,8 @@
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
 ;;; - I am working on a companion package allowing the launching of pre-defined workspace macros,
 ;;;   which works by defining the .el file that contains the macro functions.  Defaults to nil.
-(defvar knv-workspaces-file nil)
-;;; (defvar knv-workspaces-file "/home/knaveightt/Prog/knv-project/knv-workspaces.el")
+;;; (defvar knv-workspaces-file nil)
+(defvar knv-workspaces-file "/home/knaveightt/Prog/knv-project/knv-workspaces.el")
 ;;;
 ;;; NOTE 2: Config file based on my linux setup.  On Windows, I needed to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
@@ -419,6 +419,14 @@
     )
   )
 
+;; Initiate the Flyspell modes
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+(dolist (hook '(markdown-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode -1))))
+
 ;; Custom Misc Functions
 (defun open-config()
   "Opens .emacs configuration file."
@@ -456,6 +464,8 @@
 (global-set-key [f6] 'previous-buffer)
 (global-set-key [f7] 'next-buffer)
 (global-set-key [f9] 'compile)
+(global-set-key [f5] 'flyspell-buffer)
+(global-set-key (kbd "C-<f5>") 'ispell-buffer)
 (global-set-key (kbd "C-,")
 	(lambda () (interactive "")
 	  (switch-to-buffer (other-buffer (current-buffer) t))))
