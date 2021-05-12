@@ -56,7 +56,7 @@
 (blink-cursor-mode -1)
 (global-hl-line-mode +1)
 (line-number-mode +1)
-(global-display-line-numbers-mode 1)
+(global-display-line-numbers-mode -1)
 (column-number-mode t)
 (size-indication-mode t)
 (setq-default tab-width 4
@@ -349,12 +349,20 @@
 (use-package markdown-mode
   :ensure t)
 
+;; Configuring Package: lua-mode
+(use-package lua-mode
+  :ensure t)
+
 ;; Configuring Package: Yaml-Mode
 (use-package yaml-mode
   :ensure t)
 
 ;; Configuring Package: Page Break Lines
 (use-package page-break-lines
+  :ensure t)
+
+;; Configuring Package: fontawesome
+(use-package fontawesome
   :ensure t)
 
 ;; Configuring Package: Dashboard
