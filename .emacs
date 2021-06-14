@@ -14,6 +14,7 @@
 ;;; - for neotree themes - make sure you run all-the-icons-install-fonts
 ;;;   to unpack / install the fonts and icons
 ;;; - if you get a wierd font icon for modified buffer tabs, try installint ttf-hanazono from the package manager
+;;; - Also have (or set) "Inconsolata Nerd Font" installed
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
 ;;; - Make sure a ~/.org file is created
 ;;; - I am working on a companion package allowing the launching of pre-defined workspace macros,
@@ -54,7 +55,7 @@
       `((".*" ,temporary-file-directory t)))
 
 ;; Visual Setup
-(set-frame-font "Inconsolata Nerd Font 16" nil t)
+(add-to-list 'default-frame-alist '(font . "Inconsolata Nerd Font 16"))
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
@@ -67,6 +68,7 @@
 (setq-default tab-width 4
 	      indent-tabs-mode nil)
 (setq inhibit-startup-screen t)
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
