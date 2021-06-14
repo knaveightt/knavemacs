@@ -263,7 +263,7 @@
   :config
   (which-key-mode +1))
 
-;; Configuring Package: magit
+;; Configuring Package: magit / git related items
 (use-package transient
   :ensure t
   :demand t)
@@ -275,6 +275,12 @@
 (use-package magit
   :ensure t
   :bind (("C-M-g" . magit-status)))
+
+(use-package git-gutter
+  :ensure t
+  :config
+  (global-git-gutter-mode +1)
+  )
 
 ;; Configuring Package: company
 (use-package company
