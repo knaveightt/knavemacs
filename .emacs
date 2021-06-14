@@ -13,17 +13,21 @@
 ;;; NOTE: For proper installation:
 ;;; - for neotree themes - make sure you run all-the-icons-install-fonts
 ;;;   to unpack / install the fonts and icons
+;;; - if you get a wierd font icon for modified buffer tabs, try installint ttf-hanazono from the package manager
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
+;;; - Make sure a ~/.org file is created
 ;;; - I am working on a companion package allowing the launching of pre-defined workspace macros,
 ;;;   which works by defining the .el file that contains the macro functions.  Defaults to nil.
-;;; (defvar knv-workspaces-file nil)
-(defvar knv-workspaces-file "/home/knaveightt/Prog/knv-project/knv-workspaces.el")
+(defvar knv-workspaces-file nil)
+;;; (defvar knv-workspaces-file "/home/knaveightt/Prog/knv-project/knv-workspaces.el")
 ;;;
 ;;; NOTE 2: Config file based on my linux setup.  On Windows, I needed to
 ;;; install transient, magit, and magit-popup from list-packages, and manually
 ;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
+;;;
+;;; TODO: Treemacs, keymaps, server setup
 
 ;;; Code:
 ;; Defining of free variables for flycheck
@@ -50,13 +54,14 @@
       `((".*" ,temporary-file-directory t)))
 
 ;; Visual Setup
+(set-frame-font "Inconsolata Nerd Font 16" nil t)
 (menu-bar-mode -1)
 (toggle-scroll-bar -1)
 (tool-bar-mode -1)
 (blink-cursor-mode -1)
 (global-hl-line-mode +1)
 (line-number-mode +1)
-(global-display-line-numbers-mode -1)
+(global-display-line-numbers-mode +1)
 (column-number-mode t)
 (size-indication-mode t)
 (setq-default tab-width 4
@@ -95,7 +100,7 @@
 (use-package doom-themes
   :ensure t
   :config
-  (load-theme 'doom-acario-dark t)
+  (load-theme 'doom-tomorrow-night t)
   (doom-themes-visual-bell-config))
 
 ;; Configuring Package: Diminish (hides minor modes)
@@ -115,6 +120,12 @@
 (use-package telephone-line
   :ensure t
   :config
+  (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
+        telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
+        telephone-line-primary-right-separator 'telephone-line-cubed-right
+        telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
+  (setq telephone-line-height 24
+        telephone-line-evil-use-short-tag t)
   (telephone-line-mode 1)
   )
 
