@@ -28,8 +28,6 @@
 ;;; set the git path / diff path like below:
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/Desktop/other/cmder/vendor/git-for-windows/bin")))
 ;;; (setq exec-path (append exec-path '("C:/Users/josinski/AppData/Roaming/.emacs.p")))
-;;;
-;;; TODO: Treemacs, keymaps, server setup
 
 ;;; Code:
 ;; Defining of free variables for flycheck
