@@ -70,6 +70,13 @@
 (setq inhibit-startup-screen t)
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 
+(defun my/disable-scroll-bars (frame)
+  "FRAME the frame that's created.  Ensure no new frames spawn with a scrollbar."
+  (modify-frame-parameters frame
+                           '((vertical-scroll-bars . nil)
+                             (horizontal-scroll-bars . nil))))
+(add-hook 'after-make-frame-functions 'my/disable-scroll-bars)
+
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
        (abbreviate-file-name (buffer-file-name))
