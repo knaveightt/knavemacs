@@ -17,6 +17,7 @@
 ;;; - if you get a wierd font icon for modified buffer tabs, try installint ttf-hanazono from the package manager
 ;;; - Make sure .emacs amd .emacs.d/goldspade-small.png are symlinked correctly
 ;;; - Make sure a ~/.org file is created
+;;; - (optional) Install aspell (program) and aspell-en (dictionary) for flyspell/ispell functionality
 ;;; - I am working on a companion package allowing the launching of pre-defined workspace macros,
 ;;;   which works by defining the .el file that contains the macro functions.  Defaults to nil.
 (defvar knv-workspaces-file nil)
