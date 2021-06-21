@@ -345,15 +345,35 @@
   :config
   (setq org-log-done t)
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "WAITING(w)" "FUTURE(f)" "|" "DONE(d)" "CANCELED(c)")))
+        '((sequence "BACKLOG(b)" "NEXT(n)" "TODO(t)" "TASK(k)" "WAIT(w)" "HOLD(h)" "GAVE(v)" "|" "DONE(d)" "CANCELED(c)")))
   (setq org-todo-keyword-faces
-        '(("TODO" . org-warning) ("WAITING" . "yellow")
-          ("FUTURE". "green") ("DONE" . "blue") ("CANCELED" . "purple")))
+        '(("TODO" . org-warning) ("TASK" . "cyan") ("WAIT" . "yellow") ("HOLD" . "yellow") ("GAVE" . "purple")
+          ("BACKLOG". "green") ("NEXT" . "orange") ("DONE" . "blue") ("CANCELED" . "purple")))
   (setq org-agenda-files (list "~/.org"))
-  (setq org-default-notes-file "~/.org/captured.org")
-  (add-hook 'org-agenda-mode-hook (lambda () ; fix for windmove-left while in agenda mode
-                                    (define-key org-agenda-mode-map (kbd "M-h") 'windmove-left))))
 
+  ;; Custom Agenda View
+  (setq org-agenda-custom-commands
+        '(("d" "Work-Week Dashboard"
+           ((agenda "" ((org-deadline-warning-days 7)))
+           (todo "TODO"
+                 ((org-agenda-overriding-header "Additional TODOs This Week")))
+           (todo "NEXT"
+                 ((org-agenda-overriding-header "Activities Planned for Next Week"))))))
+        )
+
+  ;; Capture Templates
+  (setq org-capture-templates
+      '(("m" "Meeting Notes" entry (file+datetree "~/.org/Daily.org" "Meetings")
+         "* %t %? :unfiled-minutes:")
+
+        ("n" "General Notes" entry (file+datetree "~/.org/Daily.org" "General Notes")
+         "* %U\n%?" :empty-lines 1)
+
+        ("t" "Task Entry" entry (file+olp "~/.org/daily.org" "Tasks")
+         "* TODO %? :unfiled-action:\n  %U\n  %i" :empty-lines 1)
+        ))
+  )
+  
 ;; Configuring Package: Org Mode Bullets
 (use-package org-bullets
   :ensure t
