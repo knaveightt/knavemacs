@@ -363,13 +363,13 @@
 
   ;; Capture Templates
   (setq org-capture-templates
-      '(("m" "Meeting Notes" entry (file+datetree "~/.org/Daily.org" "Meetings")
+      '(("m" "Meeting Notes" entry (file+datetree "~/.org/Unfiled.org" "Meetings")
          "* %t %? :unfiled-minutes:")
 
-        ("n" "General Notes" entry (file+datetree "~/.org/Daily.org" "General Notes")
+        ("n" "General Notes" entry (file+datetree "~/.org/Unfiled.org" "General Notes")
          "* %U\n%?" :empty-lines 1)
 
-        ("t" "Task Entry" entry (file+olp "~/.org/daily.org" "Tasks")
+        ("t" "Task Entry" entry (file+olp "~/.org/Unfiled.org" "Tasks")
          "* TODO %? :unfiled-action:\n  %U\n  %i" :empty-lines 1)
         ))
   )
