@@ -345,9 +345,9 @@
   :config
   (setq org-log-done t)
   (setq org-todo-keywords
-        '((sequence "BACKLOG(b)" "NEXT(n)" "TODO(t)" "TASK(k)" "WAIT(w)" "HOLD(h)" "GAVE(v)" "|" "DONE(d)" "CANCELED(c)")))
+        '((sequence "BACKLOG(b)" "NEXT(n)" "TODO(t)" "TASK(k)" "TODY(y)" "WAIT(w)" "HOLD(h)" "GAVE(v)" "|" "DONE(d)" "CANCELED(c)")))
   (setq org-todo-keyword-faces
-        '(("TODO" . org-warning) ("TASK" . "cyan") ("WAIT" . "yellow") ("HOLD" . "yellow") ("GAVE" . "purple")
+        '(("TODO" . org-warning) ("TASK" . "cyan") ("TODY" . "red") ("WAIT" . "yellow") ("HOLD" . "yellow") ("GAVE" . "purple")
           ("BACKLOG". "green") ("NEXT" . "orange") ("DONE" . "blue") ("CANCELED" . "purple")))
   (setq org-agenda-files (list "~/.org"))
 
@@ -355,6 +355,8 @@
   (setq org-agenda-custom-commands
         '(("d" "Work-Week Dashboard"
            ((agenda "" ((org-deadline-warning-days 7)))
+           (todo "TODY"
+                 ((org-agenda-overriding-header "Priority Actions for Today")))
            (todo "TODO"
                  ((org-agenda-overriding-header "Additional TODOs This Week")))
            (todo "NEXT"
@@ -371,6 +373,9 @@
 
         ("t" "Task Entry" entry (file+olp "~/.org/Unfiled.org" "Tasks")
          "* TODO %? :unfiled-action:\n  %U\n  %i" :empty-lines 1)
+
+        ("y" "Priority Task Today" entry (file+olp "~/.org/Unfiled.org" "Tasks")
+         "* TODY %? :unfiled-action:\n  %U\n  %i" :empty-lines 1)
         ))
   )
   
