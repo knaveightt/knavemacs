@@ -1,0 +1,1 @@
+/home/knave8/Projects/knavemacs/config.org
