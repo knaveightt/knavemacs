@@ -367,7 +367,10 @@ excellent across project files.
 
 *** Magit
 #+BEGIN_SRC emacs-lisp
-  (use-package magit)
+  (use-package magit
+    :init
+    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/cmder/vendor/git-for-windows/bin"))))
+    )
 #+END_SRC
 
 ** Key-Bind Modifications
