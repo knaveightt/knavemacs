@@ -367,6 +367,9 @@ excellent across project files.
 
 *** Magit
 #+BEGIN_SRC emacs-lisp
+  ;; SETUP: magit
+  ;; PURPOSE: git interface with emacs
+  ;; DEP: I need to set the path manually to git for windows
   (use-package magit
     :init
     (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/cmder/vendor/git-for-windows/bin"))))
