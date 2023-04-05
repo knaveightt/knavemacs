@@ -382,6 +382,8 @@ I use ~<~ and ~>~ to navigate up and down screenfulls of text,
 as well as ~N~ and ~M~ to go to the true beginning / end of a line. I can use
 ~SPC-?~ to get a good cheatsheet of what meow keys exist. I can always use
 ~C-h k~ as well to check a specific key, or launch ~meow-tutor~ for a refresher.
+Take a look below, because I also change the purpose of the digit keys and add
+a few more functions when pressing the leader key!
 #+BEGIN_SRC emacs-lisp
   ;; SETUP: meow
   ;; PURPOSE: more native modal editing mode for Emacs
@@ -409,6 +411,7 @@ as well as ~N~ and ~M~ to go to the true beginning / end of a line. I can use
      ;'("8" . meow-digit-argument)
      ;'("9" . meow-digit-argument)
      ;'("0" . meow-digit-argument)
+     '("k" . kill-this-buffer)
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
