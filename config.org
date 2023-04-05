@@ -69,8 +69,7 @@ cursor location.
   (setq display-line-numbers-type 'relative); enable relative line numbers
   (column-number-mode)                 ; show column number in mode line
   (global-display-line-numbers-mode t) ; enable line numbers globally
-  (dolist (mode '(org-mode-hook        ; define modes that we don't want to see line numbers on
-		term-mode-hook
+  (dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
 		eshell-mode-hook
 		which-key-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
