@@ -535,6 +535,7 @@ the space key used for meow.
 			    :prefix "C-c p")
     (knavemacs/leader-keys
      "p"  '(projectile-command-map :which-key "projectile")
+     "g"  '(magit-status :which-key "git status")
       
      "o"  '(:ignore t :which-key "org-mode")
      "oa" '(org-agenda :which-key "org-agenda")
