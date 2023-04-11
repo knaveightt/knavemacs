@@ -408,7 +408,7 @@ a few more functions when pressing the leader key!
      ;'("5" . meow-digit-argument)
      ;'("6" . meow-digit-argument)
      ;'("7" . meow-digit-argument)
-     '("8" . ivy-switch-buffer)
+     '("b" . ivy-switch-buffer)
      '("9" . tab-bar-switch-to-prev-tab)
      '("0" . tab-bar-switch-to-next-tab)
      '("k" . kill-this-buffer)
