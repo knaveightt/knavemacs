@@ -226,7 +226,7 @@ completion engines to exist, like helm. Just a tip for Ivy, I can use
     :bind
     ("C-c l" . org-store-link)
     ("C-c a" . org-agenda)
-    ("C-c c" . org-capture)
+    ("C-c o" . org-capture)
     :config
     (setq org-ellipsis " ▾"
 	  org-hide-emphasis-markers t)
