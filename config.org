@@ -83,7 +83,7 @@ assumes the font is already present on the workspace.
   ;; set default font settings for my favorite linux font if not on windows
   ;; DEP: requires "Inconsolata Nerd Font" installed on linux.
   (if (not(eq system-type 'windows-nt ))
-      (set-face-attribute `default nil :font "Inconsolata Nerd Font" :height 140))
+      (set-face-attribute `default nil :font "Inconsolata Nerd Font" :height 120))
 #+END_SRC
 
 *** Backup File Rules
@@ -317,7 +317,7 @@ This is done to transform dash hyphens into dots.
     :config
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italic is universally disabled
-    (if (not(eq system-type 'windows-nt )) (load-theme 'doom-sourcerer t))
+    (if (not(eq system-type 'windows-nt )) (load-theme 'manoj-dark t))
     (if (eq system-type 'windows-nt) (load-theme 'doom-opera-light t)))
 #+END_SRC
 
