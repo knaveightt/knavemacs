@@ -284,6 +284,23 @@ This is done to transform dash hyphens into dots.
 			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
+** Org-Roam Configuration
+Using org-roam for my "zettelkasten" note-taking system.
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: org-roam
+  ;; PURPOSE: provide a note-taking system on top of org-mode
+  ;; DEP: setup these directories on linux!
+  ;; NOTE: setting up for linux only
+  (if (not(eq system-type 'windows-nt))
+    (use-package org-roam
+      :custom
+      (org-roam-directory "~/Documents/knowledge")
+      :config
+      (org-roam-setup)
+    )
+  )	
+#+END_SRC
+
 ** Visual Theme and Aesthetic
 *** all-the-icons
 #+BEGIN_SRC emacs-lisp
@@ -543,7 +560,12 @@ the space key used for meow.
     (knavemacs/leader-keys
      "p"  '(projectile-command-map :which-key "projectile")
      "g"  '(magit-status :which-key "git status")
-      
+
+     "n"  '(:ignore t :which-key "org-roam")
+     "nf" '(org-roam-node-find :which-key "Find Node")
+     "nl" '(org-roam-buffer-toggle :which-key "Toggle Buffer")
+     "ni" '(org-roam-node-insert :which-key "Insert Node")
+
      "o"  '(:ignore t :which-key "org-mode")
      "oa" '(org-agenda :which-key "org-agenda")
      "oc" '(org-capture :which-key "org-capture")
