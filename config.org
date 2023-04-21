@@ -285,6 +285,7 @@ This is done to transform dash hyphens into dots.
 #+END_SRC
 
 ** Org-Roam Configuration
+*** Org-Roam
 Using org-roam for my "zettelkasten" note-taking system.
 #+BEGIN_SRC emacs-lisp
   ;; SETUP: org-roam
