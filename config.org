@@ -339,6 +339,13 @@ This is done to transform dash hyphens into dots.
     :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
+*** Rainbow Mode
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: rainbow-mode
+  ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
+  (use-package rainbow-mode)
+#+END_SRC
+
 ** Project and Version Control
 *** Projectile
 A nice thing about projectile is I can set directory (project) specific variables, including what
