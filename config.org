@@ -296,6 +296,11 @@ Using org-roam for my "zettelkasten" note-taking system.
     (use-package org-roam
       :custom
       (org-roam-directory "~/Documents/knowledge")
+      (org-roam-capture-templates
+       '(("d" "default" plain
+	  "%?"
+	  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+	  :unnarrowed t)))
       :config
       (org-roam-setup)
     )
