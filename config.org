@@ -547,10 +547,10 @@ a few more functions when pressing the leader key!
     ("f" nil "finished" :exit t))
   (defhydra hydra-window-resize (:timeout 4)
     "resize split windows"
-    ("j" evil-window-increase-height "inc-height")
-    ("k" evil-window-decrease-height "dec-height")
-    ("h" evil-window-decrease-width "dec-width")
-    ("l" evil-window-increase-width "inc-width")
+    ("j" enlarge-window "inc-height")
+    ("k" shrink-window "dec-height")
+    ("h" shrink-window-horizontally "dec-width")
+    ("l" enlarge-window-horizontally "inc-width")
     ("f" nil "finished" :ext t))
 #+END_SRC
 
