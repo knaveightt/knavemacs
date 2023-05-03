@@ -457,10 +457,6 @@ a few more functions when pressing the leader key!
      '("C-3" . meow-expand-3)
      '("C-2" . meow-expand-2)
      '("C-1" . meow-expand-1)
-     '("M-h" . windmove-left)
-     '("M-j" . windmove-down)
-     '("M-k" . windmove-up)
-     '("M-l" . windmove-right)
      '("1" . meow-digit-argument)
      '("2" . meow-digit-argument)
      '("3" . meow-digit-argument)
@@ -581,6 +577,18 @@ the space key used for meow.
 
      "s"  '(:ignore t :which-key "scale/size")
      "st" '(hydra-text-scale/body :which-key "scale text")
-     "sw" '(hydra-window-resize/body :which-key "resize window")))
+     "sw" '(hydra-window-resize/body :which-key "resize window"))
+     
+    ;; non-leader key defininitions (mainly for window management)
+    (general-define-key
+     :prefix "C-c w"
+
+     "h" '(windmove-left :whick-key "Move-to Left Pane")
+     "l" '(windmove-right :which-key "Move-to Right Pane")
+     "j" '(windmove-down :which-key "Move-to Down Pane")
+     "k" '(windmove-up :which-key "Move-to Up Pane")
+     "s" '(hydra-window-resize/body :which-key "resize window"))
+
+     )
 #+END_SRC
 
