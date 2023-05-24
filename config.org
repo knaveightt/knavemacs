@@ -428,6 +428,23 @@ excellent across project files.
     )
 #+END_SRC
 
+** Custom Functions
+*** Navigation Functions
+*forward-or-backward-sexp*
+Grabbed from the Emacs Wiki, here is a custom function that 'smartly' emulates
+the '%' key from vi, to allow jumping between matching parenthesis (or sexp).
+
+#+BEGIN_SRC emacs-lisp
+  (defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+#+END_SRC
+
 ** Key-Bind Modifications
 *** Meow
 I use [[https://github.com/meow-edit/meow][meow]] as my modal editing system, and it is amazing!
@@ -458,7 +475,7 @@ a few more functions when pressing the leader key!
      '("2" . tab-bar-new-tab)
      '("3" . switch-to-buffer-other-tab)
      ;'("4" . meow-digit-argument)
-     ;'("5" . meow-digit-argument)
+     '("5" . forward-or-backward-sexp)
      ;'("6" . meow-digit-argument)
      ;'("7" . meow-digit-argument)
      '("b" . ivy-switch-buffer)
