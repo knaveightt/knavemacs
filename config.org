@@ -567,6 +567,7 @@ a few more functions when pressing the leader key!
      '("y" . meow-save)
      '("Y" . meow-sync-grab)
      '("z" . hydra-shift-viewport/body)
+     '("Z" . hydra-save-andor-close/body)
      '("'" . repeat)
      '("<escape>" . ignore)
      ;; deviating from the suggested map to allow easy scrolling of screens
@@ -606,6 +607,11 @@ a few more functions when pressing the leader key!
     ("b" (recenter-top-bottom -1) "shift to bottom" :exit t)
     ("g" meow-pop-selection "Pop Selection")
     ("f" nil "finished" :ext t))
+  (defhydra hydra-save-andor-close (:timeout 4)
+    "Quick kill emacs, optionally save all"
+    ("Z" (save-buffers-kill-terminal) "Save Close All")
+    ("Q" (kill-emacs) "Kill Emacs")
+    ("f" nil "cancel" :ext t))
 #+END_SRC
 
 *** General
