@@ -566,7 +566,7 @@ a few more functions when pressing the leader key!
      '("X" . meow-goto-line)
      '("y" . meow-save)
      '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
+     '("z" . hydra-shift-viewport/body)
      '("'" . repeat)
      '("<escape>" . ignore)
      ;; deviating from the suggested map to allow easy scrolling of screens
@@ -598,6 +598,13 @@ a few more functions when pressing the leader key!
     ("k" shrink-window "dec-height")
     ("h" shrink-window-horizontally "dec-width")
     ("l" enlarge-window-horizontally "inc-width")
+    ("f" nil "finished" :ext t))
+  (defhydra hydra-shift-viewport (:timeout 4)
+    "shift view around, or pop, selection"
+    ("z" recenter "recenter" :exit t)
+    ("t" (recenter-top-bottom 0) "shift to top" :exit t)
+    ("b" (recenter-top-bottom -1) "shift to bottom" :exit t)
+    ("g" meow-pop-selection "Pop Selection")
     ("f" nil "finished" :ext t))
 #+END_SRC
 
