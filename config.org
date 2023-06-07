@@ -224,7 +224,11 @@ completion engines to exist, like helm. Just a tip for Ivy, I can use
 *** Org (general config)
 #+BEGIN_SRC emacs-lisp
   ;; PURPOSE: this manages my getting things done workflow during work
+  (defun knavemacs/org-mode-setup ()
+    (org-indent-mode))
+
   (use-package org
+    :hook (org-mode . knavemacs/org-mode-setup)
     :bind
     ("C-c l" . org-store-link)
     ("C-c a" . org-agenda)
@@ -232,7 +236,8 @@ completion engines to exist, like helm. Just a tip for Ivy, I can use
     :config
     (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
     (setq org-ellipsis " ▾"
-	  org-hide-emphasis-markers t)
+	  ;org-hide-emphasis-markers t
+    )
     (setq org-agenda-files (list "~/.org"))
     (setq org-refile-targets
 	  '((nil :maxlevel . 1)
