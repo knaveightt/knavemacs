@@ -309,21 +309,21 @@ Using org-roam for my "zettelkasten" note-taking system.
 #+BEGIN_SRC emacs-lisp
   ;; SETUP: org-roam
   ;; PURPOSE: provide a note-taking system on top of org-mode
-  ;; DEP: setup these directories on linux!
+  ;; DEP: setup these directories on linux and Windows! Make sure a C compiler is in the defined path for windows
   ;; NOTE: setting up for linux only
-  (if (not(eq system-type 'windows-nt))
-    (use-package org-roam
-      :custom
-      (org-roam-directory "~/Documents/knowledge")
-      (org-roam-capture-templates
-       '(("d" "default" plain
-	  "%?"
-	  :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-	  :unnarrowed t)))
+  (use-package org-roam
+    :init
+    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/x86_64-12.2.0-release-posix-seh-ucrt-rt_v10-rev2/mingw64/bin"))))
+    :custom
+    (org-roam-directory "~/Documents/knowledge")
+    (org-roam-capture-templates
+     '(("d" "default" plain
+   "%?"
+    :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)))
       :config
       (org-roam-setup)
-    )
-  )	
+  )
 #+END_SRC
 
 ** Visual Theme and Aesthetic
@@ -627,6 +627,11 @@ the space key used for meow.
   ;; PURPOSE: provide convenient and consistent keymap definitions, including with leader keys
   (use-package general
     :config
+    ;; General global key remaps
+    (general-define-key
+     "C-x C-b" 'ibuffer) ; remap buffer list to interactive list 
+
+    ;; Personal prompt keys
     (general-create-definer knavemacs/leader-keys
 			    :keymaps 'global
 			    :prefix "C-c p")
