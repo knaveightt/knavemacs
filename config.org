@@ -461,6 +461,19 @@ the '%' key from vi, to allow jumping between matching parenthesis (or sexp).
         ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 #+END_SRC
 
+*** Date Functions
+*org-quick-time-stamp-inactive*
+Provides a single function that can be mapped to a key, as a shortcut to insert
+an inactive timestamp of the current time without user prompt.
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-quick-time-stamp-inactive ()
+  "Insert an inactive time stamp of the current time without user prompt"
+  (interactive)
+  (let ((current-prefix-arg '(16)))
+    (call-interactively 'org-time-stamp-inactive)))
+#+END_SRC
+
 ** Key-Bind Modifications
 *** Meow
 I use [[https://github.com/meow-edit/meow][meow]] as my modal editing system, and it is amazing!
@@ -648,6 +661,7 @@ the space key used for meow.
      "oa" '(org-agenda :which-key "org-agenda")
      "oc" '(org-capture :which-key "org-capture")
      "ol" '(org-store-link :which-key "org-store-link")
+     "od" '(org-quick-time-stamp-inactive :which-key "inactive timestamp")
 
      "s"  '(:ignore t :which-key "scale/size")
      "st" '(hydra-text-scale/body :which-key "scale text")
