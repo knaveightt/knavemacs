@@ -220,6 +220,21 @@ completion engines to exist, like helm. Just a tip for Ivy, I can use
     ([remap describe-key] . helpful-key))
 #+END_SRC
 
+** File Management Configuration
+*** Dired
+Some modifications to dired to support my usage of the functionality
+#+BEGIN_SRC emacs-lisp
+  (defun knavemacs/dired-mode-setup ()
+    (dired-hide-details-mode))
+
+  (use-package dired
+    :hook (dired-mode . knavemacs/dired-mode-setup)
+    :ensure nil
+    :commands (dired dired-jump)
+    :custom ((dired-listing-switches "-alGh --group-directories-first"))
+    )
+#+END_SRC
+
 ** Org-Mode Configuration
 *** Org (general config)
 #+BEGIN_SRC emacs-lisp
@@ -299,27 +314,29 @@ This is done to transform dash hyphens into dots.
 			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
-** Org-Roam Configuration
-*** Org-Roam
-Using org-roam for my "zettelkasten" note-taking system.
+** Note-Taking Configuration
+*** Markdown Mode
+I specify Markdown mode here, because I usually use markdown to take notes
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: org-roam
-  ;; PURPOSE: provide a note-taking system on top of org-mode
-  ;; DEP: setup these directories on linux and Windows! Make sure a C compiler is in the defined path for windows
-  ;; NOTE: setting up for linux only
-  (use-package org-roam
+  ;; SETUP: markdown-mode
+  ;; PURPOSE: to provide emacs facilities to edit and create md files
+  (use-package markdown-mode)
+#+END_SRC
+
+*** Denote
+Using denote for note taking and knowledge management
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: denote
+  ;; PURPOSE: provides facilities for note taking and knowledge management
+  (use-package denote
     :init
-    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/x86_64-12.2.0-release-posix-seh-ucrt-rt_v10-rev2/mingw64/bin"))))
-    :custom
-    (org-roam-directory "~/Documents/knowledge")
-    (org-roam-capture-templates
-     '(("d" "default" plain
-   "%?"
-    :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-      :unnarrowed t)))
-      :config
-      (org-roam-setup)
-  )
+    (add-hook 'find-file-hook #'denote-link-buttonize-buffer)
+    :config
+    (setq denote-directory (expand-file-name "~/Documents/denote"))
+    (setq denote-prompts '(subdirectory title keywords))
+    (setq denote-known-keywords '("info" "idea" "meta" "index" "refined"))
+    (setq denote-file-type "markdown-yaml")
+    )
 #+END_SRC
 
 ** Visual Theme and Aesthetic
@@ -382,26 +399,6 @@ Using org-roam for my "zettelkasten" note-taking system.
   ;; SETUP: rainbow-mode
   ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
   (use-package rainbow-mode)
-#+END_SRC
-
-*** Sidebar Configuration
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: dired-sidebar
-  ;; PURPOSE: provdie a quick directory view in a dedicated sidebar
-  (use-package dired-sidebar
-    :init
-    (add-hook 'dired-sidebar-mode-hook
-	      (lambda ()
-		(unless (file-remote-p default-directory)
-		  (auto-revert-mode))))
-    :config
-    (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-    (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-
-    (setq dired-sidebar-subtree-line-prefix "__")
-    (setq dired-sidebar-theme 'icons)
-    (setq dired-sidebar-use-term-integration t)
-    (setq dired-sidebar-use-custom-font t))
 #+END_SRC
 
 ** Project and Version Control
@@ -672,6 +669,17 @@ the space key used for meow.
      "j" '(windmove-down :which-key "Move-to Down Pane")
      "k" '(windmove-up :which-key "Move-to Up Pane")
      "s" '(hydra-window-resize/body :which-key "resize window"))
+
+    ;; dired configurations
+    ;; note, <space>-j to jump (dired-goto-file) in dired buffers
+    ;; note, <space>-j to open current buffer location in dired for other buffers
+    ;; note, o to open file in a different buffer split for editing (vs Enter)
+    ;; note, C-o to open file in a differnet buffer split, keep focus on dired
+    (general-define-key
+     :keymaps 'dired-mode-map
+     "h" 'dired-up-directory
+     "l" 'dired-find-file
+     "K" 'dired-do-kill-lines)
 
      )
 #+END_SRC
