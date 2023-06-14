@@ -229,10 +229,6 @@ completion engines to exist, like helm. Just a tip for Ivy, I can use
 
   (use-package org
     :hook (org-mode . knavemacs/org-mode-setup)
-    :bind
-    ("C-c l" . org-store-link)
-    ("C-c a" . org-agenda)
-    ("C-c o" . org-capture)
     :config
     (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
     (setq org-ellipsis " ▾"
