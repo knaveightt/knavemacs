@@ -235,6 +235,14 @@ Some modifications to dired to support my usage of the functionality
     )
 #+END_SRC
 
+*** Dired-Single
+Prevents a bunch of dired buffers from accumulating in the buffer list
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: dired-single
+  ;; PURPOSE: prevents a bunch of dired buffers from accumulating in the buffer list
+  (use-package dired-single)
+#+END_SRC
+
 ** Org-Mode Configuration
 *** Org (general config)
 #+BEGIN_SRC emacs-lisp
@@ -677,8 +685,8 @@ the space key used for meow.
     ;; note, C-o to open file in a differnet buffer split, keep focus on dired
     (general-define-key
      :keymaps 'dired-mode-map
-     "h" 'dired-up-directory
-     "l" 'dired-find-file
+     "h" 'dired-single-up-directory
+     "l" 'dired-single-buffer
      "K" 'dired-do-kill-lines)
 
      )
