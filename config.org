@@ -357,6 +357,13 @@ Using denote for note taking and knowledge management
     (setq denote-prompts '(subdirectory title keywords))
     (setq denote-known-keywords '("info" "idea" "meta" "index" "refined"))
     (setq denote-file-type "markdown-yaml")
+
+    (defun denote-subdirectory-with-type ()
+      "Create a note of a specific type, in a specific subdirectory"
+      (declare (interactive-only t))
+      (interactive)
+      (let ((denote-prompts '(file-type subdirectory title keywords)))
+        (call-interactively #'denote)))
     )
 #+END_SRC
 
@@ -588,6 +595,7 @@ a few more functions when pressing the leader key!
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
+     '("S" . markdown-toggle-markup-hiding)
      '("t" . meow-till)
      '("u" . meow-undo)
      '("U" . meow-undo-in-selection)
@@ -666,10 +674,15 @@ the space key used for meow.
      "p"  '(projectile-command-map :which-key "projectile")
      "g"  '(magit-status :which-key "git status")
 
-     "n"  '(:ignore t :which-key "org-roam")
-     "nf" '(org-roam-node-find :which-key "Find Node")
-     "nl" '(org-roam-buffer-toggle :which-key "Toggle Buffer")
-     "ni" '(org-roam-node-insert :which-key "Insert Node")
+     "n"  '(:ignore t :which-key "denote")
+     "nn" '(denote :which-key "Create Note")
+     "nN" '(denote-subdirectory-with-type :whick-key "Create Specific Note Type")
+     "ni" '(denote-link :which-key "Create Note Link")
+     "nI" '(denote-link-add-links :which-key "Create Multiple Links")
+     "nb" '(denote-link-backlinks :which-key "Show Backlinks")
+     "nl" '(denote-link-after-creating :which-key "Create & Link New Note")
+     "nr" '(denote-rename-file :which-key "Rename File")
+     "nR" '(denote-rename-file-using-front-matter :which-key "Rename Per Front Matter")
 
      "o"  '(:ignore t :which-key "org-mode")
      "oa" '(org-agenda :which-key "org-agenda")
