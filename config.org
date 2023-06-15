@@ -243,6 +243,19 @@ Prevents a bunch of dired buffers from accumulating in the buffer list
   (use-package dired-single)
 #+END_SRC
 
+*** Dired-Hide-Dotfiles
+The name says it all.
+#+BEGIN_SRC emacs-lisp
+  (use-package dired-hide-dotfiles
+    :hook (dired-mode . dired-hide-dotfiles-mode))
+#+END_SRC
+
+*** Dired-Subtree
+The name says it all.
+#+BEGIN_SRC emacs-lisp
+  (use-package dired-subtree)
+#+END_SRC
+
 ** Org-Mode Configuration
 *** Org (general config)
 #+BEGIN_SRC emacs-lisp
@@ -687,7 +700,10 @@ the space key used for meow.
      :keymaps 'dired-mode-map
      "h" 'dired-single-up-directory
      "l" 'dired-single-buffer
-     "K" 'dired-do-kill-lines)
+     "K" 'dired-do-kill-lines
+     "H" 'dired-hide-dotfiles-mode
+     ";" 'dired-subtree-toggle
+     )
 
      )
 #+END_SRC
