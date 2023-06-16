@@ -364,6 +364,27 @@ Using denote for note taking and knowledge management
       (interactive)
       (let ((denote-prompts '(file-type subdirectory title keywords)))
         (call-interactively #'denote)))
+
+    (defun denote-journal-entry ()
+      "Create an entry tagged 'journal' with the date as its title.
+      If a journal for the current day exists, visit it.  If multiple
+      entries exist, prompt with completion for a choice between them.
+      Else create a new file."
+      (interactive)
+      (let* ((today (format-time-string "%A %e %B %Y"))
+        (string (denote-sluggify today))
+        (files (denote-directory-files-matching-regexp string)))
+      (cond
+        ((> (length files) 1)
+        (find-file (completing-read "Select file: " files nil :require-match)))
+      (files
+        (find-file (car files)))
+      (t
+        (denote
+          today
+          '("journal")
+          'org
+          "~/Documents/denote/journal")))))
     )
 #+END_SRC
 
@@ -683,6 +704,7 @@ the space key used for meow.
      "nl" '(denote-link-after-creating :which-key "Create & Link New Note")
      "nr" '(denote-rename-file :which-key "Rename File")
      "nR" '(denote-rename-file-using-front-matter :which-key "Rename Per Front Matter")
+     "nj" '(denote-journal-entry :which-key "Create Journal Entry")
 
      "o"  '(:ignore t :which-key "org-mode")
      "oa" '(org-agenda :which-key "org-agenda")
