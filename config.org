@@ -510,7 +510,7 @@ Using denote for note taking and knowledge management
     :init
     (add-hook 'find-file-hook #'denote-link-buttonize-buffer)
     :config
-    (setq denote-directory (expand-file-name "~/Documents/denote"))
+    (setq denote-directory (expand-file-name "~/Documents/knowledge"))
     (setq denote-prompts '(subdirectory title keywords))
     (setq denote-known-keywords '("info" "idea" "meta" "index" "refined"))
     (setq denote-file-type "markdown-yaml")
@@ -541,7 +541,7 @@ Using denote for note taking and knowledge management
           today
           '("journal")
           'org
-          "~/Documents/denote/journal")))))
+          "~/Documents/knowledge/journal")))))
     )
 #+END_SRC
 
@@ -676,7 +676,6 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
   (namilus-denote-generate-bibliography (dired-get-marked-files)
                                         (namilus-denote-bibliography-file-prompt)))
 #+END_SRC
-
 
 ** Visual Theme and Aesthetic
 *** all-the-icons
