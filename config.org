@@ -843,6 +843,9 @@ a few more functions when pressing the leader key!
      '("0" . tab-bar-switch-to-next-tab)
      '("k" . kill-this-buffer)
      '("f" . org-open-at-point)
+     '("o" . org-capture)
+     '("r" . rectangle-mark-mode)
+     '("w" . hydra-window-management/body)
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
@@ -877,7 +880,6 @@ a few more functions when pressing the leader key!
      '("b" . meow-back-word)
      '("B" . meow-back-symbol)
      '("c" . meow-change)
-     '("C" . org-capture)
      '("d" . meow-delete)
      '("D" . meow-backward-delete)
      '("e" . meow-next-word)
@@ -924,8 +926,8 @@ a few more functions when pressing the leader key!
      ;; as well as getting to true beginning / ends of lines
      '("<" . scroll-down-command)
      '(">" . scroll-up-command)
-     '("N" . move-beginning-of-line)
-     '("M" . move-end-of-line)
+     '("-" . move-beginning-of-line)
+     '("=" . move-end-of-line)
      ))
 
   (meow-setup)
@@ -962,6 +964,21 @@ a few more functions when pressing the leader key!
     ("Z" (save-buffers-kill-terminal) "Save Close All")
     ("Q" (kill-emacs) "Kill Emacs")
     ("f" nil "cancel" :ext t))
+  (defhydra hydra-window-management (:timeout 10)
+    "Linked keys to move and manage window splits"
+    ("J" windmove-down "move down once" :exit t)
+    ("K" windmove-up "move up once" :exit t)
+    ("H" windmove-left "move left once" :exit t)
+    ("L" windmove-right "move right once" :exit t)
+    ("j" windmove-down "move down")
+    ("k" windmove-up "move up")
+    ("h" windmove-left "move left")
+    ("l" windmove-right "move right")
+    ("f" nil "finished" :ext t)
+    ("9" shrink-window-horizontally "shrink horizontal")
+    ("0" enlarge-window-horizontally "grow horizontal")
+    ("-" shrink-window "shrink window")
+    ("=" enlarge-window "grow window"))
 #+END_SRC
 
 *** General
@@ -1004,16 +1021,6 @@ the space key used for meow.
      "s"  '(:ignore t :which-key "scale/size")
      "st" '(hydra-text-scale/body :which-key "scale text")
      "sw" '(hydra-window-resize/body :which-key "resize window"))
-     
-    ;; non-leader key defininitions (mainly for window management)
-    (general-define-key
-     :prefix "C-c w"
-
-     "h" '(windmove-left :whick-key "Move-to Left Pane")
-     "l" '(windmove-right :which-key "Move-to Right Pane")
-     "j" '(windmove-down :which-key "Move-to Down Pane")
-     "k" '(windmove-up :which-key "Move-to Up Pane")
-     "s" '(hydra-window-resize/body :which-key "resize window"))
 
     ;; dired configurations
     ;; note, <space>-j to jump (dired-goto-file) in dired buffers
