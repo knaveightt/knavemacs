@@ -825,6 +825,10 @@ a few more functions when pressing the leader key!
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
+     '("M-h" . windmove-left) ;; consistent window movement in special modes
+     '("M-j" . windmove-down) ;; consistent window movement in special modes
+     '("M-k" . windmove-up) ;; consistent window movement in special modes
+     '("M-l" . windmove-right) ;; consistent window movement in special modes
      '("<escape>" . ignore))
     (meow-leader-define-key
      ;; SPC j/k will run the original command in MOTION state.
