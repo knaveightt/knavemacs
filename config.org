@@ -859,6 +859,10 @@ a few more functions when pressing the leader key!
      '("C-3" . meow-expand-3)
      '("C-2" . meow-expand-2)
      '("C-1" . meow-expand-1)
+     '("M-h" . windmove-left) ;; normal mode mapping only
+     '("M-j" . windmove-down) ;; normal mode mapping only
+     '("M-k" . windmove-up) ;; normal mode mapping only
+     '("M-l" . windmove-right) ;; normal mode mapping only
      '("1" . meow-digit-argument)
      '("2" . meow-digit-argument)
      '("3" . meow-digit-argument)
