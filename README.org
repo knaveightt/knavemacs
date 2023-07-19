@@ -12,14 +12,40 @@
 :                                                                                              \|_________|
 
 * What is this?
-This is my [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration setup in an org file. To load this config
-in your own emacs instance, you can add the following lines to your ~.emacs~
-or ~.config/init.el~ file (the below is assuming that you are putting the emacs
-init file and this org file in the ~/.config/emacs folder):
+This is my [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration using an org file. ~knavemacs.org~ is the
+core configuration file that defines the behavior, packages, and settings used
+in my custom emacs setup. While this org file is the "engine", the other
+important file for my setup is the include ~config.org~ file. This file is the
+"brains" so to speak. For each package configured in my knavemacs.org file,
+there are variables that are being checked for to determine if that package
+should actually be loaded. These variables are set in the config.org file.
+
+The variables setup in the config.org file allow me to define different
+combinations of these variables for the various devices that I use my emacs
+configuration on. I call these "device profiles", which are setup as elisp
+functions, which in-turn set various variables that define which packages should
+be loaded on my device. I encourage you to take a look at the config.org file
+to understand how it influences which parts of knavemace.org get loaded.
+
+This brings me to how to load this config!
+For your own emacs instance, you can add the following lines to your ~.emacs~
+or ~.config/emacs/init.el~ file (the below is assuming that you are putting 
+config.org and knavemacs.org files in the ~/.config/emacs folder):
 
 : (require 'org)
 : (require 'ob-tangle)
-: (org-babel-load-file "~/.config/emacs/config.org")
+: (setq knavemacs/device-profile 'computer)
+: (load "~/.config/emacs/config.el")
+: (org-babel-load-file "~/.config/emacs/knavemacs.org")
+
+The first two lines above initalize org and ob-tangle which will allow the
+elisp blocks in knavemacs.org to be loaded as if they were part of a singluar
+.emacs configuration file. The third line sets my "device profile" variable
+to a specific value. This is important for the fourth line, which loads
+the config.el file - this file runs a function based on the value of the
+device-profile variable, and that function sets certain variables which tell
+knavemacs.org which packages to load for that specific device. The actual
+loading of the contents of knavemacs.org is done with the last line above.
 
 Throughout my configuration, I may have settings that pertain to either
 Windows or Linux since I use this config file across different OS types. If
@@ -29,5 +55,3 @@ by searching for ~;; DEP:~ in this file.
 Credit should be given where credit is due. Much of this config is heavily
 inspired (and sometimes copied verbatim) from System Crafter's *Emacs From Scratch*
 series on youtube. Definitely a must watch.
-
-You can see my full Emacs configuration by going to my [[/config.org][config.org]] file.
