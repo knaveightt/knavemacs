@@ -727,7 +727,7 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
 *** Color Theme
 #+BEGIN_SRC emacs-lisp
   (if (not(eq system-type 'windows-nt )) (load-theme 'modus-vivendi t))
-  (if (eq system-type 'windows-nt) (load-theme 'modus-vivendi t)))
+  (if (eq system-type 'windows-nt) (load-theme 'modus-vivendi t))
 #+END_SRC
 
 *** Modeline
