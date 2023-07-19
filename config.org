@@ -936,6 +936,8 @@ a few more functions when pressing the leader key!
      '(">" . scroll-up-command)
      '("-" . move-beginning-of-line)
      '("=" . move-end-of-line)
+     '("_" . text-scale-decrease)
+     '("+" . text-scale-increase)
      ))
 
   (meow-setup)
