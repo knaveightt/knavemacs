@@ -724,17 +724,10 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
 #+END_SRC
 
 ** Visual Theme and Aesthetic
-*** Doom Theme(s)
+*** Color Theme
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: doom-themes
-  ;; PURPOSE: provide newer aesthetic themes outside the normal emacs defaults
-  (use-package doom-themes
-    :if knavemacs/config-visual
-    :config
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italic is universally disabled
-    (if (not(eq system-type 'windows-nt )) (load-theme 'doom-badger t))
-    (if (eq system-type 'windows-nt) (load-theme 'doom-opera-light t)))
+  (if (not(eq system-type 'windows-nt )) (load-theme 'modus-vivendi t))
+  (if (eq system-type 'windows-nt) (load-theme 'modus-vivendi t)))
 #+END_SRC
 
 *** Modeline
