@@ -734,6 +734,7 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
 #+BEGIN_SRC emacs-lisp
   ;; SETUP: telephone-line
   ;; PURPOSE: provide an aesthetic, configurable mode line for emacs
+  ;; DEP: may need to change telephone-line-height based on font settings
   (use-package telephone-line
     :if knavemacs/config-visual
     :config
@@ -741,7 +742,6 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
           telephone-line-secondary-left-separator 'telephone-line-abs-hollow-left
           telephone-line-primary-right-separator 'telephone-line-abs-right
           telephone-line-secondary-right-separator 'telephone-line-abs-hollow-right)
-    ; (setq telephone-line-height 16) let's let the font determine this
     (setq telephone-line-lhs
       '((evil   . (telephone-line-meow-tag-segment))
         (accent . (telephone-line-vc-segment
@@ -760,6 +760,7 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
           (meow-keypad-mode 'telephone-line-evil-operator)
           (meow-beacon-mode 'telephone-line-evil-replace)))
     (telephone-line-mode 1)
+    (setq telephone-line-height 24) ; setting manually because of font settings
     )
 #+END_SRC
 
