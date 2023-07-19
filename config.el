@@ -38,15 +38,15 @@
 ;; "mobile" profile
 (defun knavemacs/profile-mobile ()
   (message "[Knavemacs] Loading profile for Mobile")
-  (setq knavemacs/config-compframework t)
-  (setq knavemacs/config-keyhelp nil)
-  (setq knavemacs/config-dired t)
-  (setq knavemacs/config-org t)
-  (setq knavemacs/config-notes t)
-  (setq knavemacs/config-visual-icons nil)
-  (setq knavemacs/config-visual t)
-  (setq knavemacs/config-project t)
-  (setq knavemacs/config-keybinds t)
+  (setq knavemacs/config-compframework t) ; true
+  (setq knavemacs/config-keyhelp nil) ; nil
+  (setq knavemacs/config-dired t) ; true
+  (setq knavemacs/config-org t) ; true
+  (setq knavemacs/config-notes t) ; true
+  (setq knavemacs/config-visual-icons nil) ; nil
+  (setq knavemacs/config-visual t) ; true
+  (setq knavemacs/config-project t) ; true
+  (setq knavemacs/config-keybinds t) ; true
   )
 
 ;; let's determine which profile to use, given all of the above and
