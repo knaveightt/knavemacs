@@ -848,7 +848,7 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
 		  (list
 		   mode-line-misc-info
 		   " %m %l:%c "))
-		 "[%p]" ; concatenated on, format-mode-line was doing wierd things
+		 "[%p]  " ; concatenated on, format-mode-line was doing wierd things
 			)))))
 #+END_SRC
 
