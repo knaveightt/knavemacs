@@ -726,8 +726,45 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
 ** Visual Theme and Aesthetic
 *** Color Theme
 #+BEGIN_SRC emacs-lisp
-  (if (not(eq system-type 'windows-nt )) (load-theme 'modus-vivendi t))
-  (if (eq system-type 'windows-nt) (load-theme 'modus-vivendi t))
+  (use-package modus-themes
+  :config
+  ;; block regions
+  (setq modus-themes-region '(bg-only))
+
+  ;; palette overrides to define colors
+  (setq modus-themes-common-palette-overrides
+	`(
+	  ;; block regions
+	  (bg-region bg-ochre)
+	  (fg-region unspecified)
+	  
+	  ;; parenthesis overrides
+	  (bg-paren-match bg-magenta-intense)
+
+	  ;; tab bar mode
+	  (bg-tab-bar bg-main)
+	  (bg-tab-current bg-cyan-intense)
+	  (bg-tab-other bg-inactive)
+
+	  ;; expand with sensible defaults using this preset
+	  ,@modus-themes-preset-overrides-warmer))
+  
+  ;; completions
+  (setq modus-themes-completions
+	'((matches . (extrabold))
+	  (selection . (semibold italic text-also))))
+
+  ;; org-mode
+  (setq modus-themes-headings
+	'((1 . (1.4))
+	  (2 . (1.3))
+	  (3 . (extrabold))
+	  (t . (semilight 1.1))))
+  (setq modus-themes-scale-headings t)
+  (setq modus-themes-org-blocks 'gray-background)
+  
+  ;; activate theme
+  (load-theme 'modus-vivendi t))
 #+END_SRC
 
 *** Modeline
