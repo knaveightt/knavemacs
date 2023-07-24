@@ -727,6 +727,7 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
 *** Color Theme
 #+BEGIN_SRC emacs-lisp
   (use-package modus-themes
+  :if knavemacs/config-visual
   :config
   ;; block regions
   (setq modus-themes-region '(bg-only))
