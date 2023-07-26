@@ -680,6 +680,8 @@ The name says it all.
           ;org-hide-emphasis-markers t
     )
     (setq org-agenda-files (list "~/.org"))
+    (setq org-agenda-todo-ignore-scheduled t) ;; only want to see unscheduled TODOs in global list
+    (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
     (setq org-refile-targets
           '((nil :maxlevel . 1)
             (org-agenda-files :maxlevel . 2)))
