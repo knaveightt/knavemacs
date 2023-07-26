@@ -96,9 +96,10 @@ cursor location.
   (column-number-mode)                 ; show column number in mode line
   (global-display-line-numbers-mode t) ; enable line numbers globally
   (dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
-		eshell-mode-hook
-    dired-sidebar-mode-hook
-		which-key-mode-hook))
+                  eshell-mode-hook
+                  which-key-mode-hook
+                  dired-mode-hook
+                  ))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+END_SRC
 
@@ -111,7 +112,7 @@ assumes the font is already present on the workspace.
   ;; DEP: requires "Inconsolata Nerd Font" installed on linux and "Hermit" installed on windows.
     (if (not(eq system-type 'windows-nt ))
         (set-face-attribute `default nil :font "Inconsolata Nerd Font" :height 120))
-    (if (eq system-type 'windows-nt) (set-face-attribute `default nil :font "Hermit" :height 120))
+    (if (eq system-type 'windows-nt) (set-face-attribute `default nil :font "OverpassM Nerd Font Mono" :height 120))
   #+END_SRC
 
 *** Backup File Rules
@@ -172,6 +173,177 @@ already present on my system.
     (package-install 'use-package))
   (require 'use-package)
   (setq use-package-always-ensure t)
+#+END_SRC
+
+** Visual Theme and Aesthetic
+*** Color Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package modus-themes
+  :config
+  ;; block regions
+  (setq modus-themes-region '(bg-only))
+
+  ;; palette overrides to define colors
+  (setq modus-themes-common-palette-overrides
+	`(
+	  ;; mode line updates to border
+	  (border-mode-line-active bg-cyan-subtle)
+	  (border-mode-line-inactive bg-mode-line-inactive)
+
+	  ;; block regions
+	  (bg-region bg-ochre)
+	  (fg-region unspecified)
+	  
+	  ;; parenthesis overrides
+	  (bg-paren-match bg-magenta-intense)
+
+	  ;; tab bar mode
+	  (bg-tab-bar bg-main)
+	  (bg-tab-current bg-cyan-intense)
+	  (bg-tab-other bg-inactive)
+
+	  ;; expand with sensible defaults using this preset
+	  ,@modus-themes-preset-overrides-warmer))
+  
+  ;; completions
+  (setq modus-themes-completions
+	'((matches . (extrabold))
+	  (selection . (semibold text-also))))
+
+  ;; org-mode
+  (setq modus-themes-headings
+	'((1 . (1.4))
+	  (2 . (1.3))
+	  (3 . (extrabold))
+	  (t . (semilight 1.1))))
+  (setq modus-themes-scale-headings t)
+  (setq modus-themes-org-blocks 'gray-background)
+  
+  ;; activate theme
+  (load-theme 'modus-vivendi t))
+#+END_SRC
+
+*** Modeline
+#+BEGIN_SRC emacs-lisp
+  ;; No packages here, custom mode-line configuration
+  ;; Start with the faces for the meow mode indicator
+(defface knavemacs/meow-face-indicator-normal
+  '((t :foreground "SlateGrey4"
+       :background "SteelBlue4"
+       :weight bold
+       ))
+  "Face for Normal Mode"
+  :group 'knavemacs/mode-line-faces)
+
+(defface knavemacs/meow-face-indicator-insert
+  '((t :foreground "gray"
+       :background "SeaGreen"
+       :weight bold
+       ))
+  "Face for Insert Mode"
+  :group 'knavemacs/mode-line-faces)
+
+(defface knavemacs/meow-face-indicator-keypad
+  '((t :foreground "gray"
+       :background "PaleVioletRed"
+       :weight bold
+       ))
+  "Face for keypad Mode"
+  :group 'knavemacs/mode-line-faces)
+
+(defface knavemacs/meow-face-indicator-motion
+  '((t :foreground "gray"
+       :background "thistle"
+       :weight bold
+       ))
+  "Face for motion Mode"
+  :group 'knavemacs/mode-line-faces)
+
+(defface knavemacs/meow-face-indicator-beacon
+  '((t :foreground "gray"
+       :background "firebrick3"
+       :weight bold
+       ))
+  "Face for beacon Mode"
+  :group 'knavemacs/mode-line-faces)
+
+(defun knavemacs/meow-mode-line-face ()
+  (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
+	(meow-insert-mode 'knavemacs/meow-face-indicator-insert)
+	(meow-motion-mode 'knavemacs/meow-face-indicator-motion)
+	(meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
+	(meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
+
+;; write a function to do the alignment of the mode-line
+(defun simple-mode-line-render (left right)
+  "Return a string of `window-width' length containing LEFT, and RIGHT
+ aligned respectively."
+  (let* ((available-width (- (window-width) (length left) 2)))
+    (format (format " %%s %%%ds " available-width) left right)))
+
+;; construct the mode-line
+(setq-default mode-line-format
+      '((:eval (simple-mode-line-render
+                ;; left
+                (format-mode-line
+		 (list
+		  '(:eval
+		    (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
+		  mode-line-front-space
+		  mode-line-mule-info
+		  mode-line-modified
+		  '(:eval
+		    (propertize " %b " 'help-echo (buffer-file-name)))))
+                ;; right
+                (concat
+		 (format-mode-line
+		  (list
+		   mode-line-misc-info
+		   " %m %l:%c "))
+		 "[%p]  " ; concatenated on, format-mode-line was doing wierd things
+			)))))
+#+END_SRC
+
+*** all-the-icons
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: all-the-icons
+  ;; PURPOSE: provide nerdfont-like icons for graphical elements (like doom-modeline)
+  ;; DEP: must run all-the-icons-install-fonts to install the fonts to the local system.
+  ;;       on Windows, double-click each downloaded font file and click install.
+  ;;       The below use-package form should automatically 
+  (use-package all-the-icons
+    :if knavemacs/config-visual-icons
+    :commands all-the-icons-install-fonts
+    :init
+    (unless (find-font (font-spec :name "all-the-icons"))
+      (all-the-icons-install-fonts t)))
+#+END_SRC
+
+*** all-the-icons-dired
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: all-the-icons-dired
+  ;; PURPOSE: provides nerdfont-like icons specifically for dired buffers
+  (use-package all-the-icons-dired
+    :if knavemacs/config-visual-icons
+    :hook (dired-mode . all-the-icons-dired-mode))
+#+END_SRC
+
+*** Rainbow Delimiters
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: rainbow-delimiters
+  ;; PURPOSE: make apparent the nested parenthesis in program code like Elisp
+  (use-package rainbow-delimiters
+    :if knavemacs/config-visual
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+*** Rainbow Mode
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: rainbow-mode
+  ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
+  (use-package rainbow-mode
+    :if knavemacs/config-visual
+  )
 #+END_SRC
 
 ** Completion, Hints, Help Framework
@@ -410,6 +582,44 @@ Provides a connection point between embark and consult.
     :diminish
     :config
     (setq which-key-idle-delay 0.9))
+#+END_SRC
+
+** Project and Version Control
+*** Projectile
+A nice thing about projectile is I can set directory (project) specific variables, including what
+command runs when I "run" the project. Note that having ripgrep installed makes seach pretty
+excellent across project files.
+
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: projectile
+  ;; PURPOSE: project discrovey system and framework for emacs
+  ;; DEP: having ripgrep installed will allow me to search better in projects
+  (use-package projectile
+    :if knavemacs/config-project
+    :diminish projectile-mode
+    :config (projectile-mode)
+    :custom ((projectile-completion-system 'ivy))
+    :init
+    (when (file-directory-p "~/Projects")
+      (setq projectile-project-search-path '("~/Projects")))
+    )
+
+  ;; SETUP: counsel-projectile
+  ;; PURPOSE: counsel UI and further IVY integration to projectile
+  (use-package counsel-projectile
+    :config (counsel-projectile-mode))
+#+END_SRC
+
+*** Magit
+#+BEGIN_SRC emacs-lisp
+  ;; SETUP: magit
+  ;; PURPOSE: git interface with emacs
+  ;; DEP: I need to set the path manually to git for windows
+  (use-package magit
+    :if knavemacs/config-project
+    :init
+    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/cmder/vendor/git-for-windows/bin"))))
+    )
 #+END_SRC
 
 ** File Management Configuration
@@ -721,216 +931,6 @@ allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html]
   (interactive)
   (namilus-denote-generate-bibliography (dired-get-marked-files)
                                         (namilus-denote-bibliography-file-prompt)))
-#+END_SRC
-
-** Visual Theme and Aesthetic
-*** Color Theme
-#+BEGIN_SRC emacs-lisp
-  (use-package modus-themes
-  :if knavemacs/config-visual
-  :config
-  ;; block regions
-  (setq modus-themes-region '(bg-only))
-
-  ;; palette overrides to define colors
-  (setq modus-themes-common-palette-overrides
-	`(
-	  ;; mode line updates to border
-	  (border-mode-line-active bg-cyan-subtle)
-	  (border-mode-line-inactive bg-mode-line-inactive)
-
-	  ;; block regions
-	  (bg-region bg-ochre)
-	  (fg-region unspecified)
-	  
-	  ;; parenthesis overrides
-	  (bg-paren-match bg-magenta-intense)
-
-	  ;; tab bar mode
-	  (bg-tab-bar bg-main)
-	  (bg-tab-current bg-cyan-intense)
-	  (bg-tab-other bg-inactive)
-
-	  ;; expand with sensible defaults using this preset
-	  ,@modus-themes-preset-overrides-warmer))
-  
-  ;; completions
-  (setq modus-themes-completions
-	'((matches . (extrabold))
-	  (selection . (semibold italic text-also))))
-
-  ;; org-mode
-  (setq modus-themes-headings
-	'((1 . (1.4))
-	  (2 . (1.3))
-	  (3 . (extrabold))
-	  (t . (semilight 1.1))))
-  (setq modus-themes-scale-headings t)
-  (setq modus-themes-org-blocks 'gray-background)
-  
-  ;; activate theme
-  (load-theme 'modus-vivendi t))
-#+END_SRC
-
-*** Modeline
-#+BEGIN_SRC emacs-lisp
-  ;; No packages here, custom mode-line configuration
-  ;; Start with the faces for the meow mode indicator
-(defface knavemacs/meow-face-indicator-normal
-  '((t :foreground "SlateGrey4"
-       :background "SteelBlue4"
-       :weight bold
-       ))
-  "Face for Normal Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-insert
-  '((t :foreground "gray"
-       :background "SeaGreen"
-       :weight bold
-       ))
-  "Face for Insert Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-keypad
-  '((t :foreground "gray"
-       :background "PaleVioletRed"
-       :weight bold
-       ))
-  "Face for keypad Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-motion
-  '((t :foreground "gray"
-       :background "thistle"
-       :weight bold
-       ))
-  "Face for motion Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-beacon
-  '((t :foreground "gray"
-       :background "firebrick3"
-       :weight bold
-       ))
-  "Face for beacon Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defun knavemacs/meow-mode-line-face ()
-  (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
-	(meow-insert-mode 'knavemacs/meow-face-indicator-insert)
-	(meow-motion-mode 'knavemacs/meow-face-indicator-motion)
-	(meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
-	(meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
-
-;; write a function to do the alignment of the mode-line
-(defun simple-mode-line-render (left right)
-  "Return a string of `window-width' length containing LEFT, and RIGHT
- aligned respectively."
-  (let* ((available-width (- (window-width) (length left) 2)))
-    (format (format " %%s %%%ds " available-width) left right)))
-
-;; construct the mode-line
-(setq-default mode-line-format
-      '((:eval (simple-mode-line-render
-                ;; left
-                (format-mode-line
-		 (list
-		  '(:eval
-		    (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
-		  mode-line-front-space
-		  mode-line-mule-info
-		  mode-line-modified
-		  '(:eval
-		    (propertize " %b " 'help-echo (buffer-file-name)))))
-                ;; right
-                (concat
-		 (format-mode-line
-		  (list
-		   mode-line-misc-info
-		   " %m %l:%c "))
-		 "[%p]  " ; concatenated on, format-mode-line was doing wierd things
-			)))))
-#+END_SRC
-
-*** all-the-icons
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: all-the-icons
-  ;; PURPOSE: provide nerdfont-like icons for graphical elements (like doom-modeline)
-  ;; DEP: must run all-the-icons-install-fonts to install the fonts to the local system.
-  ;;       on Windows, double-click each downloaded font file and click install.
-  ;;       The below use-package form should automatically 
-  (use-package all-the-icons
-    :if knavemacs/config-visual-icons
-    :commands all-the-icons-install-fonts
-    :init
-    (unless (find-font (font-spec :name "all-the-icons"))
-      (all-the-icons-install-fonts t)))
-#+END_SRC
-
-*** all-the-icons-dired
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: all-the-icons-dired
-  ;; PURPOSE: provides nerdfont-like icons specifically for dired buffers
-  (use-package all-the-icons-dired
-    :if knavemacs/config-visual-icons
-    :hook (dired-mode . all-the-icons-dired-mode))
-#+END_SRC
-
-*** Rainbow Delimiters
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: rainbow-delimiters
-  ;; PURPOSE: make apparent the nested parenthesis in program code like Elisp
-  (use-package rainbow-delimiters
-    :if knavemacs/config-visual
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
-
-*** Rainbow Mode
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: rainbow-mode
-  ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
-  (use-package rainbow-mode
-    :if knavemacs/config-visual
-  )
-#+END_SRC
-
-** Project and Version Control
-*** Projectile
-A nice thing about projectile is I can set directory (project) specific variables, including what
-command runs when I "run" the project. Note that having ripgrep installed makes seach pretty
-excellent across project files.
-
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: projectile
-  ;; PURPOSE: project discrovey system and framework for emacs
-  ;; DEP: having ripgrep installed will allow me to search better in projects
-  (use-package projectile
-    :if knavemacs/config-project
-    :diminish projectile-mode
-    :config (projectile-mode)
-    :custom ((projectile-completion-system 'ivy))
-    :init
-    (when (file-directory-p "~/Projects")
-      (setq projectile-project-search-path '("~/Projects")))
-    )
-
-  ;; SETUP: counsel-projectile
-  ;; PURPOSE: counsel UI and further IVY integration to projectile
-  (use-package counsel-projectile
-    :config (counsel-projectile-mode))
-#+END_SRC
-
-*** Magit
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: magit
-  ;; PURPOSE: git interface with emacs
-  ;; DEP: I need to set the path manually to git for windows
-  (use-package magit
-    :if knavemacs/config-project
-    :init
-    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/cmder/vendor/git-for-windows/bin"))))
-    )
 #+END_SRC
 
 ** Custom Functions
