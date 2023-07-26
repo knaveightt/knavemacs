@@ -680,17 +680,18 @@ The name says it all.
           ;org-hide-emphasis-markers t
     )
     (setq org-agenda-files (list "~/.org"))
-    (setq org-agenda-todo-ignore-scheduled t) ;; only want to see unscheduled TODOs in global list
     (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
+    (setq org-stuck-projects
+          '("+LEVEL=2+PROJECT/-DONE" ("NEXT")))
     (setq org-refile-targets
           '((nil :maxlevel . 1)
             (org-agenda-files :maxlevel . 2)))
     (setq org-todo-keywords
-          '((sequence "TASK(k)" "TODO(t)" "NEXT(x)" "WAIT(w@/!)" "GAVE(v@/!)" "MEET(m@/!)" "|" "DONE(d!)" "CANCELED(c)")
+          '((sequence "TASK(k)" "TODO(t)" "PROJ(p)" "NEXT(x)" "WAIT(w@/!)" "GAVE(v@/!)" "MEET(m@/!)" "|" "DONE(d!)" "CANCELED(c)")
             (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
             ))
     (setq org-todo-keywoard-faces
-          '(("TODO" . org-warning) ("NEXT" . "green") ("WAIT" . "yellow") ("GAVE" . "orange") ("MEET" . "yellow")
+          '(("TODO" . org-warning) ("PROJ" . org-warning) ("NEXT" . "green") ("WAIT" . "yellow") ("GAVE" . "orange") ("MEET" . "yellow")
             ("DONE" . "blue") ("CANCELED" . "purple")))
 
     ;; custom agenda views
@@ -700,7 +701,12 @@ The name says it all.
               (todo "NOTICE" ((org-agenda-overriding-header "Notices for Today")))
               (agenda "" ((org-deadline-warning-days 7)))
               (todo "TASK" ((org-agenda-overriding-header "Additional Tasks Today")))
-              (tags-todo "+unfiled" ((org-agenda-overriding-header "Unfiled TODOs")))
+              (todo "TODO"
+                         ((org-agenda-overriding-header "Unscheduled TODOs")
+                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
+              (todo "NEXT"
+                         ((org-agenda-overriding-header "Next Project Actions to Schedule")
+                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
               (todo "WAIT"
                     ((org-agenda-overriding-header "Waiting on Confirmation")))
               (todo "GAVE"
