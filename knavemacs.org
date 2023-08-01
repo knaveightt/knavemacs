@@ -92,7 +92,7 @@ cursor location.
 
 #+BEGIN_SRC emacs-lisp
   ;; update the UI with additional basic settings
-  (setq display-line-numbers-type 'relative); enable relative line numbers
+  (setq display-line-numbers-type 'visual); enable relative line numbers
   (column-number-mode)                 ; show column number in mode line
   (global-display-line-numbers-mode t) ; enable line numbers globally
   (dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
