@@ -111,7 +111,7 @@ assumes the font is already present on the workspace.
   ;; set default font settings for my favorite linux font if not on windows
   ;; DEP: requires "Inconsolata Nerd Font" installed on linux and "Hermit" installed on windows.
     (if (not(eq system-type 'windows-nt ))
-        (set-face-attribute `default nil :font "Inconsolata Nerd Font" :height 120))
+        (set-face-attribute `default nil :font "JetBrainsMono Nerd Font" :height 120))
     (if (eq system-type 'windows-nt) (set-face-attribute `default nil :font "OverpassM Nerd Font Mono" :height 120))
   #+END_SRC
 
@@ -229,7 +229,7 @@ already present on my system.
   (setq modus-themes-org-blocks 'gray-background)
   
   ;; activate theme
-  (load-theme 'modus-vivendi t))
+  (load-theme 'modus-vivendi-tinted t))
 #+END_SRC
 
 *** Modeline
