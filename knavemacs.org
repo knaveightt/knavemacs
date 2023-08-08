@@ -109,11 +109,10 @@ assumes the font is already present on the workspace.
 
 #+BEGIN_SRC emacs-lisp
   ;; set default font settings for my favorite linux font if not on windows
-  ;; DEP: requires "Inconsolata Nerd Font" installed on linux and "Hermit" installed on windows.
-    (if (not(eq system-type 'windows-nt ))
-        (set-face-attribute `default nil :font "JetBrainsMono Nerd Font" :height 120))
-    (if (eq system-type 'windows-nt) (set-face-attribute `default nil :font "OverpassM Nerd Font Mono" :height 120))
-  #+END_SRC
+  ;; DEP: requires "JetBrainsMono Nerd Font" installed.
+    (add-to-list 'default-frame-alist
+                 '(font . "JetBrainsMono NF 12"))
+#+END_SRC
 
 *** Backup File Rules
 It is worth nothing that the emacs manual has a good description of backups by
