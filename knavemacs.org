@@ -1007,6 +1007,8 @@ a few more functions when pressing the leader key!
      '("M-j" . windmove-down) ;; consistent window movement in special modes
      '("M-k" . windmove-up) ;; consistent window movement in special modes
      '("M-l" . windmove-right) ;; consistent window movement in special modes
+     '("C-j" . scroll-up-command)
+     '("C-k" . scroll-down-command)
      '("<escape>" . ignore))
     (meow-leader-define-key
      '("," . tab-bar-close-tab)
@@ -1044,6 +1046,8 @@ a few more functions when pressing the leader key!
      '("M-j" . windmove-down) ;; normal mode mapping only
      '("M-k" . windmove-up) ;; normal mode mapping only
      '("M-l" . windmove-right) ;; normal mode mapping only
+     '("C-j" . scroll-up-command)
+     '("C-k" . scroll-down-command)
      '("1" . meow-digit-argument)
      '("2" . meow-digit-argument)
      '("3" . meow-digit-argument)
@@ -1075,7 +1079,7 @@ a few more functions when pressing the leader key!
      '("h" . meow-left)
      '("H" . meow-left-expand)
      '("i" . meow-insert)
-     '("I" . meow-open-above) ; used to page up
+     '("I" . meow-open-above) 
      '("j" . meow-next)
      '("J" . meow-next-expand)
      '("k" . meow-prev)
@@ -1095,7 +1099,7 @@ a few more functions when pressing the leader key!
      '("S" . markdown-toggle-markup-hiding)
      '("t" . meow-till)
      '("u" . meow-undo)
-     ;'("U" . meow-undo-in-selection)
+     '("U" . meow-undo-in-selection)
      '("v" . meow-visit)
      '("w" . meow-mark-word)
      '("W" . meow-mark-symbol)
@@ -1109,8 +1113,6 @@ a few more functions when pressing the leader key!
      '("<escape>" . ignore)
      ;; deviating from the suggested map to allow easy scrolling of screens
      ;; as well as getting to true beginning / ends of lines
-     '("N" . scroll-up-command)
-     '("U" . scroll-down-command)
      '("<" . tab-bar-switch-to-prev-tab)
      '(">" . tab-bar-switch-to-next-tab)
      '("-" . move-beginning-of-line)
