@@ -1007,8 +1007,6 @@ a few more functions when pressing the leader key!
      '("M-j" . windmove-down) ;; consistent window movement in special modes
      '("M-k" . windmove-up) ;; consistent window movement in special modes
      '("M-l" . windmove-right) ;; consistent window movement in special modes
-     '("C-j" . scroll-up-command)
-     '("C-k" . scroll-down-command)
      '("<escape>" . ignore))
     (meow-leader-define-key
      '("," . tab-bar-close-tab)
@@ -1046,8 +1044,6 @@ a few more functions when pressing the leader key!
      '("M-j" . windmove-down) ;; normal mode mapping only
      '("M-k" . windmove-up) ;; normal mode mapping only
      '("M-l" . windmove-right) ;; normal mode mapping only
-     '("C-j" . scroll-up-command)
-     '("C-k" . scroll-down-command)
      '("1" . meow-digit-argument)
      '("2" . meow-digit-argument)
      '("3" . meow-digit-argument)
@@ -1069,6 +1065,7 @@ a few more functions when pressing the leader key!
      '("b" . meow-back-word)
      '("B" . meow-back-symbol)
      '("c" . meow-change)
+     '("C" . scroll-down)
      '("d" . meow-delete)
      '("D" . meow-backward-delete)
      '("e" . meow-next-word)
@@ -1101,6 +1098,7 @@ a few more functions when pressing the leader key!
      '("u" . meow-undo)
      '("U" . meow-undo-in-selection)
      '("v" . meow-visit)
+     '("V" . scroll-up)
      '("w" . meow-mark-word)
      '("W" . meow-mark-symbol)
      '("x" . meow-line)
