@@ -61,6 +61,10 @@ The following sections both describe and provide the elisp used to configure
 various aspects of my emacs instance.
 
 ** Basic Configuration
+*** Lexical Binding
+#+BEGIN_SRC emacs-lisp
+  ;; -*- lexical-binding: t; -*-
+#+END_SRC
 *** Garbage Collection
 I've read a lot about different ways to approach this. I'm going off a stack exchange
 post that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set this. I'm using a
@@ -828,7 +832,6 @@ I used to capture literature notes.
 
 #+BEGIN_SRC emacs-lisp
   ;; https://org-roam.discourse.group/t/exclude-title-heading-from-the-results-of-org-roam-node-find-but-show-the-aliases/2964/2
-  ;; -*- lexical-binding: t; -*-
   (defun knavemacs/org-roam-node-find-literature-only ()
     "It's like `org-roam-node-find' but only for nodes
      that have one and only one tag - Literature."
@@ -865,10 +868,11 @@ in my notes, and then present me with nodes to visit based on the selected tag.
 
   (defun knavemacs/org-roam-find-by-tag ()
     (interactive)
+    (setq selectedtag (knavemacs/org-roam-get-tag-selection))
     (org-roam-node-find
      nil
      nil
-     (knavemacs/org-roam-filter-by-tag (knavemacs/org-roam-get-tag-selection))
+     (knavemacs/org-roam-filter-by-tag selectedtag)
      ))
 #+END_SRC
 
