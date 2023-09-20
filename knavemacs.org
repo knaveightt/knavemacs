@@ -687,7 +687,7 @@ The name says it all.
     (setq org-ellipsis " ▾"
           ;org-hide-emphasis-markers t
     )
-    (setq org-agenda-files (list "~/.org"))
+    (setq org-agenda-files (list "~/.org" "~/.org/active" "~/.org/info"))
     (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
     (setq org-stuck-projects
           '("+LEVEL=2+PROJECT/-DONE" ("NEXT")))
@@ -697,10 +697,11 @@ The name says it all.
     (setq org-todo-keywords
           '((sequence "TASK(k)" "TODO(t)" "PROJ(p)" "NEXT(x)" "WAIT(w@/!)" "GAVE(v@/!)" "MEET(m@/!)" "|" "DONE(d!)" "CANCELED(c)")
             (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
+            (sequence "NOTE(f)" "|" "NOTED(z)" "TRASH(x)")
             ))
     (setq org-todo-keywoard-faces
           '(("TODO" . org-warning) ("PROJ" . org-warning) ("NEXT" . "green") ("WAIT" . "yellow") ("GAVE" . "orange") ("MEET" . "yellow")
-            ("DONE" . "blue") ("CANCELED" . "purple")))
+            ("DONE" . "blue") ("CANCELED" . "purple") ("NOTE" . org-warning) ("NOTED" . "green")))
 
     ;; custom agenda views
     (setq org-agenda-custom-commands
@@ -718,7 +719,11 @@ The name says it all.
               (todo "WAIT"
                     ((org-agenda-overriding-header "Waiting on Confirmation")))
               (todo "GAVE"
-                    ((org-agenda-overriding-header "TODOs Delegated to Someone Else")))))))
+                    ((org-agenda-overriding-header "TODOs Delegated to Someone Else")))))
+            ("f" "View Fleeting Notes Collection"
+             (
+              (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes"))))))
+          )
 
     ;; capture templates
     (setq org-capture-templates
@@ -737,6 +742,9 @@ The name says it all.
 
             ("w" "Start Work Cycle" entry (file+olp+datetree "~/.org/worklog.org" "Work Log")
              "* %? :WorkNew:\n%U Work Cycle Created\n%i" :empty-lines 1)
+
+            ("f" "Fleeting Note" entry (file+olp "~/.org/fleeting.org" "Fleeting Notes")
+             "* NOTE %?\n %i" :empty-lines 1)
             ))
     )
 #+END_SRC
@@ -761,195 +769,110 @@ This is done to transform dash hyphens into dots.
 			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+END_SRC
 
-** Note-Taking Configuration
-*** Markdown Mode
-I specify Markdown mode here, because I usually use markdown to take notes
+** Org-Roam Configuration
+I am experimenting with using org-roam for note-taking and knowledge management.
+*** Org-Roam
+Main org-roam configuration is below, including capture templates I am using for
+my note-taking workflow
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: markdown-mode
-  ;; PURPOSE: to provide emacs facilities to edit and create md files
-  (use-package markdown-mode
-    :if knavemacs/config-notes
-  )
-#+END_SRC
-
-*** Denote
-Using denote for note taking and knowledge management
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: denote
-  ;; PURPOSE: provides facilities for note taking and knowledge management
-  (use-package denote
+  ;; SETUP: org-roam
+  ;; PURPOSE: providing note-taking / knowledge management atop org mode functionality
+  ;; DEP: setup these directories, and ensure a c compiler is in the current path
+  (use-package org-roam
     :if knavemacs/config-notes
     :init
-    (add-hook 'find-file-hook #'denote-link-buttonize-buffer)
+    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/x86_64-12.2.0-release-posix-seh-ucrt-rt_v10-rev2/mingw64/bin"))))
+    :custom
+    (org-roam-directory "~/Documents/knowledge")
+    (org-roam-capture-templates
+     '(("d" "default" plain
+        "%?"
+        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+        :unnarrowed t)
+       ("l" "Literature Note" plain
+        "* Source Info\n\n- Title: ${title}\n- Author: %^{Author}\n\n- Year: %^{Year}\n\n- Date Accessed: %^{Accessed}\n\n* (Info)\nUse org-roam-add-ref if needed. Add tags to header levels.\n\n%?"
+        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Literature")
+        :unnarrowed t)))
     :config
-    (setq denote-directory (expand-file-name "~/Documents/knowledge"))
-    (setq denote-prompts '(subdirectory title keywords))
-    (setq denote-known-keywords '("info" "idea" "meta" "index" "refined"))
-    (setq denote-file-type "markdown-yaml")
-
-    (defun denote-subdirectory-with-type ()
-      "Create a note of a specific type, in a specific subdirectory"
-      (declare (interactive-only t))
-      (interactive)
-      (let ((denote-prompts '(file-type subdirectory title keywords)))
-        (call-interactively #'denote)))
-
-    (defun denote-journal-entry ()
-      "Create an entry tagged 'journal' with the date as its title.
-      If a journal for the current day exists, visit it.  If multiple
-      entries exist, prompt with completion for a choice between them.
-      Else create a new file."
-      (interactive)
-      (let* ((today (format-time-string "%A %e %B %Y"))
-        (string (denote-sluggify today))
-        (files (denote-directory-files-matching-regexp string)))
-      (cond
-        ((> (length files) 1)
-        (find-file (completing-read "Select file: " files nil :require-match)))
-      (files
-        (find-file (car files)))
-      (t
-        (denote
-          today
-          '("journal")
-          'org
-          "~/Documents/knowledge/journal")))))
+    (setq org-roam-node-display-template
+          (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
+    (org-roam-db-autosync-mode)
     )
 #+END_SRC
 
-*** Capturing Bibliography Notes
-The following are a set of elips functions that were written by *Mohamed Suliman* that provide
-a facility using org-capture to capture a literature/bibliography note from a Bibtext entry.
-The description of this workflow can be found [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html][at his blog post]]. His general workflow is as follows:
-- I come across an interesting paper online that I’d like to save to my bibliography.
-- After copying its BiBTeX entry from the webpage to the clipboard, I switch to emacs.
-- I then open up an org-capture template that asks for the BibTeX (which I paste in), a title (defaults to the title of the entry), and some tags.
-- A capture window opens with a Denote note that has the inserted BiBTeX enclosed in an org source block.
-- I then write any notes I may have (if any) and close the capture window with C-c C-c.
+*** Org-Roam-UI
+Visualizer for Org-Roam notes
 #+BEGIN_SRC emacs-lisp
-  (defun namilus-denote-org-capture-biblio ()
-  "Ask the user for a bibtex entry, title, and keywords, and creates a denote note template with:
-
-1. The bibtex included inside an org bibtex source block.
-
-2. The keyword \"biblio\" and the bibtex entry's sanitised key as
-part of the denote file's tags. If the bibtex entry entered by
-the user is empty or doesn't match the regexp, only the
-\"biblio\" keyword is added, along with whatever other keywords
-entered by the user."
-  (let* ((bibtex (namilus-denote-bibtex-prompt))
-         (title (denote-title-prompt (namilus-denote-bibtex-title bibtex)))
-         (keywords (append (denote-keywords-prompt) (namilus-denote-biblio-keywords bibtex)))
-         (front-matter (denote--format-front-matter
-                        title (denote--date nil 'org) keywords
-                        (format-time-string denote-id-format nil) 'org)))
-    (setq denote-last-path
-          (denote--path title keywords
-                        (file-name-as-directory (concat denote-directory "/zettelkasten"))
-                        (format-time-string denote-id-format) 'org))
-    (denote--keywords-add-to-history keywords)
-    (concat front-matter (namilus-denote-bibtex-org-block bibtex))))
-
-
-(defun namilus-denote-bibtex-prompt (&optional default-bibtex)
-  "Ask the user for a bibtex entry. Returns the sanitised
-version. See `namilus-denote-sanitise-bibtex' for details."
-  (let* ((def default-bibtex)
-         (format (if (and def (not (string-empty-p def)))
-                     (format "Bibtex [%s]: " def)
-                   "Bibtex: "))
-         (sanitised-bibtex (namilus-denote-sanitise-bibtex (read-string format nil nil def))))
-    (if sanitised-bibtex
-        sanitised-bibtex
-      (error "Invalid BiBTeX"))))
-
-
-(defun namilus-denote-sanitise-bibtex (bibtex)
-  "Returns a santised version of BIBTEX. Sanitisation entails remove
-all non alpha-numeric characters from the bibtex key, and
- returning this updated bibtex entry. If BIBTEX is not a valid
- bibtex entry, returns nil."
-  (when (string-match "@.*{\\(.*\\)," bibtex)
-    (let* ((key (match-string-no-properties 1 bibtex))
-           (sanitised-key (replace-regexp-in-string "[^A-Za-z0-9]" "" key)))
-      (replace-regexp-in-string key sanitised-key bibtex))))
-
-(defun namilus-denote-bibtex-key (bibtex)
-  "Returns the bibtex key from BIBTEX."
-  (when (string-match "@.*{\\(.*\\)," bibtex)
-    (match-string-no-properties 1 bibtex)))
-
-(defun namilus-denote-bibtex-title (bibtex)
-  "Returns the bibtex title from BIBTEX."
-  (when (string-match "\\s *title\\s *=\\s *{\\(.*\\)}," bibtex)
-    (match-string-no-properties 1 bibtex)))
-
-
-(defun namilus-denote-biblio-keywords (bibtex)
-  "Returns a list of strings \"biblio\" and the key from the BIBTEX
-entry, otherwise, just returns a list consisting of the string
- \"biblio\"."
-  (let ((bibtex-key (namilus-denote-bibtex-key bibtex)))
-    (if bibtex-key
-        `("biblio" ,bibtex-key)
-      '("biblio"))))
-
-(defun namilus-denote-bibtex-org-block (bibtex)
-  "Returns a string representing an org `bibtex' source block
-encompassing BIBTEX, a string of a bibtex entry."
-  (concat "#+begin_src bibtex\n" bibtex "\n#+end_src"))
-
-(add-to-list 'org-capture-templates
-             '("B" "Bibliography (with Denote) BibTeX" plain
-               (file denote-last-path)
-                      #'namilus-denote-org-capture-biblio
-                      :no-save t
-                      :immediate-finish nil
-                      :kill-buffer t
-                      :jump-to-captured nil))
+  (use-package org-roam-ui
+    :if knavemacs/config-notes
+    :after org-roam
+    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+    ;;         a hookable mode anymore, you're advised to pick something yourself
+    ;;         if you don't care about startup time, use
+    ;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 #+END_SRC
 
-*** Exporting Bibliography Note Citations
-Similarly to the prior section, Mohamed also provides a set of functions that
-allow you to [[https://www.scss.tcd.ie/~sulimanm/posts/denote-bibliography.html][export bibtext entries from notes]].
+*** Org-Roam Custom Functions
+**** Find Literature Notes Only
+This is a custom function based on something I found on the org-roam discourse group
+that allows me to search nodes that are my Literature notes. What's nice about the custom
+SQLite query in this function, is it only shows me my "top level" nodes - sometimes I have
+sub-headers in my literature notes that I turn into nodes, but I dont necessarily want to see
+those nodes when searching this way. This gives me a clean list of nodes - one for each source
+I used to capture literature notes.
 
 #+BEGIN_SRC emacs-lisp
-  (defun namilus-denote-biblio-read-bibtex (file)
-    "Reads the bibtex entry from a given Denote FILE. Does so by
-  searching for a org bibtex source block and returns the contents
-  therein."
-    (with-temp-buffer
-      (insert-file-contents file)
-      (let ((contents (buffer-string)))
-        (when (string-match "#\\+begin_src.*bibtex\\(\\(.*\n\\)*\\)#\\+end_src" contents)
-          (match-string-no-properties 1 contents)))))
-
-
-  (defun namilus-denote-generate-bibliography (denote-biblio-files bibliography-file)
-    "Writes the org bibtex source blocks located in each of
-  DENOTE-BIBLIO-FILES to BIBLIOGRAPHY-FILE."
-    (with-temp-file bibliography-file
-      (dolist (file denote-biblio-files)
-        (let ((bibtex (namilus-denote-biblio-read-bibtex file)))
-          (if bibtex
-              (insert bibtex))))))
-
-(defun namilus-denote-bibliography-file-prompt (&optional default-bibliography-file)
-  "Ask the user for a bibliography file."
-  (let* ((def default-bibliography-file)
-         (format (if (and def (not (string-empty-p def)))
-                     (format "Bibliography file [%s]: " def)
-                   "Bibliography file: ")))
-    (expand-file-name (read-file-name format nil def))))
-
-
-(defun namilus-denote-dired-generate-bibliography-from-marked ()
-  (interactive)
-  (namilus-denote-generate-bibliography (dired-get-marked-files)
-                                        (namilus-denote-bibliography-file-prompt)))
+  ;; https://org-roam.discourse.group/t/exclude-title-heading-from-the-results-of-org-roam-node-find-but-show-the-aliases/2964/2
+  ;; -*- lexical-binding: t; -*-
+  (defun knavemacs/org-roam-node-find-literature-only ()
+    "It's like `org-roam-node-find' but only for nodes
+     that have one and only one tag - Literature."
+    (interactive)
+    ;; Temporarily replace `org-roam-node-list' to get only nodes from
+    ;; my custom query
+    (cl-letf (((symbol-function 'org-roam-node-list)
+               ;; Anonymus function. Return list of nodes based on just
+               ;; one (Literature) tag.
+               (lambda () (mapcar (lambda (e)
+                                    (org-roam-node-from-id (car e)))
+                                  (org-roam-db-query
+                                   "SELECT nodes.id
+    FROM nodes
+    INNER JOIN tags ON tags.node_id = nodes.id
+    WHERE nodes.level = 0
+    AND tags.tag = '\"Literature\"'")))))
+      (org-roam-node-find)))
 #+END_SRC
 
-** Custom Functions
+**** Find Notes/Nodes based on Selected Tags
+This collection of functions allows me to select from a completion list of all tags
+in my notes, and then present me with nodes to visit based on the selected tag.
+
+#+BEGIN_SRC emacs-lisp
+  (defun knavemacs/org-roam-filter-by-tag (tag-name)
+    (lambda (node)
+      (member tag-name (org-roam-node-tags node))))
+
+  (defun knavemacs/org-roam-get-tag-selection ()
+    (setq alltags (seq-uniq
+                   (org-roam-db-query [:select :distinct [tag] :from tags])))
+    (completing-read "Tag: " alltags))
+
+  (defun knavemacs/org-roam-find-by-tag ()
+    (interactive)
+    (org-roam-node-find
+     nil
+     nil
+     (knavemacs/org-roam-filter-by-tag (knavemacs/org-roam-get-tag-selection))
+     ))
+#+END_SRC
+
+** General Custom Functions
 *** Navigation Functions
 *forward-or-backward-sexp*
 Grabbed from the Emacs Wiki, here is a custom function that 'smartly' emulates
@@ -1195,16 +1118,12 @@ the space key used for meow.
      "p"  '(projectile-command-map :which-key "projectile")
      "g"  '(magit-status :which-key "git status")
 
-     "n"  '(:ignore t :which-key "denote")
-     "nn" '(denote :which-key "Create Note")
-     "nN" '(denote-subdirectory-with-type :whick-key "Create Specific Note Type")
-     "ni" '(denote-link :which-key "Create Note Link")
-     "nI" '(denote-link-add-links :which-key "Create Multiple Links")
-     "nb" '(denote-link-backlinks :which-key "Show Backlinks")
-     "nl" '(denote-link-after-creating :which-key "Create & Link New Note")
-     "nr" '(denote-rename-file :which-key "Rename File")
-     "nR" '(denote-rename-file-using-front-matter :which-key "Rename Per Front Matter")
-     "nj" '(denote-journal-entry :which-key "Create Journal Entry")
+     "n"  '(:ignore t :which-key "Note Taking")
+     "nf" '(org-roam-node-find :which-key "Create/View Note")
+     "nb" '(org-roam-buffer-toggle :which-key "Show Backlinks Buffer")
+     "nl" '(org-roam-node-insert :which-key "Create & Link New Note")
+     "nL" '(knavemacs/org-roam-node-find-literature-only :which-key "View Literature Notes")
+     "nT" '(knavemacs/org-roam-find-by-tag :which-key "View Notes by Selected Tag")
 
      "o"  '(:ignore t :which-key "org-mode")
      "oa" '(org-agenda :which-key "org-agenda")
