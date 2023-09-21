@@ -65,6 +65,7 @@ various aspects of my emacs instance.
 #+BEGIN_SRC emacs-lisp
   ;; -*- lexical-binding: t; -*-
 #+END_SRC
+
 *** Garbage Collection
 I've read a lot about different ways to approach this. I'm going off a stack exchange
 post that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set this. I'm using a
@@ -95,16 +96,14 @@ line numbers shown so I know how far apart various lines are from my current
 cursor location.
 
 #+BEGIN_SRC emacs-lisp
-  ;; update the UI with additional basic settings
-  (setq display-line-numbers-type 'visual); enable relative line numbers
-  (column-number-mode)                 ; show column number in mode line
-  (global-display-line-numbers-mode t) ; enable line numbers globally
-  ;(dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
-  ;                eshell-mode-hook
-  ;                which-key-mode-hook
-  ;                dired-mode-hook
-  ;                ))
-  ;(add-hook mode (lambda () (display-line-numbers-mode 0))))
+    ;; update the UI with additional basic settings
+    (setq display-line-numbers-type 'visual); enable relative line numbers
+    (column-number-mode)                 ; show column number in mode line
+    (global-display-line-numbers-mode t) ; enable line numbers globally
+    (dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
+                    eshell-mode-hook
+                    dired-mode-hook))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+END_SRC
 
 *** Font Configuration
