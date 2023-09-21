@@ -953,6 +953,7 @@ a few more functions when pressing the leader key!
      '("k" . kill-this-buffer)
      '("f" . org-open-at-point)
      '("o" . knavemacs/transient-org-commands)
+     '("n" . knavemacs/transient-note-commands)
      '("r" . rectangle-mark-mode)
      '("w" . hydra-window-management/body)
      '("/" . meow-keypad-describe-key)
@@ -1100,14 +1101,26 @@ built in functionality (although not sure I can fully accomplish this. We will s
 
 #+BEGIN_SRC emacs-lisp
   (transient-define-prefix knavemacs/transient-org-commands ()
-  "Custom Org Commands Transient"
-  :info-manual "Custom Org Commands Transient"
-  ["Actions"
-   ("a" "Org Agenda" org-agenda)
-   ("c" "Org Capture" org-capture)
-   ("l" "Store Link" org-store-link)
-   ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
-  [("q" "Quit" transient-quit-one)])
+    "Custom Org Commands Transient"
+    :info-manual "Custom Org Commands Transient"
+    ["Org-Mode Actions"
+     ("a" "Org Agenda" org-agenda)
+     ("c" "Org Capture" org-capture)
+     ("l" "Store Link" org-store-link)
+     ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
+    [("q" "Quit" transient-quit-one)])
+  
+  (transient-define-prefix knavemacs/transient-note-commands ()
+    "Custom Org-Roam Commands Transient"
+    :info-manual "Custom Note-Taking Commands Transient"
+    ["Note-Taking Actions"
+     ("f" "Create/Find a Note" org-roam-node-find)
+     ("b" "Show Linked Notes Buffer" org-roam-buffer-toggle)
+     ("l" "Insert Link to Note" org-roam-node-insert)]
+    ["View Specific Notes"
+     ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
+     ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]
+    [("q" "Quit" transient-quit-one)])
 #+END_SRC
 
 *** General
@@ -1130,19 +1143,6 @@ the space key used for meow.
     (knavemacs/leader-keys
      "p"  '(projectile-command-map :which-key "projectile")
      "g"  '(magit-status :which-key "git status")
-
-     "n"  '(:ignore t :which-key "Note Taking")
-     "nf" '(org-roam-node-find :which-key "Create/View Note")
-     "nb" '(org-roam-buffer-toggle :which-key "Show Backlinks Buffer")
-     "nl" '(org-roam-node-insert :which-key "Create & Link New Note")
-     "nL" '(knavemacs/org-roam-node-find-literature-only :which-key "View Literature Notes")
-     "nT" '(knavemacs/org-roam-find-by-tag :which-key "View Notes by Selected Tag")
-
-     "o"  '(:ignore t :which-key "org-mode")
-     "oa" '(org-agenda :which-key "org-agenda")
-     "oc" '(org-capture :which-key "org-capture")
-     "ol" '(org-store-link :which-key "org-store-link")
-     "od" '(org-quick-time-stamp-inactive :which-key "inactive timestamp")
 
      "s"  '(:ignore t :which-key "scale/size")
      "st" '(hydra-text-scale/body :which-key "scale text")
