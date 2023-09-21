@@ -609,16 +609,11 @@ excellent across project files.
     :if knavemacs/config-project
     :diminish projectile-mode
     :config (projectile-mode)
-    :custom ((projectile-completion-system 'ivy))
+    :custom ((projectile-completion-system 'default))
     :init
     (when (file-directory-p "~/Projects")
       (setq projectile-project-search-path '("~/Projects")))
     )
-
-  ;; SETUP: counsel-projectile
-  ;; PURPOSE: counsel UI and further IVY integration to projectile
-  (use-package counsel-projectile
-    :config (counsel-projectile-mode))
 #+END_SRC
 
 *** Magit
@@ -951,6 +946,7 @@ a few more functions when pressing the leader key!
      '("b" . consult-buffer)
      '("k" . kill-this-buffer)
      '("r" . rectangle-mark-mode)
+     '("v" . magit-status)
      '("o" . knavemacs/transient-org-commands)
      '("n" . knavemacs/transient-note-commands)
      '("w" . knavemacs/transient-window-commands)
@@ -1132,18 +1128,7 @@ The below keymap updates are used for general, overall changes to keys.
   (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode)
   (define-key dired-mode-map ";" 'dired-subtree-toggle)
 
-  ;; SETUP: general
-  ;; PURPOSE: provide convenient and consistent keymap definitions, including with leader keys
-  (use-package general
-    :if knavemacs/config-keybinds
-    :config
-    ;; Personal prompt keys
-    (general-create-definer knavemacs/leader-keys
-      :keymaps 'global
-      :prefix "C-c p")
-    (knavemacs/leader-keys
-     "p"  '(projectile-command-map :which-key "projectile")
-     "g"  '(magit-status :which-key "git status")
-     ))
+  ;; projectile configurations
+  (define-key projectile-mode-map "\C-cp" 'projectile-command-map)
 #+END_SRC
 
