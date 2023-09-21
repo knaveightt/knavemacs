@@ -99,12 +99,12 @@ cursor location.
   (setq display-line-numbers-type 'visual); enable relative line numbers
   (column-number-mode)                 ; show column number in mode line
   (global-display-line-numbers-mode t) ; enable line numbers globally
-  (dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
-                  eshell-mode-hook
-                  which-key-mode-hook
-                  dired-mode-hook
-                  ))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  ;(dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
+  ;                eshell-mode-hook
+  ;                which-key-mode-hook
+  ;                dired-mode-hook
+  ;                ))
+  ;(add-hook mode (lambda () (display-line-numbers-mode 0))))
 #+END_SRC
 
 *** Font Configuration
@@ -951,11 +951,10 @@ a few more functions when pressing the leader key!
      '("]" . tab-bar-new-tab)
      '("b" . consult-buffer)
      '("k" . kill-this-buffer)
-     '("f" . org-open-at-point)
+     '("r" . rectangle-mark-mode)
      '("o" . knavemacs/transient-org-commands)
      '("n" . knavemacs/transient-note-commands)
-     '("r" . rectangle-mark-mode)
-     '("w" . hydra-window-management/body)
+     '("w" . knavemacs/transient-window-commands)
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
@@ -1008,7 +1007,7 @@ a few more functions when pressing the leader key!
      '("O" . meow-to-block)
      '("p" . meow-yank)
      '("q" . meow-quit)
-     '("Q" . meow-goto-line)
+     '("Q" . meow-pop-selection)
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
@@ -1024,8 +1023,8 @@ a few more functions when pressing the leader key!
      '("X" . meow-goto-line)
      '("y" . meow-save)
      '("Y" . meow-sync-grab)
-     '("z" . hydra-shift-viewport/body)
-     '("Z" . hydra-save-andor-close/body)
+     '("z" . knavemacs/transient-viewport-commands)
+     '("Z" . knavemacs/transient-saveclose-commands)
      '("'" . repeat)
      '("<escape>" . ignore)
      ;; deviating from the suggested map to allow easy scrolling of screens
@@ -1045,54 +1044,6 @@ a few more functions when pressing the leader key!
     )
 #+END_SRC
 
-*** Hydra
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: hydra
-  ;; PURPOSE: tie related/successive commands together to provide family modes of key bindings
-  (use-package hydra
-    :if knavemacs/config-keybinds
-  )
-  (defhydra hydra-text-scale (:timeout 4)
-    "scale text"
-    ("j" text-scale-increase "in")
-    ("k" text-scale-decrease "out")
-    ("f" nil "finished" :exit t))
-  (defhydra hydra-window-resize (:timeout 4)
-    "resize split windows"
-    ("j" enlarge-window "inc-height")
-    ("k" shrink-window "dec-height")
-    ("h" shrink-window-horizontally "dec-width")
-    ("l" enlarge-window-horizontally "inc-width")
-    ("f" nil "finished" :ext t))
-  (defhydra hydra-shift-viewport (:timeout 4)
-    "shift view around, or pop, selection"
-    ("z" recenter "recenter" :exit t)
-    ("t" (recenter-top-bottom 0) "shift to top" :exit t)
-    ("b" (recenter-top-bottom -1) "shift to bottom" :exit t)
-    ("g" meow-pop-selection "Pop Selection")
-    ("f" nil "finished" :ext t))
-  (defhydra hydra-save-andor-close (:timeout 4)
-    "Quick kill emacs, optionally save all"
-    ("Z" (save-buffers-kill-terminal) "Save Close All")
-    ("Q" (kill-emacs) "Kill Emacs")
-    ("f" nil "cancel" :ext t))
-  (defhydra hydra-window-management (:timeout 10)
-    "Linked keys to move and manage window splits"
-    ("J" windmove-down "move down once" :exit t)
-    ("K" windmove-up "move up once" :exit t)
-    ("H" windmove-left "move left once" :exit t)
-    ("L" windmove-right "move right once" :exit t)
-    ("j" windmove-down "move down")
-    ("k" windmove-up "move up")
-    ("h" windmove-left "move left")
-    ("l" windmove-right "move right")
-    ("f" nil "finished" :ext t)
-    ("9" shrink-window-horizontally "shrink horizontal")
-    ("0" enlarge-window-horizontally "grow horizontal")
-    ("-" shrink-window "shrink window")
-    ("=" enlarge-window "grow window"))
-#+END_SRC
-
 *** Custom Transients
 I am beginning to incorporate transients into my workflow / keybinds.
 The potential goal here is to remove reliance on numerous keybind packages
@@ -1109,7 +1060,7 @@ built in functionality (although not sure I can fully accomplish this. We will s
      ("l" "Store Link" org-store-link)
      ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
     [("q" "Quit" transient-quit-one)])
-  
+
   (transient-define-prefix knavemacs/transient-note-commands ()
     "Custom Org-Roam Commands Transient"
     :info-manual "Custom Note-Taking Commands Transient"
@@ -1120,6 +1071,48 @@ built in functionality (although not sure I can fully accomplish this. We will s
     ["View Specific Notes"
      ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
      ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]
+    [("q" "Quit" transient-quit-one)])
+
+  (defun knavemacs/recenter-top ()
+    "Recenter View to Top"
+    (interactive)
+    (recenter-top-bottom 0))
+
+  (defun knavemacs/recenter-bottom ()
+    "Recenter View to Bottom"
+    (interactive)
+    (recenter-top-bottom -1))
+
+  (transient-define-prefix knavemacs/transient-viewport-commands ()
+    "Custom Viewport Commands Transient"
+    :info-manual "Custom Viewport Commands Transient"
+    ["Shift View"
+     ("z" "Recenter" recenter)
+     ("t" "Shift to Top" knavemacs/recenter-top)
+     ("b" "Shift to Bottom" knavemacs/recenter-bottom)]
+    [("q" "Quit" transient-quit-one)])
+
+  (transient-define-prefix knavemacs/transient-saveclose-commands ()
+    "Custom Save and Close Commands Transient"
+    :info-manual "Custom Save and Close Commands Transient"
+    ["Choose Action"
+     ("Z" "Save All and Close" save-buffers-kill-terminal)
+     ("Q" "Kill Emacs" kill-emacs)]
+    [("q" "Quit" transient-quit-one)])
+
+  (transient-define-prefix knavemacs/transient-window-commands ()
+    "Custom Window Commands Transient"
+    :info-manual "Custom Window Commands Transient"
+    ["Window Resizing"
+     ("=" "Grow Window" enlarge-window :transient t)
+     ("-" "Shrink Window" shrink-window :transient t)
+     ("0" "Expand Horizontally" enlarge-window-horizontally :transient t)
+     ("9" "Shrink Horizontally" shrink-window-horizontally :transient t)]
+    ["Move to Window"
+     ("k" "Move Up" windmove-up)
+     ("j" "Move Down" windmove-down)
+     ("h" "Move Left" windmove-left)
+     ("l" "Move Right" windmove-right)]
     [("q" "Quit" transient-quit-one)])
 #+END_SRC
 
@@ -1144,13 +1137,9 @@ the space key used for meow.
      "p"  '(projectile-command-map :which-key "projectile")
      "g"  '(magit-status :which-key "git status")
 
-     "s"  '(:ignore t :which-key "scale/size")
-     "st" '(hydra-text-scale/body :which-key "scale text")
-     "sw" '(hydra-window-resize/body :which-key "resize window"))
-
     ;; dired configurations
     ;; note, <space>-j to jump (dired-goto-file) in dired buffers
-    ;; note, <space>-j to open current buffer location in dired for other buffers
+    ;; note, <space>-x-j to open current buffer location in dired for other buffers
     ;; note, o to open file in a different buffer split for editing (vs Enter)
     ;; note, C-o to open file in a differnet buffer split, keep focus on dired
     (general-define-key
