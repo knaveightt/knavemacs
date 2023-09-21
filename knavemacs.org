@@ -927,7 +927,7 @@ a few more functions when pressing the leader key!
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
-     ;; SPC 9/0 will run the original command in MOTION state.
+     ;; C-M-j/k will run the original command in MOTION state.
      '("C-M-j" . "H-j")
      '("C-M-k" . "H-k")
      '("M-h" . windmove-left) ;; consistent window movement in special modes
@@ -936,37 +936,28 @@ a few more functions when pressing the leader key!
      '("M-l" . windmove-right) ;; consistent window movement in special modes
      '("<escape>" . ignore))
     (meow-leader-define-key
+     ;; Space-# is now used for number expansion
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
      '("[" . tab-bar-close-tab)
      '("]" . tab-bar-new-tab)
-     ;; Use SPC (0-9) for digit arguments.
-     ;'("1" . tab-bar-close-tab)
-     ;'("2" . tab-bar-new-tab)
-     '("3" . switch-to-buffer-other-tab)
-     ;'("4" . meow-digit-argument)
-     '("5" . forward-or-backward-sexp)
-     ;'("6" . meow-digit-argument)
-     ;'("7" . meow-digit-argument)
      '("b" . consult-buffer)
-     ;'("9" . tab-bar-switch-to-prev-tab)
-     ;'("0" . tab-bar-switch-to-next-tab)
      '("k" . kill-this-buffer)
      '("f" . org-open-at-point)
-     '("o" . org-capture)
+     '("o" . knavemacs/transient-org-commands)
      '("r" . rectangle-mark-mode)
      '("w" . hydra-window-management/body)
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
-     '("C-0" . meow-expand-0)
-     '("C-9" . meow-expand-9)
-     '("C-8" . meow-expand-8)
-     '("C-7" . meow-expand-7)
-     '("C-6" . meow-expand-6)
-     '("C-5" . meow-expand-5)
-     '("C-4" . meow-expand-4)
-     '("C-3" . meow-expand-3)
-     '("C-2" . meow-expand-2)
-     '("C-1" . meow-expand-1)
      '("M-h" . windmove-left) ;; normal mode mapping only
      '("M-j" . windmove-down) ;; normal mode mapping only
      '("M-k" . windmove-up) ;; normal mode mapping only
@@ -1099,6 +1090,24 @@ a few more functions when pressing the leader key!
     ("0" enlarge-window-horizontally "grow horizontal")
     ("-" shrink-window "shrink window")
     ("=" enlarge-window "grow window"))
+#+END_SRC
+
+*** Custom Transients
+I am beginning to incorporate transients into my workflow / keybinds.
+The potential goal here is to remove reliance on numerous keybind packages
+like hydra and general, if I can duplicate the value I get from them using
+built in functionality (although not sure I can fully accomplish this. We will see.)
+
+#+BEGIN_SRC emacs-lisp
+  (transient-define-prefix knavemacs/transient-org-commands ()
+  "Custom Org Commands Transient"
+  :info-manual "Custom Org Commands Transient"
+  ["Actions"
+   ("a" "Org Agenda" org-agenda)
+   ("c" "Org Capture" org-capture)
+   ("l" "Store Link" org-store-link)
+   ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
+  [("q" "Quit" transient-quit-one)])
 #+END_SRC
 
 *** General
