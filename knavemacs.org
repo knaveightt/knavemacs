@@ -1115,41 +1115,35 @@ built in functionality (although not sure I can fully accomplish this. We will s
     [("q" "Quit" transient-quit-one)])
 #+END_SRC
 
-*** General
-I use general to setup some additional keybinds based on a global leader. Like my own keypad versus
-the space key used for meow.
+*** Overall Key Updates
+The below keymap updates are used for general, overall changes to keys.
 #+BEGIN_SRC emacs-lisp
+  ;; global
+  (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
+
+  ;; dired configurations
+  ;; note, <space>-j to jump (dired-goto-file) in dired buffers
+  ;; note, <space>-x-j to open current buffer location in dired for other buffers
+  ;; note, o to open file in a different buffer split for editing (vs Enter)
+  ;; note, C-o to open file in a differnet buffer split, keep focus on dired
+  (define-key dired-mode-map "h" 'dired-single-up-directory)
+  (define-key dired-mode-map "l" 'dired-single-buffer)
+  (define-key dired-mode-map "K" 'dired-do-kill-lines)
+  (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode)
+  (define-key dired-mode-map ";" 'dired-subtree-toggle)
+
   ;; SETUP: general
   ;; PURPOSE: provide convenient and consistent keymap definitions, including with leader keys
   (use-package general
     :if knavemacs/config-keybinds
     :config
-    ;; General global key remaps
-    (general-define-key
-     "C-x C-b" 'ibuffer) ; remap buffer list to interactive list 
-
     ;; Personal prompt keys
     (general-create-definer knavemacs/leader-keys
-                            :keymaps 'global
-                            :prefix "C-c p")
+      :keymaps 'global
+      :prefix "C-c p")
     (knavemacs/leader-keys
      "p"  '(projectile-command-map :which-key "projectile")
      "g"  '(magit-status :which-key "git status")
-
-    ;; dired configurations
-    ;; note, <space>-j to jump (dired-goto-file) in dired buffers
-    ;; note, <space>-x-j to open current buffer location in dired for other buffers
-    ;; note, o to open file in a different buffer split for editing (vs Enter)
-    ;; note, C-o to open file in a differnet buffer split, keep focus on dired
-    (general-define-key
-     :keymaps 'dired-mode-map
-     "h" 'dired-single-up-directory
-     "l" 'dired-single-buffer
-     "K" 'dired-do-kill-lines
-     "H" 'dired-hide-dotfiles-mode
-     ";" 'dired-subtree-toggle
-     )
-
-     )
+     ))
 #+END_SRC
 
