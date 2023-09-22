@@ -596,26 +596,6 @@ Provides a connection point between embark and consult.
 #+END_SRC
 
 ** Project and Version Control
-*** Projectile
-A nice thing about projectile is I can set directory (project) specific variables, including what
-command runs when I "run" the project. Note that having ripgrep installed makes seach pretty
-excellent across project files.
-
-#+BEGIN_SRC emacs-lisp
-  ;; SETUP: projectile
-  ;; PURPOSE: project discrovey system and framework for emacs
-  ;; DEP: having ripgrep installed will allow me to search better in projects
-  (use-package projectile
-    :if knavemacs/config-project
-    :diminish projectile-mode
-    :config (projectile-mode)
-    :custom ((projectile-completion-system 'default))
-    :init
-    (when (file-directory-p "~/Projects")
-      (setq projectile-project-search-path '("~/Projects")))
-    )
-#+END_SRC
-
 *** Magit
 #+BEGIN_SRC emacs-lisp
   ;; SETUP: magit
@@ -1127,8 +1107,5 @@ The below keymap updates are used for general, overall changes to keys.
   (define-key dired-mode-map "K" 'dired-do-kill-lines)
   (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode)
   (define-key dired-mode-map ";" 'dired-subtree-toggle)
-
-  ;; projectile configurations
-  (define-key projectile-mode-map "\C-cp" 'projectile-command-map)
 #+END_SRC
 
