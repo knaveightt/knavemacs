@@ -1096,6 +1096,7 @@ The below keymap updates are used for general, overall changes to keys.
 #+BEGIN_SRC emacs-lisp
   ;; global
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
+  (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
 
   ;; dired configurations
   ;; note, <space>-j to jump (dired-goto-file) in dired buffers
