@@ -978,7 +978,6 @@ a few more functions when pressing the leader key!
      '("b" . consult-buffer)
      '("k" . kill-this-buffer)
      '("r" . rectangle-mark-mode)
-     '("v" . magit-status)
      '("o" . knavemacs/transient-org-commands)
      '("n" . knavemacs/transient-note-commands)
      '("w" . knavemacs/transient-window-commands)
@@ -1154,6 +1153,10 @@ The below keymap updates are used for general, overall changes to keys.
   ;; global
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
+
+  ;; project map changes
+  (define-key project-prefix-map "V" 'project-vc-dir)
+  (define-key project-prefix-map "v" 'magit-status)
 
   ;; dired configurations
   ;; note, <space>-j to jump (dired-goto-file) in dired buffers
