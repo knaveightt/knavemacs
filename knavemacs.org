@@ -670,7 +670,7 @@ The name says it all.
     (setq org-ellipsis " ▾"
           ;org-hide-emphasis-markers t
     )
-    (setq org-agenda-files (list "~/.org" "~/.org/active" "~/.org/info"))
+    (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active" "~/Documents/org/info"))
     (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
     (setq org-stuck-projects
           '("+LEVEL=2+PROJECT/-DONE" ("NEXT")))
@@ -711,22 +711,22 @@ The name says it all.
     ;; capture templates
     (setq org-capture-templates
           '(
-            ("n" "Post Notice" entry (file+olp "~/.org/notice.org" "Notice")
+            ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notice")
              "* NOTICE %?\n%U Notice Created" :empty-lines 1)
 
-            ("k" "New Task Today" entry (file+olp "~/.org/unfiled.org" "Tasks")
+            ("k" "New Task Today" entry (file+olp "~/Documents/org/unfiled.org" "Tasks")
              "* TASK %?\n %i" :empty-lines 1)
 
-            ("t" "New Todo" entry (file+olp "~/.org/unfiled.org" "Todos")
+            ("t" "New Todo" entry (file+olp "~/Documents/org/unfiled.org" "Todos")
              "* TODO %? :unfiled:\n %i" :empty-lines 1)
 
-            ("m" "Meeting Notes" entry (file+olp "~/.org/unfiled.org" "Meetings")
+            ("m" "Meeting Notes" entry (file+olp "~/Documents/org/unfiled.org" "Meetings")
              "* %t %? :unfiled:\n %i" :empty-lines 1)
 
-            ("w" "Start Work Cycle" entry (file+olp+datetree "~/.org/worklog.org" "Work Log")
+            ("w" "Start Work Cycle" entry (file+olp+datetree "~/Documents/org/worklog.org" "Work Log")
              "* %? :WorkNew:\n%U Work Cycle Created\n%i" :empty-lines 1)
 
-            ("f" "Fleeting Note" entry (file+olp "~/.org/fleeting.org" "Fleeting Notes")
+            ("f" "Fleeting Note" entry (file+olp "~/Documents/org/fleeting.org" "Fleeting Notes")
              "* NOTE %?\n %i" :empty-lines 1)
             ))
     )
@@ -775,6 +775,10 @@ my note-taking workflow
        ("l" "Literature Note" plain
         "* Source Info\n\n- Title: ${title}\n- Author: %^{Author}\n\n- Year: %^{Year}\n\n- Date Accessed: %^{Accessed}\n\n* (Info)\nUse org-roam-add-ref if needed. Add tags to header levels.\n\n%?"
         :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Literature")
+        :unnarrowed t)
+       ("a" "(Permanent) Article Note" plain
+        "* Sources\n** Referenced Literature:\n - %?\n\n** Linked Notes\n\n"
+        :if-new (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Article")
         :unnarrowed t)))
     :config
     (setq org-roam-db-location "~/Documents/knowledge/org-roam.db")
