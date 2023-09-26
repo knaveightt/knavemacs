@@ -111,7 +111,7 @@ lines are from my current cursor location.
 
 #+BEGIN_SRC emacs-lisp
   ;; set the fill-column amount to 80
-  (setq fill-column 80)
+  (setq-default fill-column 80)
 
   ;; function I hoook to modes I dont want to see line numbers on
   (defun knavemacs/no-line-nums-hook ()
@@ -173,6 +173,8 @@ an issue.
 #+END_SRC
 
 ** Package Management and Setup
+Before we get into the next sections of configuration, I setup the package
+manager (use-package) and package repositories.
 *** Initialize Package Sources
 I use the following three sources for downloadable emacs packages:
  - elpa, the GNU ELPA package archive
@@ -180,11 +182,11 @@ I use the following three sources for downloadable emacs packages:
  - org, to get the latest version of org-mode functionality
 
 #+BEGIN_SRC emacs-lisp
-  ;; initialize package sources
+  ;; define package sources
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-			   ("org" . "https://orgmode.org/elpa/")
-			   ("elpa" . "https://elpa.gnu.org/packages/")))
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
   (package-initialize)
   (unless package-archive-contents
     (package-refresh-contents))
@@ -194,12 +196,12 @@ I use the following three sources for downloadable emacs packages:
 I use use-package as my main package manager for downloading and configuring
 external emacs packages. I set use-package-always-ensure because I want all
 packages defined in this config file to be installed automatically if not
-already present on my system.
+already present on my system. I can do this because my ~config.el~ file helps
+dictate what packages should be active on my system.
 
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: use-package
+  ;; PACKAGE: use-package
   ;; PURPOSE: for easy installation of other packages
-  ;; initialize use-package on non-linux platforms
   (unless (package-installed-p 'use-package)
     (package-install 'use-package))
   (require 'use-package)
