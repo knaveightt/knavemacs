@@ -61,6 +61,7 @@ series on youtube. Definitely a must watch.
 The following bullet-list of dependencies must be satisfied to ensure this
 configuration is working as expected:
 - ~JetBrainsMono Nerd Font~ installed on system
+- ~Symbols Nerd Font Mono~ installed on system (try 'nerd-icons-install-fonts')
   
 * Full Emacs Configuration
 The following sections both describe and provide the elisp used to
@@ -337,28 +338,50 @@ dictate what packages should be active on my system.
 			)))))
 #+END_SRC
 
-*** all-the-icons
+*** nerd-icons
+I use nerd fonts as my go-to fonts. This package will allow me to use some nifty
+symbols in emacs, as well as unify the look between GUI and terminal instances!
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: all-the-icons
-  ;; PURPOSE: provide nerdfont-like icons for graphical elements (like doom-modeline)
-  ;; DEP: must run all-the-icons-install-fonts to install the fonts to the local system.
-  ;;       on Windows, double-click each downloaded font file and click install.
-  ;;       The below use-package form should automatically 
-  (use-package all-the-icons
-    :if knavemacs/config-visual-icons
-    :commands all-the-icons-install-fonts
-    :init
-    (unless (find-font (font-spec :name "all-the-icons"))
-      (all-the-icons-install-fonts t)))
+  ;; PACKAGE: nerd-icons
+  ;; PURPOSE: fancy icons in GUI and terminal emacs
+  (use-package nerd-icons)
 #+END_SRC
 
-*** all-the-icons-dired
+*** nerd-icons-dired
+Companion to nerd-icons, for fancy icons in dired buffers.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: all-the-icons-dired
-  ;; PURPOSE: provides nerdfont-like icons specifically for dired buffers
-  (use-package all-the-icons-dired
-    :if knavemacs/config-visual-icons
-    :hook (dired-mode . all-the-icons-dired-mode))
+  ;; PACKAGE: nerd-icons-dired
+  ;; PURPOSE: fancy icons in dired buffers
+  (use-package nerd-icons-dired
+    :after nerd-icons
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
+#+END_SRC
+
+*** nerd-icons-completion
+Companion to nerd-icons, for fancy icons in completion buffers (vertico).
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: nerd-icons-completion
+  ;; PURPOSE: fancy icons in completion buffers
+  (use-package nerd-icons-completion
+    :after vertico marginalia nerd-icons
+    :config
+    (nerd-icons-completion-mode)
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+#+END_SRC
+
+*** nerd-icons-ibuffer
+Companion to nerd-icons, for fancy icons in the ibuffer buffer.
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: nerd-icons-ibuffer
+  ;; PURPOSE: fancy icons in ibuffer
+  (use-package nerd-icons-ibuffer
+    :after nerd-icons
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+END_SRC
 
 *** Rainbow Delimiters
