@@ -779,6 +779,18 @@ my note-taking workflow
        ("a" "(Permanent) Article Note" plain
         "* Sources\n** Referenced Literature:\n - %?\n\n** Linked Notes\n\n"
         :if-new (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Article")
+        :unnarrowed t)
+       ("i" "(Permanent) Idea Note" plain
+        "* Sources\n** Referenced Literature:\n - %?\n\n** Linked Notes\n\n"
+        :if-new (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Idea")
+        :unnarrowed t)
+       ("w" "Wiki Note" plain
+        "* Topic\n%?"
+        :if-new (file+head "wiki/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Wiki")
+        :unnarrowed t)
+       ("p" "Project Note" plain
+        "* ${title}\n%?"
+        :if-new (file+head "project/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
         :unnarrowed t)))
     :config
     (setq org-roam-db-location "~/Documents/knowledge/org-roam.db")
