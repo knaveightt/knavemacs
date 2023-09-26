@@ -617,6 +617,22 @@ Provides a connection point between embark and consult.
     (setq which-key-idle-delay 0.9))
 #+END_SRC
 
+*** Yasnippet
+I put snippets in this section of the configuration, because I consider it fancy
+completion using text templates!  This configuration is looking for snippets in
+the ~~/Shelf/snippets~ directory, but this can be changed to taste.
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: yasnippet
+  ;; PURPOSE: text templates to auto-complete common text
+  (use-package yasnippet
+    :config
+    (setq yas-snippet-dirs
+          '("~/Shelf/snippets"))
+    (yas-global-mode 1) ;; or M-x yas-reload-all if YASnippet is already started
+    )
+#+END_SRC
+
 ** Project and Version Control
 *** Magit
 #+BEGIN_SRC emacs-lisp
