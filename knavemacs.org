@@ -1,6 +1,7 @@
 #+TITLE: Knavemacs Emacs Configuration
 #+AUTHOR: John Osinski
 #+EMAIL: johnosinski80@gmail.com
+#+DATE: [2023-09-26 Tue 12:37]
 
 :  ___  __    ________   ________  ___      ___ _______   _____ ______   ________  ________  ________
 : |\  \|\  \ |\   ___  \|\   __  \|\  \    /  /|\  ___ \ |\   _ \  _   \|\   __  \|\   ____\|\   ____\
@@ -49,35 +50,47 @@ loading of the contents of knavemacs.org is done with the last line above.
 
 Throughout my configuration, I may have settings that pertain to either
 Windows or Linux since I use this config file across different OS types. If
-there are ever any dependencies for either platform, they can be looked up
-by searching for ~;; DEP:~ in this file.
+there are ever any dependencies for either platform, they are identified in
+the next section.
 
 Credit should be given where credit is due. Much of this config is heavily
 inspired (and sometimes copied verbatim) from System Crafter's *Emacs From Scratch*
 series on youtube. Definitely a must watch.
 
+* Dependencies
+The following bullet-list of dependencies must be satisfied to ensure this
+configuration is working as expected:
+- ~JetBrainsMono Nerd Font~ installed on system
+  
 * Full Emacs Configuration
-The following sections both describe and provide the elisp used to configure
-various aspects of my emacs instance.
+The following sections both describe and provide the elisp used to
+configurevarious aspects of my emacs instance.
+
 
 ** Basic Configuration
+Note that these settings are all global settings that do not have any dependency
+to variables set in the ~config.el~ file.
 *** Lexical Binding
+I start by declaring this at the top of my configuration. There is code
+(specifically around the note-taking I believe) that having lexical scoping for
+my variables is needed.
 #+BEGIN_SRC emacs-lisp
   ;; -*- lexical-binding: t; -*-
 #+END_SRC
 
 *** Garbage Collection
-I've read a lot about different ways to approach this. I'm going off a stack exchange
-post that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set this. I'm using a
-single command for now and we'll see how that goes.
+I've read a lot about different ways to approach this. I'm going off a stack
+exchange post that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set
+this. I'm using a single command for now and we'll see how that goes.
 
 #+BEGIN_SRC emacs-lisp
+  ;; set the garbage collection threshold
   (setq gc-cons-threshold (* 1024 1024 100)) ;; about 100MB
 #+END_SRC
 
 *** Basic Visual Changes
-Vanilla, unconfigured emacs starts with a tool bar, scroll bar, menus, and
-other visual elements at play that I disable right from the get-go.
+Vanilla, unconfigured emacs starts with a tool bar, scroll bar, menus, and other
+visual elements at play that I disable right from the get-go.
 
 #+BEGIN_SRC emacs-lisp 
   ;; setting some default settings to start with a minimal Emacs startup
@@ -90,62 +103,69 @@ other visual elements at play that I disable right from the get-go.
   (menu-bar-mode -1)               ;; disable menu bar
 #+END_SRC
 
-*** Enable Line Numbers
-I like to use line numbers on the left-hand side, and like to have relative
-line numbers shown so I know how far apart various lines are from my current
-cursor location.
+*** Line Numbers and Configuration
+I set the fill-column amount so that I can automatically wrap paragraphs using
+the keybind ~M-q~.  I like to use line numbers on the left-hand side, and like
+to have relative (visual!)  line numbers shown so I know how far apart various
+lines are from my current cursor location.
 
 #+BEGIN_SRC emacs-lisp
-    ;; update the UI with additional basic settings
-    (setq display-line-numbers-type 'visual); enable relative line numbers
-    (column-number-mode)                 ; show column number in mode line
-    (global-display-line-numbers-mode t) ; enable line numbers globally
-    (dolist (mode '(term-mode-hook        ; define modes that we don't want to see line numbers on
-                    eshell-mode-hook
-                    dired-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  ;; set the fill-column amount to 80
+  (setq fill-column 80)
+
+  ;; function I hoook to modes I dont want to see line numbers on
+  (defun knavemacs/no-line-nums-hook ()
+    (display-line-numbers-mode 0))
+
+  ;; update line number settings
+  (setq display-line-numbers-type 'visual); enable relative line numbers
+  (column-number-mode)                    ; show column number in mode line
+  (global-display-line-numbers-mode t)    ; enable line numbers globally
+  (dolist (mode '(term-mode-hook          ; define modes we don't want line numbers
+                  eshell-mode-hook
+                  dired-mode-hook))
+    (add-hook mode 'knavemacs/no-line-nums-hook))
 #+END_SRC
 
 *** Font Configuration
-On my linux workspace, I like to set the font to my linking. Note that this
-assumes the font is already present on the workspace.
+My current favorite font is *JetBrainsMono*. I use the Nerd Font version of this
+for fancy symbols.  This assumes the font is already present on the workspace.
 
 #+BEGIN_SRC emacs-lisp
-  ;; set default font settings for my favorite linux font if not on windows
-  ;; DEP: requires "JetBrainsMono Nerd Font" installed.
-    (add-to-list 'default-frame-alist
-                 '(font . "JetBrainsMono NF 12"))
+  ;; set default font settings
+  (add-to-list 'default-frame-alist
+               '(font . "JetBrainsMono NF 12"))
 #+END_SRC
 
 *** Backup File Rules
 It is worth nothing that the emacs manual has a good description of backups by
 copying vs renaming. Right now I am using the other mode (copy on backing up),
-so that I don't start causing issues with system links, I might need to change to
-the other method if it's too slow. In any case, I define a specific directory
+so that I don't start causing issues with system links, I might need to change
+to the other method if it's too slow. In any case, I define a specific directory
 for my backup files.
 
 #+BEGIN_SRC emacs-lisp
-  ;; set a default location for backup files, instead of the files being created
-  ;; right next to the original sources
+  ;; set a default location for backup files
   (if (not (file-exists-p "~/.local/share/emacs-saves"))
       (make-directory "~/.local/share/emacs-saves" t))
   (setq backup-directory-alist '(("." . "~/.local/share/emacs-saves")))
   (setq make-backup-files t
-	backup-by-copying t
-	version-control t
-	delete-old-version t
-	delete-by-moving-to-trash t
-	kept-old-versions 6
-	kept-new-versions 6
-	auto-save-default t
-	auto-save-timeout 20
-	auto-save-interval 200
-	)
+        backup-by-copying t
+        version-control t
+        delete-old-version t
+        delete-by-moving-to-trash t
+        kept-old-versions 6
+        kept-new-versions 6
+        auto-save-default t
+        auto-save-timeout 20
+        auto-save-interval 200
+        )
 #+END_SRC
 
 *** Warning Rules
-I like to surpress warnings such that the *Warnings* buffer does not come up
-and harass me.
+I like to surpress warnings such that the *Warnings* buffer does not come up and
+harass me. Not the best practice, I will disable this if I need to troubleshoot
+an issue.
 
 #+BEGIN_SRC emacs-lisp
   ;; set the warning leve
