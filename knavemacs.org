@@ -257,87 +257,6 @@ dictate what packages should be active on my system.
   (load-theme 'modus-vivendi-tinted t))
 #+END_SRC
 
-*** Modeline
-#+BEGIN_SRC emacs-lisp
-  ;; No packages here, custom mode-line configuration
-  ;; Start with the faces for the meow mode indicator
-(defface knavemacs/meow-face-indicator-normal
-  '((t :foreground "SlateGrey4"
-       :background "SteelBlue4"
-       :weight bold
-       ))
-  "Face for Normal Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-insert
-  '((t :foreground "gray"
-       :background "SeaGreen"
-       :weight bold
-       ))
-  "Face for Insert Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-keypad
-  '((t :foreground "gray"
-       :background "PaleVioletRed"
-       :weight bold
-       ))
-  "Face for keypad Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-motion
-  '((t :foreground "gray"
-       :background "thistle"
-       :weight bold
-       ))
-  "Face for motion Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defface knavemacs/meow-face-indicator-beacon
-  '((t :foreground "gray"
-       :background "firebrick3"
-       :weight bold
-       ))
-  "Face for beacon Mode"
-  :group 'knavemacs/mode-line-faces)
-
-(defun knavemacs/meow-mode-line-face ()
-  (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
-	(meow-insert-mode 'knavemacs/meow-face-indicator-insert)
-	(meow-motion-mode 'knavemacs/meow-face-indicator-motion)
-	(meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
-	(meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
-
-;; write a function to do the alignment of the mode-line
-(defun simple-mode-line-render (left right)
-  "Return a string of `window-width' length containing LEFT, and RIGHT
- aligned respectively."
-  (let* ((available-width (- (window-width) (length left) 2)))
-    (format (format " %%s %%%ds " available-width) left right)))
-
-;; construct the mode-line
-(setq-default mode-line-format
-      '((:eval (simple-mode-line-render
-                ;; left
-                (format-mode-line
-		 (list
-		  '(:eval
-		    (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
-		  mode-line-front-space
-		  mode-line-mule-info
-		  mode-line-modified
-		  '(:eval
-		    (propertize " %b " 'help-echo (buffer-file-name)))))
-                ;; right
-                (concat
-		 (format-mode-line
-		  (list
-		   mode-line-misc-info
-		   " %m %l:%c "))
-		 "[%p]  " ; concatenated on, format-mode-line was doing wierd things
-			)))))
-#+END_SRC
-
 *** nerd-icons
 I use nerd fonts as my go-to fonts. This package will allow me to use some nifty
 symbols in emacs, as well as unify the look between GUI and terminal instances!
@@ -382,6 +301,93 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
   (use-package nerd-icons-ibuffer
     :after nerd-icons
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+#+END_SRC
+
+*** Modeline
+#+BEGIN_SRC emacs-lisp
+  ;; No packages here, custom mode-line configuration
+  ;; Start with the faces for the meow mode indicator
+  (defface knavemacs/meow-face-indicator-normal
+    '((t :foreground "SlateGrey4"
+         :background "SteelBlue4"
+         :weight bold
+         ))
+    "Face for Normal Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-insert
+    '((t :foreground "gray"
+         :background "SeaGreen"
+         :weight bold
+         ))
+    "Face for Insert Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-keypad
+    '((t :foreground "gray"
+         :background "PaleVioletRed"
+         :weight bold
+         ))
+    "Face for keypad Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-motion
+    '((t :foreground "gray"
+         :background "thistle"
+         :weight bold
+         ))
+    "Face for motion Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-beacon
+    '((t :foreground "gray"
+         :background "firebrick3"
+         :weight bold
+         ))
+    "Face for beacon Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defun knavemacs/meow-mode-line-face ()
+    (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
+          (meow-insert-mode 'knavemacs/meow-face-indicator-insert)
+          (meow-motion-mode 'knavemacs/meow-face-indicator-motion)
+          (meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
+          (meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
+
+  ;; write a function to do the alignment of the mode-line
+  (defun simple-mode-line-render (left right)
+    "Return a string of `window-width' length containing LEFT, and RIGHT
+   aligned respectively."
+    (let* ((available-width (- (window-width) (length left) 2)))
+      (format (format " %%s %%%ds " available-width) left right)))
+
+  ;; construct the mode-line
+  (setq-default mode-line-format
+                '((:eval (simple-mode-line-render
+                          ;; left
+                          (format-mode-line
+                           (list
+                            '(:eval
+                              (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
+                            mode-line-front-space
+                            mode-line-mule-info
+                            mode-line-modified
+                            " "
+                            '(:eval
+                              (nerd-icons-icon-for-file (buffer-file-name)))
+                            '(:eval
+                              (propertize " %b " 'help-echo (buffer-file-name)))))
+                          ;; right
+                          (concat
+                           (format-mode-line
+                            (list
+                             " %m "
+                             '(:eval
+                               (nerd-icons-icon-for-mode major-mode))
+                             mode-line-misc-info
+                             " L%l:C%c "))
+                           "[%p]   " ; concatenated on, format-mode-line was doing wierd things
+                           )))))
 #+END_SRC
 
 *** Rainbow Delimiters
