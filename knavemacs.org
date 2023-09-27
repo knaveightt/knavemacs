@@ -210,51 +210,116 @@ dictate what packages should be active on my system.
 #+END_SRC
 
 ** Visual Theme and Aesthetic
-*** Color Theme
+*** Color Theme and Faces
 #+BEGIN_SRC emacs-lisp
+  (defun knavemacs/modus-themes-customize-mode-line ()
+    "Apply padding to mode-line via box that has the background color"
+    (modus-themes-with-colors
+      (custom-set-faces
+       `(mode-line ((,c :overline "#CCCCCC")))
+       ;; `(mode-line-inactive ((,c :overline "#565656")))
+       )))
+
   (use-package modus-themes
-  :config
-  ;; block regions
-  (setq modus-themes-region '(bg-only))
+    :config
+    ;; block regions
+    (setq modus-themes-region '(bg-only))
 
-  ;; palette overrides to define colors
-  (setq modus-themes-common-palette-overrides
-	`(
-	  ;; mode line updates to border
-	  (border-mode-line-active bg-mode-line-active)
-	  (border-mode-line-inactive bg-mode-line-inactive)
+    ;; palette overrides to define colors
+    (setq modus-vivendi-tinted-palette-overrides
+          '(
+            ;; mode line updates to border
+            (bg-mode-line-active bg-main) ; #484d67
+            (fg-mode-line-active "#ffffff")
+            (border-mode-line-active bg-main) ; #979797
+            (bg-mode-line-inactive "#262626") ; #292d48
+            (fg-mode-line-inactive "#565656") ; #969696
+            (border-mode-line-inactive bg-dim) ; #606270
 
-	  ;; block regions
-	  (bg-region bg-ochre)
-	  (fg-region unspecified)
-	  
-	  ;; parenthesis overrides
-	  (bg-paren-match bg-magenta-intense)
+            ;; block regions
+            (bg-region bg-ochre)
+            (fg-region unspecified)
 
-	  ;; tab bar mode
-	  (bg-tab-bar bg-main)
-	  (bg-tab-current bg-cyan-intense)
-	  (bg-tab-other bg-inactive)
+            ;; parenthesis overrides
+            (bg-paren-match bg-magenta-intense)
 
-	  ;; expand with sensible defaults using this preset
-	  ,@modus-themes-preset-overrides-warmer))
-  
-  ;; completions
-  (setq modus-themes-completions
-	'((matches . (extrabold))
-	  (selection . (semibold text-also))))
+            ;; Make the fringe less intense
+            (fringe bg-main)
 
-  ;; org-mode
-  (setq modus-themes-headings
-	'((1 . (1.4))
-	  (2 . (1.3))
-	  (3 . (extrabold))
-	  (t . (semilight 1.1))))
-  (setq modus-themes-scale-headings t)
-  (setq modus-themes-org-blocks 'gray-background)
-  
-  ;; activate theme
-  (load-theme 'modus-vivendi-tinted t))
+            ;; tab bar mode
+            (bg-tab-bar bg-main)
+            (bg-tab-current bg-cyan-intense)
+            (bg-tab-other bg-inactive)
+            ))
+
+    ;; completions
+    (setq modus-themes-completions
+          '((matches . (extrabold))
+            (selection . (semibold text-also))))
+
+    ;; org-mode
+    (setq modus-themes-headings
+          '((1 . (1.4))
+            (2 . (1.3))
+            (3 . (extrabold))
+            (t . (semilight 1.1))))
+    (setq modus-themes-scale-headings t)
+    (setq modus-themes-org-blocks 'gray-background)
+
+    ;; activate theme
+    (load-theme 'modus-vivendi-tinted t)
+    (knavemacs/modus-themes-customize-mode-line))
+
+
+  ;; Start with the faces for the meow mode indicator
+  (defface knavemacs/meow-face-indicator-normal
+    '((t :foreground "SlateGrey4"
+         :background "SteelBlue4"
+         :weight bold
+         ))
+    "Face for Normal Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-insert
+    '((t :foreground "gray"
+         :background "SeaGreen"
+         :weight bold
+         ))
+    "Face for Insert Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-keypad
+    '((t :foreground "gray"
+         :background "PaleVioletRed"
+         :weight bold
+         ))
+    "Face for keypad Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-motion
+    '((t :foreground "gray"
+         :background "thistle"
+         :weight bold
+         ))
+    "Face for motion Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/meow-face-indicator-beacon
+    '((t :foreground "gray"
+         :background "firebrick3"
+         :weight bold
+         ))
+    "Face for beacon Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defun knavemacs/meow-mode-line-face ()
+    (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
+          (meow-insert-mode 'knavemacs/meow-face-indicator-insert)
+          (meow-motion-mode 'knavemacs/meow-face-indicator-motion)
+          (meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
+          (meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
+
+
 #+END_SRC
 
 *** nerd-icons
@@ -306,54 +371,6 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
 *** Modeline
 #+BEGIN_SRC emacs-lisp
   ;; No packages here, custom mode-line configuration
-  ;; Start with the faces for the meow mode indicator
-  (defface knavemacs/meow-face-indicator-normal
-    '((t :foreground "SlateGrey4"
-         :background "SteelBlue4"
-         :weight bold
-         ))
-    "Face for Normal Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/meow-face-indicator-insert
-    '((t :foreground "gray"
-         :background "SeaGreen"
-         :weight bold
-         ))
-    "Face for Insert Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/meow-face-indicator-keypad
-    '((t :foreground "gray"
-         :background "PaleVioletRed"
-         :weight bold
-         ))
-    "Face for keypad Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/meow-face-indicator-motion
-    '((t :foreground "gray"
-         :background "thistle"
-         :weight bold
-         ))
-    "Face for motion Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/meow-face-indicator-beacon
-    '((t :foreground "gray"
-         :background "firebrick3"
-         :weight bold
-         ))
-    "Face for beacon Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defun knavemacs/meow-mode-line-face ()
-    (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
-          (meow-insert-mode 'knavemacs/meow-face-indicator-insert)
-          (meow-motion-mode 'knavemacs/meow-face-indicator-motion)
-          (meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
-          (meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
-
   ;; write a function to do the alignment of the mode-line
   (defun simple-mode-line-render (left right)
     "Return a string of `window-width' length containing LEFT, and RIGHT
@@ -374,19 +391,19 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
                             mode-line-modified
                             " "
                             '(:eval
-                              (nerd-icons-icon-for-file (buffer-file-name)))
+                              (propertize " %b " 'help-echo (buffer-file-name)))
                             '(:eval
-                              (propertize " %b " 'help-echo (buffer-file-name)))))
+                              (nerd-icons-icon-for-mode major-mode))
+                            " %m "
+                            ))
                           ;; right
                           (concat
                            (format-mode-line
                             (list
-                             " %m "
-                             '(:eval
-                               (nerd-icons-icon-for-mode major-mode))
                              mode-line-misc-info
-                             " L%l:C%c "))
-                           "[%p]     " ; concatenated on, format-mode-line was doing wierd things
+                             " L%l:C%c "
+                             ))
+                           "[%p]     " ; concatenated at end, format-mode-line was doing wierd things
                            )))))
 #+END_SRC
 
