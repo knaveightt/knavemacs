@@ -378,14 +378,21 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
     (let* ((available-width (- (window-width) (length left) 2)))
       (format (format " %%s %%%ds " available-width) left right)))
 
+  ;; modeline module: meow indicator
+  (defvar-local knavemacs/modeline-meow-indicator
+      '(:eval
+        (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
+    "Modeline module to provide a meow mode indicator.")
+
+  (put 'knavemacs/modeline-meow-indicator 'risky-local-variable t) ;; required for modeline local vars
+
   ;; construct the mode-line
   (setq-default mode-line-format
                 '((:eval (simple-mode-line-render
                           ;; left
                           (format-mode-line
                            (list
-                            '(:eval
-                              (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
+                            knavemacs/modeline-meow-indicator
                             mode-line-front-space
                             mode-line-mule-info
                             mode-line-modified
