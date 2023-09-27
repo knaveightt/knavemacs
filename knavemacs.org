@@ -386,7 +386,7 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
                                (nerd-icons-icon-for-mode major-mode))
                              mode-line-misc-info
                              " L%l:C%c "))
-                           "[%p]   " ; concatenated on, format-mode-line was doing wierd things
+                           "[%p]     " ; concatenated on, format-mode-line was doing wierd things
                            )))))
 #+END_SRC
 
@@ -1058,12 +1058,10 @@ a few more functions when pressing the leader key!
      '("1" . meow-expand-1)
      '("[" . tab-bar-close-tab)
      '("]" . tab-bar-new-tab)
-     '("b" . consult-buffer)
-     '("k" . kill-this-buffer)
      '("r" . rectangle-mark-mode)
      '("o" . knavemacs/transient-org-commands)
      '("n" . knavemacs/transient-note-commands)
-     '("w" . knavemacs/transient-window-commands)
+     '("b" . knavemacs/transient-buffer-commands)
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
@@ -1227,6 +1225,15 @@ built in functionality (although not sure I can fully accomplish this. We will s
      ("j" "Move Down" windmove-down)
      ("h" "Move Left" windmove-left)
      ("l" "Move Right" windmove-right)]
+    [("q" "Quit" transient-quit-all)])
+
+  (transient-define-prefix knavemacs/transient-buffer-commands ()
+    "Custom Buffer Commands Transient"
+    :info-manual "Custom Buffer Commands Transient"
+    ["Buffer Actions"
+     ("b" "Switch To Buffer" consult-buffer)
+     ("k" "Kill Buffer" kill-current-buffer)
+     ("w" "Buffer Window Commands" knavemacs/transient-window-commands)]
     [("q" "Quit" transient-quit-one)])
 #+END_SRC
 
