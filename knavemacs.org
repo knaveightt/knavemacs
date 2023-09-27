@@ -221,7 +221,7 @@ dictate what packages should be active on my system.
   (setq modus-themes-common-palette-overrides
 	`(
 	  ;; mode line updates to border
-	  (border-mode-line-active bg-cyan-subtle)
+	  (border-mode-line-active bg-mode-line-active)
 	  (border-mode-line-inactive bg-mode-line-inactive)
 
 	  ;; block regions
@@ -522,7 +522,7 @@ Enhanced commands utilizing the power of the completion framework packages previ
          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
          ;; Custom M-# bindings for fast register access
          ("M-#" . consult-register-load)
          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
@@ -1247,6 +1247,7 @@ The below keymap updates are used for general, overall changes to keys.
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
   (define-key project-prefix-map "v" 'magit-status)
+  (define-key project-prefix-map "\C-b" 'consult-project-buffer) ;; use over project-switch-to-buffer
 
   ;; dired configurations
   ;; note, <space>-j to jump (dired-goto-file) in dired buffers
