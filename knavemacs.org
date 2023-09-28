@@ -210,7 +210,7 @@ dictate what packages should be active on my system.
 #+END_SRC
 
 ** Visual Theme and Aesthetic
-*** Color Theme and Faces
+*** Color Theme
 #+BEGIN_SRC emacs-lisp
   (defun knavemacs/modus-themes-customize-mode-line ()
     "Apply padding to mode-line via box that has the background color"
@@ -269,57 +269,70 @@ dictate what packages should be active on my system.
     ;; activate theme
     (load-theme 'modus-vivendi-tinted t)
     (knavemacs/modus-themes-customize-mode-line))
+#+END_SRC
 
+*** Custom Faces
+Here are special custom faces I define for knavemacs.
+Most of these are used specifically for my modeline.
 
+#+BEGIN_SRC emacs-lisp
   ;; Start with the faces for the meow mode indicator
-  (defface knavemacs/meow-face-indicator-normal
-    '((t :foreground "SlateGrey4"
-         :background "SteelBlue4"
-         :weight bold
+  (defface knavemacs/face-meow-normal
+    '((t :foreground "#bcbcbc"
          ))
     "Face for Normal Mode"
     :group 'knavemacs/mode-line-faces)
 
-  (defface knavemacs/meow-face-indicator-insert
-    '((t :foreground "gray"
-         :background "SeaGreen"
+  (defface knavemacs/face-meow-insert
+    '((t :foreground "#66CC22"
          :weight bold
          ))
     "Face for Insert Mode"
     :group 'knavemacs/mode-line-faces)
 
-  (defface knavemacs/meow-face-indicator-keypad
-    '((t :foreground "gray"
-         :background "PaleVioletRed"
+  (defface knavemacs/face-meow-keypad
+    '((t :foreground "#aa0066"
+         :background "#090909"
          :weight bold
          ))
     "Face for keypad Mode"
     :group 'knavemacs/mode-line-faces)
 
-  (defface knavemacs/meow-face-indicator-motion
-    '((t :foreground "gray"
-         :background "thistle"
-         :weight bold
+  (defface knavemacs/face-meow-motion
+    '((t :foreground "#b57123"
          ))
     "Face for motion Mode"
     :group 'knavemacs/mode-line-faces)
 
-  (defface knavemacs/meow-face-indicator-beacon
-    '((t :foreground "gray"
-         :background "firebrick3"
+  (defface knavemacs/face-meow-beacon
+    '((t :foreground "#bb1213"
          :weight bold
          ))
     "Face for beacon Mode"
     :group 'knavemacs/mode-line-faces)
 
-  (defun knavemacs/meow-mode-line-face ()
-    (cond (meow-normal-mode 'knavemacs/meow-face-indicator-normal)
-          (meow-insert-mode 'knavemacs/meow-face-indicator-insert)
-          (meow-motion-mode 'knavemacs/meow-face-indicator-motion)
-          (meow-keypad-mode 'knavemacs/meow-face-indicator-keypad)
-          (meow-beacon-mode 'knavemacs/meow-face-indicator-beacon)))
+  ;; construct the meow mode indicator
+  (defun knavemacs/modeline-faces-meow ()
+    (cond (meow-normal-mode 'knavemacs/face-meow-normal)
+          (meow-insert-mode 'knavemacs/face-meow-insert)
+          (meow-motion-mode 'knavemacs/face-meow-motion)
+          (meow-keypad-mode 'knavemacs/face-meow-keypad)
+          (meow-beacon-mode 'knavemacs/face-meow-beacon)))
 
+  ;; misc mode line faces
+  (defface knavemacs/modeline-faces-readonly
+    '((t :foreground "#AA1523"
+         :weight bold
+         ))
+    "Face for readonly indicator"
+    :group 'knavemacs/mode-line-faces)
 
+  (defface knavemacs/modeline-faces-modified
+    '((t :foreground "#d59123"
+         :weight bold
+         ))
+    "Face for modified indicator"
+    :group 'knavemacs/mode-line-faces)
 #+END_SRC
 
 *** nerd-icons
@@ -369,49 +382,97 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
 #+END_SRC
 
 *** Modeline
+I've written my own custom modeline, using some custom faces, taping into meow,
+and leveraging some nerd icons.
+
 #+BEGIN_SRC emacs-lisp
-  ;; No packages here, custom mode-line configuration
-  ;; write a function to do the alignment of the mode-line
-  (defun simple-mode-line-render (left right)
-    "Return a string of `window-width' length containing LEFT, and RIGHT
-   aligned respectively."
-    (let* ((available-width (- (window-width) (length left) 2)))
-      (format (format " %%s %%%ds " available-width) left right)))
+  ;; Let's define the modules I will use.
 
   ;; modeline module: meow indicator
   (defvar-local knavemacs/modeline-meow-indicator
       '(:eval
-        (propertize (meow-indicator) 'face (knavemacs/meow-mode-line-face)))
+        (when (mode-line-window-selected-p)
+          (propertize (meow-indicator) 'face (knavemacs/modeline-faces-meow))))
     "Modeline module to provide a meow mode indicator.")
 
-  (put 'knavemacs/modeline-meow-indicator 'risky-local-variable t) ;; required for modeline local vars
+  ;; modeline module: readonly indicator
+  (defvar-local knavemacs/modeline-readonly-indicator
+      '(:eval
+        (when buffer-read-only
+          (propertize "" 'face 'knavemacs/modeline-faces-readonly)))
+    "Modeline module to provide a readonly indicator for appropriate buffers")
 
-  ;; construct the mode-line
+  ;; modeline module: modified indicator
+  (defvar-local knavemacs/modeline-modified-indicator
+      '(:eval
+        (when (buffer-modified-p)
+          (propertize "" 'face 'knavemacs/modeline-faces-modified)))
+    "Modeline module to provide a modified indicator for appropriate buffers")
+
+  ;; modeline module: buffer name
+  (defvar-local knavemacs/modeline-bufname
+      '(:eval
+        (propertize (buffer-name) 'help-echo (buffer-file-name)))
+    "Modeline module to provide the buffer name.")
+
+  ;; modeline module: major mode icon
+  (defvar-local knavemacs/modeline-major-mode-icon
+      '(:eval
+        (when (mode-line-window-selected-p)
+          (nerd-icons-icon-for-mode major-mode)))
+    "Modeline module to provide an icon based on the major mode.")
+
+  ;; modeline module: major mode name
+  (defvar-local knavemacs/modeline-major-mode-name
+      '(:eval
+        (when (mode-line-window-selected-p)
+          (propertize mode-name 'help-echo (format "%s" minor-mode-list))))
+    "Modeline module to provide major mode name.")
+
+  ;; modeline module: right display
+  (defvar-local knavemacs/modeline-right-display
+      '(""
+        " L%l:C%c "
+        "[%p]")
+    "Modeline module to provide minimal modeline info aligned right."
+    )
+
+
+  ;; making the modeline modules "risky" variables
+  (dolist (construct '(knavemacs/modeline-meow-indicator
+                       knavemacs/modeline-readonly-indicator
+                       knavemacs/modeline-modified-indicator
+                       knavemacs/modeline-bufname
+                       knavemacs/modeline-major-mode-icon
+                       knavemacs/modeline-major-mode-name
+                       knavemacs/modeline-right-display))
+    (put construct 'risky-local-variable t)) ;; required for modeline local vars
+
+  ;; modeline *function*: fill for alignment
+  (defun knavemacs/modeline-fill-for-alignment ()
+    "Modeline module to provide filler space until right-aligned items on the modeline"
+    (let ((r-length (length (format-mode-line knavemacs/modeline-right-display))))
+      (propertize " "
+                  'display `(space :align-to (- right ,r-length)))))
+
+
+  ;; now construct the actual mode-line
   (setq-default mode-line-format
-                '((:eval (simple-mode-line-render
-                          ;; left
-                          (format-mode-line
-                           (list
-                            knavemacs/modeline-meow-indicator
-                            mode-line-front-space
-                            mode-line-mule-info
-                            mode-line-modified
-                            " "
-                            '(:eval
-                              (propertize " %b " 'help-echo (buffer-file-name)))
-                            '(:eval
-                              (nerd-icons-icon-for-mode major-mode))
-                            " %m "
-                            ))
-                          ;; right
-                          (concat
-                           (format-mode-line
-                            (list
-                             mode-line-misc-info
-                             " L%l:C%c "
-                             ))
-                           "[%p]     " ; concatenated at end, format-mode-line was doing wierd things
-                           )))))
+                '("%e"
+                  " "
+                  knavemacs/modeline-meow-indicator
+                  mode-line-front-space
+                  knavemacs/modeline-readonly-indicator
+                  " "
+                  knavemacs/modeline-modified-indicator
+                  " "
+                  knavemacs/modeline-bufname
+                  " "
+                  knavemacs/modeline-major-mode-icon
+                  " "
+                  knavemacs/modeline-major-mode-name
+                  (:eval (knavemacs/modeline-fill-for-alignment))
+                  knavemacs/modeline-right-display))
 #+END_SRC
 
 *** Rainbow Delimiters
