@@ -210,17 +210,25 @@ dictate what packages should be active on my system.
 #+END_SRC
 
 ** Visual Theme and Aesthetic
-*** Color Theme
+Here is the section that I start defining the overall look and feel of my emacs
+configuration.
+*** Color Theme (modus-themes)
+I really enjoy the modus-themes from Protesilaos Stavrou
+
 #+BEGIN_SRC emacs-lisp
+  ;; called after my selected modus-theme is loaded
   (defun knavemacs/modus-themes-customize-mode-line ()
-    "Apply padding to mode-line via box that has the background color"
+    "Apply padding to mode-line via an overline"
     (modus-themes-with-colors
       (custom-set-faces
        `(mode-line ((,c :overline "#CCCCCC")))
        ;; `(mode-line-inactive ((,c :overline "#565656")))
        )))
 
+  ;; PACKAGE: modus-themes
+  ;; PURPOSE: while this is built into emacs, makes sure I get the very latest
   (use-package modus-themes
+    :if knavemacs/config-visual
     :config
     ;; block regions
     (setq modus-themes-region '(bg-only))
@@ -228,12 +236,12 @@ dictate what packages should be active on my system.
     ;; palette overrides to define colors
     (setq modus-vivendi-tinted-palette-overrides
           '(
-            ;; mode line updates to border
-            (bg-mode-line-active bg-main) ; #484d67
+            ;; mode line updates to border     ; =Original=
+            (bg-mode-line-active bg-main)      ; #484d67
             (fg-mode-line-active "#ffffff")
-            (border-mode-line-active bg-main) ; #979797
-            (bg-mode-line-inactive "#262626") ; #292d48
-            (fg-mode-line-inactive "#565656") ; #969696
+            (border-mode-line-active bg-main)  ; #979797
+            (bg-mode-line-inactive "#262626")  ; #292d48
+            (fg-mode-line-inactive "#565656")  ; #969696
             (border-mode-line-inactive bg-dim) ; #606270
 
             ;; block regions
@@ -342,7 +350,9 @@ symbols in emacs, as well as unify the look between GUI and terminal instances!
 #+BEGIN_SRC emacs-lisp
   ;; PACKAGE: nerd-icons
   ;; PURPOSE: fancy icons in GUI and terminal emacs
-  (use-package nerd-icons)
+  (use-package nerd-icons
+    :if knavemacs/config-visual-icons
+    )
 #+END_SRC
 
 *** nerd-icons-dired
@@ -352,6 +362,7 @@ Companion to nerd-icons, for fancy icons in dired buffers.
   ;; PACKAGE: nerd-icons-dired
   ;; PURPOSE: fancy icons in dired buffers
   (use-package nerd-icons-dired
+    :if knavemacs/config-visual-icons
     :after nerd-icons
     :hook
     (dired-mode . nerd-icons-dired-mode))
@@ -364,6 +375,7 @@ Companion to nerd-icons, for fancy icons in completion buffers (vertico).
   ;; PACKAGE: nerd-icons-completion
   ;; PURPOSE: fancy icons in completion buffers
   (use-package nerd-icons-completion
+    :if knavemacs/config-visual-icons
     :after vertico marginalia nerd-icons
     :config
     (nerd-icons-completion-mode)
@@ -377,11 +389,12 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
   ;; PACKAGE: nerd-icons-ibuffer
   ;; PURPOSE: fancy icons in ibuffer
   (use-package nerd-icons-ibuffer
+    :if knavemacs/config-visual-icons
     :after nerd-icons
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+END_SRC
 
-*** Modeline
+*** Modeline Configuration
 I've written my own custom modeline, using some custom faces, taping into meow,
 and leveraging some nerd icons.
 
@@ -426,7 +439,7 @@ and leveraging some nerd icons.
   (defvar-local knavemacs/modeline-major-mode-name
       '(:eval
         (when (mode-line-window-selected-p)
-          (propertize mode-name 'help-echo (format "%s" minor-mode-list))))
+          mode-name))
     "Modeline module to provide major mode name.")
 
   ;; modeline module: right display
@@ -457,27 +470,33 @@ and leveraging some nerd icons.
 
 
   ;; now construct the actual mode-line
-  (setq-default mode-line-format
-                '("%e"
-                  " "
-                  knavemacs/modeline-meow-indicator
-                  mode-line-front-space
-                  knavemacs/modeline-readonly-indicator
-                  " "
-                  knavemacs/modeline-modified-indicator
-                  " "
-                  knavemacs/modeline-bufname
-                  " "
-                  knavemacs/modeline-major-mode-icon
-                  " "
-                  knavemacs/modeline-major-mode-name
-                  (:eval (knavemacs/modeline-fill-for-alignment))
-                  knavemacs/modeline-right-display))
+  (when (and
+         knavemacs/config-visual-icons
+         knavemacs/config-keybinds
+         knavemacs/config-visual)
+    (setq-default mode-line-format
+                  '("%e"
+                    " "
+                    knavemacs/modeline-meow-indicator
+                    mode-line-front-space
+                    knavemacs/modeline-readonly-indicator
+                    " "
+                    knavemacs/modeline-modified-indicator
+                    " "
+                    knavemacs/modeline-bufname
+                    " "
+                    knavemacs/modeline-major-mode-icon
+                    " "
+                    knavemacs/modeline-major-mode-name
+                    (:eval (knavemacs/modeline-fill-for-alignment))
+                    knavemacs/modeline-right-display)))
 #+END_SRC
 
 *** Rainbow Delimiters
+I use rainbow delimiters to see matching parenthesis better in my files.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: rainbow-delimiters
+  ;; PACKAGE: rainbow-delimiters
   ;; PURPOSE: make apparent the nested parenthesis in program code like Elisp
   (use-package rainbow-delimiters
     :if knavemacs/config-visual
@@ -485,6 +504,9 @@ and leveraging some nerd icons.
 #+END_SRC
 
 *** Rainbow Mode
+I use rainbow mode so that I can get an in-text preview of colors when I use
+hex codes.
+
 #+BEGIN_SRC emacs-lisp
   ;; SETUP: rainbow-mode
   ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer

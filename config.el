@@ -6,6 +6,13 @@
 ;;
 ;; Note: packages in [,] brackets are externally downloaded
 ;;       packages in (,) parenthesis are internal package configs
+(setq knavemacs/config-visual t)        ; [modus-themes]
+                                        ; [rainbow-delimiters]
+                                        ; [rainbow-mode]
+(setq knavemacs/config-visual-icons t)  ; [nerd-icons]
+                                        ; [nerd-icons-dired]
+                                        ; [nerd-icons-completion]
+                                        ; [nerd-icons-ibuffer]
 (setq knavemacs/config-compframework t) ; [vertico]
                                         ; [savehist]
                                         ; [marginalia]
@@ -22,17 +29,14 @@
                                         ; [org-bullets]
 (setq knavemacs/config-notes t)         ; [org-roam]
                                         ; [org-roam-ui]
-(setq knavemacs/config-visual-icons t)  ; [all-the-icons]
-                                        ; [all-the-icons-dired]
-(setq knavemacs/config-visual t)        ; [doom-themes]
-                                        ; [doom-modeline]
-                                        ; [rainbow-delimiters]
-                                        ; [rainbow-mode]
 (setq knavemacs/config-project t)       ; [projectile]
                                         ; [magit]
 (setq knavemacs/config-keybinds t)      ; [meow]
                                         ; [hydra]
                                         ; [general]
+
+;; Special Notes:
+;; 1) modeline configuration :: depends on visual,visual-icons,keybinds
 
 ;; functions for specific profiles get added here
 ;; "mobile" profile
