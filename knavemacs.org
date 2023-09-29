@@ -788,7 +788,7 @@ the ~~/Shelf/snippets~ directory, but this can be changed to taste.
     )
 #+END_SRC
 
-** Undo Management
+** Misc Buffer Utilities
 *** Vundo
 I use vundu as a visual undo tree, to help me backtrack better on document
 changes.
@@ -797,6 +797,42 @@ changes.
   ;; PACKAGE: vundo
   ;; PURPOSE: visual undo tree management
   (use-package vundo)
+#+END_SRC
+
+*** Avy
+I use avy as a jump-to-location swiss army knife.
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: avy
+  ;; PURPOSE: jump to location based on char decision tree
+  (use-package avy
+    :config
+
+    ;; define an avy action to kill a while line based on a selection
+    ;; (see https://karthinks.com/software/avy-can-do-anything/)
+    (defun avy-action-kill-whole-line (pt)
+      (save-excursion
+        (goto-char pt)
+        (kill-whole-line))
+      (select-window
+       (cdr
+        (ring-ref avy-ring 0)))
+      t)
+
+    ;; define an avy action to activate embark on a selection
+    (defun avy-action-embark (pt)
+      (save-excursion
+        (goto-char pt)
+        (embark-act))
+      (select-window
+       (cdr
+        (ring-ref avy-ring 0)))
+      t)
+
+    ;; add custom avy actions to the action dispatcher
+    (setf (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+          (alist-get ?o avy-dispatch-alist) 'avy-action-embark)
+    )
 #+END_SRC
 
 ** Project and Version Control
@@ -1248,8 +1284,9 @@ a few more functions when pressing the leader key!
      '("K" . meow-prev-expand)
      '("l" . meow-right)
      '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
+     '("n" . meow-join)
+     '("M" . avy-goto-char-timer)
+     '("m" . meow-search)
      '("o" . meow-block)
      '("O" . meow-to-block)
      '("p" . meow-yank)
