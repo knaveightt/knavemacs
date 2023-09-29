@@ -257,8 +257,8 @@ I really enjoy the modus-themes from Protesilaos Stavrou
 
             ;; tab bar mode
             (bg-tab-bar bg-main)
-            (bg-tab-current bg-cyan-intense)
-            (bg-tab-other bg-inactive)
+            (bg-tab-current bg-lavender)
+            (bg-tab-other border)
             ))
 
     ;; completions
