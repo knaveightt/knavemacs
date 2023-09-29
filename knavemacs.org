@@ -835,6 +835,19 @@ I use avy as a jump-to-location swiss army knife.
     )
 #+END_SRC
 
+*** Ace Window
+For easy navigation of buffer windows, I use ace-window.
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: ace-window
+  ;; PURPOSE: smart and easy window nagivation
+  (use-package ace-window
+    :config
+    ;; defines hot keys to use for window switching
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    )
+#+END_SRC
+
 ** Project and Version Control
 Anything to help me with working in project spaces will go in this section.
 
@@ -1238,6 +1251,7 @@ a few more functions when pressing the leader key!
      '("o" . knavemacs/transient-org-commands)
      '("n" . knavemacs/transient-note-commands)
      '("b" . knavemacs/transient-buffer-commands)
+     '("w" . ace-window)
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
@@ -1319,8 +1333,10 @@ a few more functions when pressing the leader key!
      '(">" . end-of-buffer)
      '("-" . move-beginning-of-line)
      '("=" . move-end-of-line)
-     '("_" . text-scale-decrease)
-     '("+" . text-scale-increase)
+     '("+" . enlarge-window)
+     '("_" . shrink-window)
+     '("(" . shrink-window-horizontally)
+     '(")" . enlarge-window-horizontally)
      ))
 
   (meow-setup)
@@ -1335,84 +1351,68 @@ like hydra and general, if I can duplicate the value I get from them using
 built in functionality (although not sure I can fully accomplish this. We will see.)
 
 #+BEGIN_SRC emacs-lisp
-  (transient-define-prefix knavemacs/transient-org-commands ()
-    "Custom Org Commands Transient"
-    :info-manual "Custom Org Commands Transient"
-    ["Org-Mode Actions"
-     ("a" "Org Agenda" org-agenda)
-     ("c" "Org Capture" org-capture)
-     ("l" "Store Link" org-store-link)
-     ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
-    [("q" "Quit" transient-quit-one)])
+   (transient-define-prefix knavemacs/transient-org-commands ()
+     "Custom Org Commands Transient"
+     :info-manual "Custom Org Commands Transient"
+     ["Org-Mode Actions"
+      ("a" "Org Agenda" org-agenda)
+      ("c" "Org Capture" org-capture)
+      ("l" "Store Link" org-store-link)
+      ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
+     [("q" "Quit" transient-quit-one)])
 
-  (transient-define-prefix knavemacs/transient-note-commands ()
-    "Custom Org-Roam Commands Transient"
-    :info-manual "Custom Note-Taking Commands Transient"
-    [["Note-Taking Actions"
-      ("f" "Create/Find a Note" org-roam-node-find)
-      ("b" "Show Linked Notes Buffer" org-roam-buffer-toggle)
-      ("l" "Insert Link to Note" org-roam-node-insert)]
-     ["View Specific Notes"
-      ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
-      ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]]
-    [["Miscellaneous Actions"
-      ("E" "Launch Ebib" ebib)
-      ("q" "Quit" transient-quit-one)]
-     ["Citation Actions"
-      ("cf" "Open Note from Biblio" citar-open-notes)
-      ("ci" "Insert Biblio Citation" citar-insert-citation)]])
+   (transient-define-prefix knavemacs/transient-note-commands ()
+     "Custom Org-Roam Commands Transient"
+     :info-manual "Custom Note-Taking Commands Transient"
+     [["Note-Taking Actions"
+       ("f" "Create/Find a Note" org-roam-node-find)
+       ("b" "Show Linked Notes Buffer" org-roam-buffer-toggle)
+       ("l" "Insert Link to Note" org-roam-node-insert)]
+      ["View Specific Notes"
+       ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
+       ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]]
+     [["Miscellaneous Actions"
+       ("E" "Launch Ebib" ebib)
+       ("q" "Quit" transient-quit-one)]
+      ["Citation Actions"
+       ("cf" "Open Note from Biblio" citar-open-notes)
+       ("ci" "Insert Biblio Citation" citar-insert-citation)]])
 
-  (defun knavemacs/recenter-top ()
-    "Recenter View to Top"
-    (interactive)
-    (recenter-top-bottom 0))
+   (defun knavemacs/recenter-top ()
+     "Recenter View to Top"
+     (interactive)
+     (recenter-top-bottom 0))
 
-  (defun knavemacs/recenter-bottom ()
-    "Recenter View to Bottom"
-    (interactive)
-    (recenter-top-bottom -1))
+   (defun knavemacs/recenter-bottom ()
+     "Recenter View to Bottom"
+     (interactive)
+     (recenter-top-bottom -1))
 
-  (transient-define-prefix knavemacs/transient-viewport-commands ()
-    "Custom Viewport Commands Transient"
-    :info-manual "Custom Viewport Commands Transient"
-    ["Shift View"
-     ("z" "Recenter" recenter)
-     ("t" "Shift to Top" knavemacs/recenter-top)
-     ("b" "Shift to Bottom" knavemacs/recenter-bottom)]
-    [("q" "Quit" transient-quit-one)])
+   (transient-define-prefix knavemacs/transient-viewport-commands ()
+     "Custom Viewport Commands Transient"
+     :info-manual "Custom Viewport Commands Transient"
+     ["Shift View"
+      ("z" "Recenter" recenter)
+      ("t" "Shift to Top" knavemacs/recenter-top)
+      ("b" "Shift to Bottom" knavemacs/recenter-bottom)]
+     [("q" "Quit" transient-quit-one)])
 
-  (transient-define-prefix knavemacs/transient-saveclose-commands ()
-    "Custom Save and Close Commands Transient"
-    :info-manual "Custom Save and Close Commands Transient"
-    ["Choose Action"
-     ("Z" "Save All and Close" save-buffers-kill-terminal)
-     ("Q" "Kill Emacs" kill-emacs)]
-    [("q" "Quit" transient-quit-one)])
-
-  (transient-define-prefix knavemacs/transient-window-commands ()
-    "Custom Window Commands Transient"
-    :info-manual "Custom Window Commands Transient"
-    ["Window Resizing"
-     ("=" "Grow Window" enlarge-window :transient t)
-     ("-" "Shrink Window" shrink-window :transient t)
-     ("0" "Expand Horizontally" enlarge-window-horizontally :transient t)
-     ("9" "Shrink Horizontally" shrink-window-horizontally :transient t)]
-    ["Move to Window"
-     ("k" "Move Up" windmove-up)
-     ("j" "Move Down" windmove-down)
-     ("h" "Move Left" windmove-left)
-     ("l" "Move Right" windmove-right)]
-    [("q" "Quit" transient-quit-all)])
+   (transient-define-prefix knavemacs/transient-saveclose-commands ()
+     "Custom Save and Close Commands Transient"
+     :info-manual "Custom Save and Close Commands Transient"
+     ["Choose Action"
+      ("Z" "Save All and Close" save-buffers-kill-terminal)
+      ("Q" "Kill Emacs" kill-emacs)]
+     [("q" "Quit" transient-quit-one)])
 
   (transient-define-prefix knavemacs/transient-buffer-commands ()
-    "Custom Buffer Commands Transient"
-    :info-manual "Custom Buffer Commands Transient"
-    ["Buffer Actions"
-     ("b" "Switch To Buffer" consult-buffer)
-     ("k" "Kill Buffer" kill-current-buffer)
-     ("u" "See Undo Tree" vundo)
-     ("w" "Buffer Window Commands" knavemacs/transient-window-commands)]
-    [("q" "Quit" transient-quit-one)])
+     "Custom Buffer Commands Transient"
+     :info-manual "Custom Buffer Commands Transient"
+     ["Buffer Actions"
+      ("b" "Switch To Buffer" consult-buffer)
+      ("k" "Kill Buffer" kill-current-buffer)
+      ("u" "See Undo Tree" vundo)]
+     [("q" "Quit" transient-quit-one)])
 #+END_SRC
 
 *** Overall Key Updates
@@ -1421,6 +1421,7 @@ The below keymap updates are used for general, overall changes to keys.
   ;; global
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
+  (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
 
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
