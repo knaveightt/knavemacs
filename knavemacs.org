@@ -788,6 +788,17 @@ the ~~/Shelf/snippets~ directory, but this can be changed to taste.
     )
 #+END_SRC
 
+** Undo Management
+*** Vundo
+I use vundu as a visual undo tree, to help me backtrack better on document
+changes.
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: vundo
+  ;; PURPOSE: visual undo tree management
+  (use-package vundo)
+#+END_SRC
+
 ** Project and Version Control
 Anything to help me with working in project spaces will go in this section.
 
@@ -1362,6 +1373,7 @@ built in functionality (although not sure I can fully accomplish this. We will s
     ["Buffer Actions"
      ("b" "Switch To Buffer" consult-buffer)
      ("k" "Kill Buffer" kill-current-buffer)
+     ("u" "See Undo Tree" vundo)
      ("w" "Buffer Window Commands" knavemacs/transient-window-commands)]
     [("q" "Quit" transient-quit-one)])
 #+END_SRC
