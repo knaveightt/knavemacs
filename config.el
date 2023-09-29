@@ -21,6 +21,8 @@
                                         ; [consult]
                                         ; [embark-consult]
 (setq knavemacs/config-keyhelp t)       ; [Which-key]
+(setq knavemacs/config-templates t)     ; [yasnippet]
+(setq knavemacs/config-project t)       ; [magit]
 (setq knavemacs/config-dired t)         ; (dired)
                                         ; [dired-single]
                                         ; [dired-hide-dotfiles]
@@ -29,8 +31,6 @@
                                         ; [org-bullets]
 (setq knavemacs/config-notes t)         ; [org-roam]
                                         ; [org-roam-ui]
-(setq knavemacs/config-project t)       ; [projectile]
-                                        ; [magit]
 (setq knavemacs/config-keybinds t)      ; [meow]
                                         ; [hydra]
                                         ; [general]
@@ -44,6 +44,7 @@
   (message "[Knavemacs] Loading profile for Mobile")
   (setq knavemacs/config-compframework t)
   (setq knavemacs/config-keyhelp nil)
+  (setq knavemacs/config-templates nil)
   (setq knavemacs/config-dired t)
   (setq knavemacs/config-org t)
   (setq knavemacs/config-notes t)

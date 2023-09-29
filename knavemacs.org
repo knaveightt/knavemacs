@@ -62,6 +62,7 @@ The following bullet-list of dependencies must be satisfied to ensure this
 configuration is working as expected:
 - ~JetBrainsMono Nerd Font~ installed on system
 - ~Symbols Nerd Font Mono~ installed on system (try 'nerd-icons-install-fonts')
+- Git executable in PATH (check the config here if on windows)
   
 * Full Emacs Configuration
 The following sections both describe and provide the elisp used to
@@ -517,9 +518,11 @@ hex codes.
 
 ** Completion, Hints, Help Framework
 *** Vertico
-I am moving away from Ivy to try Vertico's ecosystem of Completion Framework packages.
+I currently use Vertico and its companion packages as my completion
+fuzzy-finding system.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: verico
+  ;; PACKAGE: verico
   ;; PURPOSE: minimal completion system in the likes of helm and ivy
   (use-package vertico
     :if knavemacs/config-compframework
@@ -538,8 +541,9 @@ I am moving away from Ivy to try Vertico's ecosystem of Completion Framework pac
 *** Savehist
 Saves the most recent completion selection so the next time you show completions, recent selections
 show on the top of the list.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: savehist
+  ;; PACKAGE: savehist
   ;; PURPOSE: built in emacs package that works with vertico, show recent completion selections used
   (use-package savehist
     :if knavemacs/config-compframework
@@ -548,9 +552,10 @@ show on the top of the list.
 #+END_SRC
 
 *** Marginalia
-Provides extra metadata in margins of Vertico completions
+Provides extra metadata in margins of Vertico completions.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: marginalia
+  ;; PACKAGE: marginalia
   ;; PURPOSE: provides extra metadata in margins of vertico completions
   (use-package marginalia
     :if knavemacs/config-compframework
@@ -562,188 +567,201 @@ Provides extra metadata in margins of Vertico completions
 #+END_SRC
 
 *** Orderless
-Provides fuzzy-finding enablement to completion system searches
+Provides fuzzy-finding enablement to completion system searches.
+
 #+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: orderless
+  ;; PURPOSE: enables fuzzy finding in vertico completion lists
   (use-package orderless
-  :if knavemacs/config-compframework
-  :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+    :if knavemacs/config-compframework
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
 #+END_SRC
 
 *** Embark
-Emacs Mini-Buffer Actions Rooted in Keymaps. Also provides smart actions depending on where the point is.
+Emacs Mini-Buffer Actions Rooted in Keymaps. Also provides smart actions
+depending on where the point is.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: embark
+  ;; PACKAGE: embark
   ;; PURPOSE: Minibuffer actions based on vertico completions
   (use-package embark
-  :if knavemacs/config-compframework
-  :ensure t
+    :if knavemacs/config-compframework
+    :ensure t
 
-  :bind
-  (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+    :bind
+    (("C-." . embark-act)         ;; pick some comfortable binding
+     ("C-;" . embark-dwim)        ;; good alternative: M-.
+     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
-  :init
+    :init
 
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
+    ;; Optionally replace the key help with a completing-read interface
+    (setq prefix-help-command #'embark-prefix-help-command)
 
-  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
-  ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+    ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+    ;; strategy, if you want to see the documentation from multiple providers.
+    (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+    ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
 
-  :config
+    :config
 
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+    ;; Hide the mode line of the Embark live/completions buffers
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
 #+END_SRC
 
 *** Consult
-Enhanced commands utilizing the power of the completion framework packages previously loaded.
+Enhanced commands utilizing the power of the completion framework packages
+previously loaded.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: consult
+  ;; PACKAGE: consult
   ;; PURPOSE: provides alternative, taylored commands for various search / switch functions using the current completion framework
   (use-package consult
-  :if knavemacs/config-compframework
-  ;; Replace bindings. Lazily loaded due by `use-package'.
-  :bind (;; C-c bindings in `mode-specific-map'
-         ("C-c M-x" . consult-mode-command)
-         ("C-c h" . consult-history)
-         ("C-c k" . consult-kmacro)
-         ("C-c m" . consult-man)
-         ("C-c i" . consult-info)
-         ([remap Info-search] . consult-info)
-         ;; C-x bindings in `ctl-x-map'
-         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
-         ;; Custom M-# bindings for fast register access
-         ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ("C-M-#" . consult-register)
-         ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ;; M-g bindings in `goto-map'
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ("M-g i" . consult-imenu)
-         ("M-g I" . consult-imenu-multi)
-         ;; M-s bindings in `search-map'
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("C-s" . consult-line)
-         ("M-s L" . consult-line-multi)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ;; Isearch integration
-         ("M-s e" . consult-isearch-history)
-         :map isearch-mode-map
-         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-         ;; Minibuffer history
-         :map minibuffer-local-map
-         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+    :if knavemacs/config-compframework
+    ;; Replace bindings. Lazily loaded due by `use-package'.
+    :bind (;; C-c bindings in `mode-specific-map'
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h" . consult-history)
+           ("C-c k" . consult-kmacro)
+           ("C-c m" . consult-man)
+           ("C-c i" . consult-info)
+           ([remap Info-search] . consult-info)
+           ;; C-x bindings in `ctl-x-map'
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+                                          ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings in `goto-map'
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings in `search-map'
+           ("M-s d" . consult-find)
+           ("M-s D" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("C-s" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
-  :hook (completion-list-mode . consult-preview-at-point-mode)
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
 
-  ;; The :init configuration is always executed (Not lazy)
-  :init
+    ;; The :init configuration is always executed (Not lazy)
+    :init
 
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
 
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
 
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
 
-  ;; Configure other variables and modes in the :config section,
-  ;; after lazily loading the package.
-  :config
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
 
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key "M-.")
-  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
-  (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
-   ;; :preview-key "M-."
-   :preview-key '(:debounce 0.4 any))
+    ;; Optionally configure preview. The default value
+    ;; is 'any, such that any key triggers the preview.
+    ;; (setq consult-preview-key 'any)
+    ;; (setq consult-preview-key "M-.")
+    ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key '(:debounce 0.4 any))
 
-  ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; "C-+"
+    ;; Optionally configure the narrowing key.
+    ;; Both < and C-+ work reasonably well.
+    (setq consult-narrow-key "<") ;; "C-+"
 
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+    ;; Optionally make narrowing help available in the minibuffer.
+    ;; You may want to use `embark-prefix-help-command' or which-key instead.
+    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
 
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 3. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  ;;;; 4. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 5. No project support
-  ;; (setq consult-project-function nil)
-)
+    ;; By default `consult-project-function' uses `project-root' from project.el.
+    ;; Optionally configure a different project root function.
+    ;;;; 1. project.el (the default)
+    ;; (setq consult-project-function #'consult--default-project--function)
+    ;;;; 2. vc.el (vc-root-dir)
+    ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+    ;;;; 3. locate-dominating-file
+    ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+    ;;;; 4. projectile.el (projectile-project-root)
+    ;; (autoload 'projectile-project-root "projectile")
+    ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+    ;;;; 5. No project support
+    ;; (setq consult-project-function nil)
+    )
 #+END_SRC 
 
 *** Embark-Consult
 Provides a connection point between embark and consult.
+
 #+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: embark-consult
+  ;; PURPOSE: provides an integration point between embark and consult packages
   (use-package embark-consult
     :if knavemacs/config-compframework
-  )
+    )
 #+END_SRC
 
 *** Which-key
+The definitive in-line helper to show what hotkeys are available and their
+associated functions
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: which-key
+  ;; PACKAGE: which-key
   ;; PURPOSE: provides assistance in showing what key permutations/options exist while entering commands
   (use-package which-key
     :if knavemacs/config-keyhelp
@@ -762,6 +780,7 @@ the ~~/Shelf/snippets~ directory, but this can be changed to taste.
   ;; PACKAGE: yasnippet
   ;; PURPOSE: text templates to auto-complete common text
   (use-package yasnippet
+    :if knavemacs/config-templates
     :config
     (setq yas-snippet-dirs
           '("~/Shelf/snippets"))
@@ -770,11 +789,14 @@ the ~~/Shelf/snippets~ directory, but this can be changed to taste.
 #+END_SRC
 
 ** Project and Version Control
+Anything to help me with working in project spaces will go in this section.
+
 *** Magit
+The definitive git front-end package for emacs.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: magit
+  ;; PACKAGE: magit
   ;; PURPOSE: git interface with emacs
-  ;; DEP: I need to set the path manually to git for windows
   (use-package magit
     :if knavemacs/config-project
     :init
