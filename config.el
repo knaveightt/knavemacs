@@ -34,6 +34,8 @@
                                         ; [org-bullets]
 (setq knavemacs/config-notes t)         ; [org-roam]
                                         ; [org-roam-ui]
+(setq knavemacs/config-cite t)          ; [ebib]
+                                        ; [citar] [citar-embark] [citar-org-roam]
 (setq knavemacs/config-keybinds t)      ; [meow]
                                         ; [hydra]
                                         ; [general]
@@ -51,6 +53,7 @@
   (setq knavemacs/config-dired t)          ; t
   (setq knavemacs/config-org t)            ; t
   (setq knavemacs/config-notes t)          ; t
+  (setq knavemacs/config-cite t)           ; t
   (setq knavemacs/config-visual-icons nil) ; nil
   (setq knavemacs/config-visual t)         ; t
   (setq knavemacs/config-utils)            ; t

@@ -1,7 +1,7 @@
 #+TITLE: Knavemacs Emacs Configuration
 #+AUTHOR: John Osinski
 #+EMAIL: johnosinski80@gmail.com
-#+DATE: [2023-09-26 Tue 12:37]
+#+DATE: [2023-10-03 Tue 12:04]
 
 :  ___  __    ________   ________  ___      ___ _______   _____ ______   ________  ________  ________
 : |\  \|\  \ |\   ___  \|\   __  \|\  \    /  /|\  ___ \ |\   _ \  _   \|\   __  \|\   ____\|\   ____\
@@ -16,22 +16,22 @@
 This is my [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration using an org file. ~knavemacs.org~ is the
 core configuration file that defines the behavior, packages, and settings used
 in my custom emacs setup. While this org file is the "engine", the other
-important file for my setup is the include ~config.org~ file. This file is the
+important file for my setup is the included ~config.org~ file. This file is the
 "brains" so to speak. For each package configured in my knavemacs.org file,
-there are variables that are being checked for to determine if that package
-should actually be loaded. These variables are set in the config.org file.
+there are variables that are being checked to determine if that package should
+actually be loaded. These variables are set in the config.org file.
 
 The variables setup in the config.org file allow me to define different
 combinations of these variables for the various devices that I use my emacs
 configuration on. I call these "device profiles", which are setup as elisp
 functions, which in-turn set various variables that define which packages should
-be loaded on my device. I encourage you to take a look at the config.org file
-to understand how it influences which parts of knavemace.org get loaded.
+be loaded on my device. I encourage you to take a look at the config.org file to
+understand how it influences which parts of knavemace.org get loaded.
 
-This brings me to how to load this config!
-For your own emacs instance, you can add the following lines to your ~.emacs~
-or ~.config/emacs/init.el~ file (the below is assuming that you are putting 
-config.org and knavemacs.org files in the ~/.config/emacs folder):
+This brings me to how to load this config!  For your own emacs instance, you can
+add the following lines to your ~.emacs~ or ~.config/emacs/init.el~ file (the
+below is assuming that you are putting config.org and knavemacs.org files in the
+~/.config/emacs folder):
 
 : (require 'org)
 : (require 'ob-tangle)
@@ -48,10 +48,8 @@ device-profile variable, and that function sets certain variables which tell
 knavemacs.org which packages to load for that specific device. The actual
 loading of the contents of knavemacs.org is done with the last line above.
 
-Throughout my configuration, I may have settings that pertain to either
-Windows or Linux since I use this config file across different OS types. If
-there are ever any dependencies for either platform, they are identified in
-the next section.
+To run my configuration of emacs, some dependencies must be met. These are
+listed in the next section.
 
 Credit should be given where credit is due. Much of this config is heavily
 inspired (and sometimes copied verbatim) from System Crafter's *Emacs From Scratch*
@@ -60,15 +58,26 @@ series on youtube. Definitely a must watch.
 * Dependencies
 The following bullet-list of dependencies must be satisfied to ensure this
 configuration is working as expected:
+
 - ~JetBrainsMono Nerd Font~ installed on system
 - ~Symbols Nerd Font Mono~ installed on system (try 'nerd-icons-install-fonts')
 - Git executable in PATH (check the config here if on windows)
 - Directory ~~/Shelf/snippets~ created to load snippet files
+- Org Mode Directory Setup - for my org workflow:
+  1) Org files go to ~~/Documents/org~
+  2) There should be a =fleeting.org=, =unfiled.org=, =notice.org=, and
+     =worklog.org= file in the top level org folder.
+  3) There should be an =active= and =info= folder in the top level org folder.
+- Org Roam Setup requires =gcc= (or another c compiler) in the execution path.
+  (check the config here if on windows)
+  1) Org Roam files go to ~~/Documents/knowledge~
+  2) There should be a =master.bib= bibliography file in the top level org roam folder.
+  3) There should be a =permanent=, =wiki=, =literature=, and =project= folder
+     in the top level org roam folder to support my workflow.
   
 * Full Emacs Configuration
 The following sections both describe and provide the elisp used to
 configurevarious aspects of my emacs instance.
-
 
 ** Basic Configuration
 Note that these settings are all global settings that do not have any dependency
@@ -397,7 +406,7 @@ Companion to nerd-icons, for fancy icons in the ibuffer buffer.
 #+END_SRC
 
 *** Modeline Configuration
-I've written my own custom modeline, using some custom faces, taping into meow,
+I've written my own custom modeline, using some custom faces, tapping into meow,
 and leveraging some nerd icons.
 
 #+BEGIN_SRC emacs-lisp
@@ -875,6 +884,8 @@ The definitive git front-end package for emacs.
 #+END_SRC
 
 ** File Management Configuration
+Here are my configurations for how I like to use dired in my workflow.
+
 *** Dired
 Some modifications to dired to support my usage of the functionality
 #+BEGIN_SRC emacs-lisp
@@ -892,8 +903,9 @@ Some modifications to dired to support my usage of the functionality
 
 *** Dired-Single
 Prevents a bunch of dired buffers from accumulating in the buffer list
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: dired-single
+  ;; PACKAGE: dired-single
   ;; PURPOSE: prevents a bunch of dired buffers from accumulating in the buffer list
   (use-package dired-single
     :if knavemacs/config-dired
@@ -902,7 +914,10 @@ Prevents a bunch of dired buffers from accumulating in the buffer list
 
 *** Dired-Hide-Dotfiles
 The name says it all.
+
 #+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: dired-hide-dotfiles
+  ;; PURPOSE: hides hidden files from the default dired view
   (use-package dired-hide-dotfiles
     :if knavemacs/config-dired
     :hook (dired-mode . dired-hide-dotfiles-mode))
@@ -910,13 +925,20 @@ The name says it all.
 
 *** Dired-Subtree
 The name says it all.
+
 #+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: dired-subtree
+  ;; PURPOSE: allows viewing the contents of a subdirectory, without changing the current dired view
   (use-package dired-subtree
     :if knavemacs/config-dired
   )
 #+END_SRC
 
 ** Org-Mode Configuration
+My org-mode workflow works for both my personal and work devices. There's a lot
+to unpack here, and require some directories/files to exist which can be found
+in the dependencies section at the top of this org file.
+
 *** Org (general config)
 #+BEGIN_SRC emacs-lisp
   ;; PURPOSE: this manages my getting things done workflow during work
@@ -999,8 +1021,10 @@ The name says it all.
 #+END_SRC
 
 *** Org Bullets
+Nicer org bullets for aesthetic purposes.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: org-bullets
+  ;; PACKAGE: org-bullets
   ;; PURPOSE: nicer bullets when working in org files
   (use-package org-bullets
     :if knavemacs/config-org
@@ -1019,14 +1043,14 @@ This is done to transform dash hyphens into dots.
 #+END_SRC
 
 ** Org-Roam Configuration
-I am experimenting with using org-roam for note-taking and knowledge management.
+I am currently using org-roam for note-taking and knowledge management.
+
 *** Org-Roam
 Main org-roam configuration is below, including capture templates I am using for
 my note-taking workflow
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: org-roam
+  ;; PACKAGE: org-roam
   ;; PURPOSE: providing note-taking / knowledge management atop org mode functionality
-  ;; DEP: setup these directories, and ensure a c compiler is in the current path
   (use-package org-roam
     :if knavemacs/config-notes
     :init
@@ -1070,6 +1094,8 @@ my note-taking workflow
 *** Org-Roam-UI
 Visualizer for Org-Roam notes
 #+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: org-roam-ui
+  ;; PURPOSE: provides a navigation visualizer for my org roam notes
   (use-package org-roam-ui
     :if knavemacs/config-notes
     :after org-roam
@@ -1141,12 +1167,15 @@ in my notes, and then present me with nodes to visit based on the selected tag.
 
 ** Citation System
 I use a combination of packages to manage bibliograpic sources for notes,
-and their citations in my workflow.
+their citations, and overall literature note capturing in my workflow.
+
 *** Ebib
 I am using Ebib to manage my bibliography directly in Emacs.
 I manage this bibliography as a way to collect notes on literature works I consume.
 #+BEGIN_SRC emacs-lisp
-  (use-package ebib)
+  (use-package ebib
+    :if knavemacs/config-cite
+    )
 #+END_SRC
 
 *** Org-Cite
@@ -1166,6 +1195,7 @@ a permanent note will typically have the citation to reference the main source n
 specific nodes from that file.
 #+BEGIN_SRC emacs-lisp
   (use-package citar
+    :if knavemacs/config-cite
     :custom
     (citar-bibliography '("~/Documents/knowledge/master.bib"))
     (citar-notes-paths '("~/Documents/knowledge/literature"))
@@ -1173,18 +1203,24 @@ specific nodes from that file.
 
   ;; use citar with embark
   (use-package citar-embark
+    :if knavemacs/config-cite
     :after citar embark
     :no-require
     :config (citar-embark-mode))
 
   ;; use citar with org-roam
   (use-package citar-org-roam
+    :if knavemacs/config-cite
     :after citar org-roam
     :config (citar-org-roam-mode))
   (setq citar-org-roam-capture-template-key "l")
 #+END_SRC
 
 ** General Custom Functions
+There custom functions are a miscellanous set of functions I use to enhance my
+usage of emacs.
+
+
 *** Navigation Functions
 *forward-or-backward-sexp*
 Grabbed from the Emacs Wiki, here is a custom function that 'smartly' emulates
@@ -1215,16 +1251,36 @@ an inactive timestamp of the current time without user prompt.
 #+END_SRC
 
 ** Key-Bind Modifications
+As a past, heavy user of vim and neovim, I am a huge fan of modal editing.
+However, evil mode felt too bulky for me, and I felt like it overwrote a lot of
+key emacs keys that I felt were core. Overall, it seemed to intrusive for my
+liking.
+
+Enter =meow= which I abosolutely love. I have built my custom keybindings around
+a combination of meow, custom transient commmands for menus, and some global
+tweaks.
+
 *** Meow
 I use [[https://github.com/meow-edit/meow][meow]] as my modal editing system, and it is amazing!
-I use ~<~ and ~>~ to navigate up and down screenfulls of text,
-as well as ~N~ and ~M~ to go to the true beginning / end of a line. I can use
-~SPC-?~ to get a good cheatsheet of what meow keys exist. I can always use
-~C-h k~ as well to check a specific key, or launch ~meow-tutor~ for a refresher.
-Take a look below, because I also change the purpose of the digit keys and add
-a few more functions when pressing the leader key!
+
+Scrolling around text, I have ~<~ and ~>~ as easy keys navigate up and down a
+full buffer. ~C~ and ~V~ allow me to page up and down in normal mode. ~X~ allows
+me to go to a specific line, and ~z~ works similar to vim in a limited capacity.
+
+The keypad (pressing space) is configured to allow me specific menus such as:
+- ~SPC b~ for buffer commands (switch buffer, kill buffer)
+- ~SPC n~ for note taking commands (org-roam and such)
+- ~SPC p~ for the built in project.el (I can access magit through here!)
+- ~SPC o~ for all things org mode
+- ~SPC w~ for ace-window and window management commands.
+
+I also heavily modified some of the basic meow QWERTY setup when it comes to
+some keys such as the number keys. Take a look below for how I configured my
+setup.  I also recommend launching ~meow-tutor~ for a overview of meow's modal
+editing system.
+
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: meow
+  ;; PACKAGE: meow
   ;; PURPOSE: more native modal editing mode for Emacs
   (use-package meow
     :if knavemacs/config-keybinds
@@ -1319,7 +1375,7 @@ a few more functions when pressing the leader key!
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
-     '("S" . markdown-toggle-markup-hiding)
+     '("S" . meow-kill-whole-line)
      '("t" . meow-till)
      '("u" . meow-undo)
      '("U" . meow-undo-in-selection)
@@ -1335,7 +1391,7 @@ a few more functions when pressing the leader key!
      '("Z" . knavemacs/transient-saveclose-commands)
      '("'" . repeat)
      '("<escape>" . ignore)
-     ;; deviating from the suggested map to allow easy scrolling of screens
+     ;; deviating from the suggested map
      ;; as well as getting to true beginning / ends of lines
      '("{" . tab-bar-switch-to-prev-tab)
      '("}" . tab-bar-switch-to-next-tab)
