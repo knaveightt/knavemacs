@@ -63,6 +63,7 @@ configuration is working as expected:
 - ~JetBrainsMono Nerd Font~ installed on system
 - ~Symbols Nerd Font Mono~ installed on system (try 'nerd-icons-install-fonts')
 - Git executable in PATH (check the config here if on windows)
+- Directory ~~/Shelf/snippets~ created to load snippet files
   
 * Full Emacs Configuration
 The following sections both describe and provide the elisp used to
@@ -509,7 +510,7 @@ I use rainbow mode so that I can get an in-text preview of colors when I use
 hex codes.
 
 #+BEGIN_SRC emacs-lisp
-  ;; SETUP: rainbow-mode
+  ;; PACKAGE: rainbow-mode
   ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
   (use-package rainbow-mode
     :if knavemacs/config-visual
@@ -517,6 +518,11 @@ hex codes.
 #+END_SRC
 
 ** Completion, Hints, Help Framework
+The vertico completion system and its companion packages are the main completion
+packages I use.  I find them pretty indispensible in terms of their
+usefulness. Other helpful packages in terms of completing text or helping you
+complete a command are here as well.
+
 *** Vertico
 I currently use Vertico and its companion packages as my completion
 fuzzy-finding system.
@@ -796,7 +802,9 @@ changes.
 #+BEGIN_SRC emacs-lisp
   ;; PACKAGE: vundo
   ;; PURPOSE: visual undo tree management
-  (use-package vundo)
+  (use-package vundo
+    :if knavemacs/config-utils
+    )
 #+END_SRC
 
 *** Avy
@@ -806,6 +814,7 @@ I use avy as a jump-to-location swiss army knife.
   ;; PACKAGE: avy
   ;; PURPOSE: jump to location based on char decision tree
   (use-package avy
+    :if knavemacs/config-utils
     :config
 
     ;; define an avy action to kill a while line based on a selection
@@ -842,6 +851,7 @@ For easy navigation of buffer windows, I use ace-window.
   ;; PACKAGE: ace-window
   ;; PURPOSE: smart and easy window nagivation
   (use-package ace-window
+    :if knavemacs/config-utils
     :config
     ;; defines hot keys to use for window switching
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))

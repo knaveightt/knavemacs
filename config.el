@@ -22,6 +22,9 @@
                                         ; [embark-consult]
 (setq knavemacs/config-keyhelp t)       ; [Which-key]
 (setq knavemacs/config-templates t)     ; [yasnippet]
+(setq knavemacs/config-utils t)         ; [vundo]
+                                        ; [avy]
+                                        ; [ace-window]
 (setq knavemacs/config-project t)       ; [magit]
 (setq knavemacs/config-dired t)         ; (dired)
                                         ; [dired-single]
@@ -42,16 +45,17 @@
 ;; "mobile" profile
 (defun knavemacs/profile-mobile ()
   (message "[Knavemacs] Loading profile for Mobile")
-  (setq knavemacs/config-compframework t)
-  (setq knavemacs/config-keyhelp nil)
-  (setq knavemacs/config-templates nil)
-  (setq knavemacs/config-dired t)
-  (setq knavemacs/config-org t)
-  (setq knavemacs/config-notes t)
-  (setq knavemacs/config-visual-icons nil)
-  (setq knavemacs/config-visual t)
-  (setq knavemacs/config-project t)
-  (setq knavemacs/config-keybinds t)
+  (setq knavemacs/config-compframework t)  ; t
+  (setq knavemacs/config-keyhelp nil)      ; nil
+  (setq knavemacs/config-templates nil)    ; nil
+  (setq knavemacs/config-dired t)          ; t
+  (setq knavemacs/config-org t)            ; t
+  (setq knavemacs/config-notes t)          ; t
+  (setq knavemacs/config-visual-icons nil) ; nil
+  (setq knavemacs/config-visual t)         ; t
+  (setq knavemacs/config-utils)            ; t
+  (setq knavemacs/config-project t)        ; t
+  (setq knavemacs/config-keybinds t)       ; t
   )
 
 ;; let's determine which profile to use, given all of the above and
