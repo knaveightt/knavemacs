@@ -26,6 +26,10 @@
                                         ; [avy]
                                         ; [ace-window]
 (setq knavemacs/config-project t)       ; [magit]
+(setq knavemacs/config-programming t)   ; (eglot)
+                                        ; [corfu]
+                                        ; [kind-icon]
+                                        ; [corfu-terminal]
 (setq knavemacs/config-dired t)         ; (dired)
                                         ; [dired-single]
                                         ; [dired-hide-dotfiles]

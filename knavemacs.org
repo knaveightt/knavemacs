@@ -883,6 +883,71 @@ The definitive git front-end package for emacs.
     )
 #+END_SRC
 
+** Programming Configurations
+*** eglot
+First, let's make sure we're using the latest version of eglot for lsp
+integration.
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: eglot
+  ;; PURPOSE: provide lsp integration
+  (use-package eglot
+    :if knavemacs/config-programming
+    )
+#+END_SRC
+
+*** corfu
+Next let's make sure corfu is running for completions integrations
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: corfu
+  ;; PURPOSE: completion at point (lsp informed) completions
+  (use-package corfu
+    :if knavemacs/config-programming
+    :custom
+    (corfu-auto t)
+    (corfu-popupinfo-delay 0.3)
+    :init
+    (global-corfu-mode)
+    (corfu-popupinfo-mode 1))
+#+END_SRC
+
+*** kind-icon
+Here we enable svg icon support in completions!!
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: kind-icon
+  ;; PURPOSE: provide icon support in completions from corfu
+
+  (use-package kind-icon
+    :if knavemacs/config-programming
+    :ensure t
+    :after corfu
+    :custom
+    (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+  ;; =Alternative Below= using nerd-icons
+  ;; (use-package nerd-icons-corfu
+  ;; :config
+  ;; (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+#+END_SRC
+
+*** corfu-teriminal
+Configuration (optional) enable terminal support for completions!
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: corfu-terminal
+  ;; PURPOSE: terminal completions with corfu
+  ;; NOTE: must be manually installed! Below is a use-package configuration once on M/ELPA
+  ;; (use-package corfu-terminal
+  ;;  :config
+  ;;  (unless (display-graphic-p)
+  ;;    (corfu-terminal-mode +1)))
+#+END_SRC
+
 ** File Management Configuration
 Here are my configurations for how I like to use dired in my workflow.
 
