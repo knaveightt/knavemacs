@@ -963,8 +963,33 @@ Some modifications to dired to support my usage of the functionality
     :ensure nil
     :commands (dired dired-jump)
     :custom ((dired-listing-switches "-alGh --group-directories-first"))
+    :config
+
+    (defun knavemacs/dired-vc-root-left ()
+      "This function is taken closely verbatim from Protesilaos Stavrou's dired function.
+  Open the root directory of the current version-controlled repository or the present
+  working directory with `dired` with specific window parameters."
+      (interactive)
+      (let ((dir (if (eq (vc-root-dir) nil)
+                     (dired-noselect default-directory)
+                   (dired-noselect (vc-root-dir)))))
+        (display-buffer-in-side-window
+         dir `((side . left)
+               (slot . 0)
+               (window-width . 0.2)
+               (window-parameters . ((no-other-window . nil)
+                                     (no-delete-other-windows . t)
+                                     (tab-line-format . nil)
+                                     (mode-line-format . (" "
+                                                          "%b"))))))
+        (with-current-buffer dir
+          (rename-buffer "*Dired-Side*")))
+      (with-eval-after-load 'ace-window
+        (when (boundp 'aw-ignored-buffers)
+          (add-to-list 'aw-ignored-buffers "*Dired-Side*"))))
+
     )
-#+END_SRC
+#+End_SRC
 
 *** Dired-Single
 Prevents a bunch of dired buffers from accumulating in the buffer list
