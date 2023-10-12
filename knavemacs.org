@@ -965,11 +965,32 @@ Some modifications to dired to support my usage of the functionality
     :custom ((dired-listing-switches "-alGh --group-directories-first"))
     :config
 
+    ;; tab line functions courtesy o https://emacs.stackexchange.com/questions/69074/how-to-make-buffer-order-in-tab-line-persistent?rq=1
+    (setq my/current-tab-list (list (current-buffer)))
+    (setq tab-line-tabs-function 'tab-line-tabs-mode-buffers) 
+    (defun tab-line-tabs-mode-buffers ()
+      my/current-tab-list)
+    (defun my/add-current-buffer-to-tab ()
+      (interactive)
+      (setq my/current-tab-list (add-to-list 'my/current-tab-list (current-buffer)))
+      )
+    (add-hook 'find-file-hook 'my/add-current-buffer-to-tab)
+    (add-hook 'dired-mode-hook 'my/add-current-buffer-to-tab)
+    (defun my/close-tab ()
+      (interactive)
+      (setq my/current-tab-list (delete (current-buffer) my/current-tab-list))
+      (kill-buffer)
+      )
+
     (defun knavemacs/dired-vc-root-left ()
       "This function is taken closely verbatim from Protesilaos Stavrou's dired function.
-  Open the root directory of the current version-controlled repository or the present
-  working directory with `dired` with specific window parameters."
+      Open the root directory of the current version-controlled repository or the present
+      working directory with `dired` with specific window parameters."
       (interactive)
+
+      ;; activate tab bar mode
+      (global-tab-line-mode)
+
       (let ((dir (if (eq (vc-root-dir) nil)
                      (dired-noselect default-directory)
                    (dired-noselect (vc-root-dir)))))
@@ -977,16 +998,32 @@ Some modifications to dired to support my usage of the functionality
          dir `((side . left)
                (slot . 0)
                (window-width . 0.2)
-               (window-parameters . ((no-other-window . nil)
+               (window-parameters . (
                                      (no-delete-other-windows . t)
-                                     (tab-line-format . nil)
                                      (mode-line-format . (" "
                                                           "%b"))))))
         (with-current-buffer dir
-          (rename-buffer "*Dired-Side*")))
+          (rename-buffer "*Dired-Side*"))
+        (with-current-buffer dir
+          (tab-line-mode -1)))
+
       (with-eval-after-load 'ace-window
         (when (boundp 'aw-ignored-buffers)
           (add-to-list 'aw-ignored-buffers "*Dired-Side*"))))
+
+    ;; from https://stackoverflow.com/questions/10073673/open-file-in-specified-window-in-emacs
+    (defun dired-window () (window-at (frame-width) 1))
+
+    (eval-after-load 'dired
+      '(define-key dired-mode-map (kbd "o")
+                   (lambda ()
+                     (interactive)
+                     (let ((dired-window (dired-window)))
+                       (set-window-buffer dired-window
+                                          (find-file-noselect 
+                                           (dired-get-file-for-visit)))
+                       (select-window dired-window)))))
+
 
     )
 #+End_SRC
