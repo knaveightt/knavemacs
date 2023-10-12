@@ -965,32 +965,12 @@ Some modifications to dired to support my usage of the functionality
     :custom ((dired-listing-switches "-alGh --group-directories-first"))
     :config
 
-    ;; tab line functions courtesy o https://emacs.stackexchange.com/questions/69074/how-to-make-buffer-order-in-tab-line-persistent?rq=1
-    (setq my/current-tab-list (list (current-buffer)))
-    (setq tab-line-tabs-function 'tab-line-tabs-mode-buffers) 
-    (defun tab-line-tabs-mode-buffers ()
-      my/current-tab-list)
-    (defun my/add-current-buffer-to-tab ()
-      (interactive)
-      (setq my/current-tab-list (add-to-list 'my/current-tab-list (current-buffer)))
-      )
-    (add-hook 'find-file-hook 'my/add-current-buffer-to-tab)
-    (add-hook 'dired-mode-hook 'my/add-current-buffer-to-tab)
-    (defun my/close-tab ()
-      (interactive)
-      (setq my/current-tab-list (delete (current-buffer) my/current-tab-list))
-      (kill-buffer)
-      )
-
+    ;; function declaration to create a dired sidebar
     (defun knavemacs/dired-vc-root-left ()
       "This function is taken closely verbatim from Protesilaos Stavrou's dired function.
-      Open the root directory of the current version-controlled repository or the present
-      working directory with `dired` with specific window parameters."
+            Open the root directory of the current version-controlled repository or the present
+            working directory with `dired` with specific window parameters."
       (interactive)
-
-      ;; activate tab bar mode
-      (global-tab-line-mode)
-
       (let ((dir (if (eq (vc-root-dir) nil)
                      (dired-noselect default-directory)
                    (dired-noselect (vc-root-dir)))))
@@ -1011,9 +991,9 @@ Some modifications to dired to support my usage of the functionality
         (when (boundp 'aw-ignored-buffers)
           (add-to-list 'aw-ignored-buffers "*Dired-Side*"))))
 
+    ;; function declaraction to have files opened in the next window when pressing "o"
     ;; from https://stackoverflow.com/questions/10073673/open-file-in-specified-window-in-emacs
     (defun dired-window () (window-at (frame-width) 1))
-
     (eval-after-load 'dired
       '(define-key dired-mode-map (kbd "o")
                    (lambda ()
@@ -1023,6 +1003,13 @@ Some modifications to dired to support my usage of the functionality
                                           (find-file-noselect 
                                            (dired-get-file-for-visit)))
                        (select-window dired-window)))))
+
+    ;; function declaration to setup a project-like tab mode style of working with
+    ;; a directory tree on the left, and working files under tabs on the right
+    (defun knavemacs/tabbed-workspace-with-dired ()
+      (interactive)
+      (global-tab-line-mode)
+      (knavemacs/dired-vc-root-left))
 
 
     )
@@ -1520,8 +1507,10 @@ editing system.
      '("<escape>" . ignore)
      ;; deviating from the suggested map
      ;; as well as getting to true beginning / ends of lines
-     '("{" . tab-bar-switch-to-prev-tab)
-     '("}" . tab-bar-switch-to-next-tab)
+     '("{" . tab-line-switch-to-prev-tab)
+     '("}" . tab-line-switch-to-next-tab)
+     '("M-[" . tab-bar-switch-to-prev-tab)
+     '("M-]" . tab-bar-switch-to-next-tab)
      '("<" . beginning-of-buffer)
      '(">" . end-of-buffer)
      '("-" . move-beginning-of-line)
@@ -1620,6 +1609,8 @@ The below keymap updates are used for general, overall changes to keys.
   (define-key project-prefix-map "V" 'project-vc-dir)
   (define-key project-prefix-map "v" 'magit-status)
   (define-key project-prefix-map "\C-b" 'consult-project-buffer) ;; use over project-switch-to-buffer
+  (define-key project-prefix-map "t" 'knavemacs/dired-vc-root-left) ;; show project tree
+  (define-key project-prefix-map "T" 'knavemacs/tabbed-workspace-with-dired) ;; enable tab-line, open new tabs with dired
 
   ;; dired configurations
   ;; note, <space>-j to jump (dired-goto-file) in dired buffers
