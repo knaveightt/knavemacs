@@ -1604,7 +1604,7 @@ The below keymap updates are used for general, overall changes to keys.
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
-
+  
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
   (define-key project-prefix-map "v" 'magit-status)
@@ -1624,3 +1624,12 @@ The below keymap updates are used for general, overall changes to keys.
   (define-key dired-mode-map ";" 'dired-subtree-toggle)
 #+END_SRC
 
+** Notifications
+As part of my setup for emacs, I like to run emacs as a daemon on my linux
+machines.  To ensure emacs properly started up correctly, I print a system
+notification assuming the config-linux variable is set to true to ensure I get a
+notification via dunst.
+
+#+BEGIN_SRC emacs-lisp
+  (if knavemacs/config-linux (shell-command "notify-send 'Emacs Configuration Loaded'"))
+#+END_SRC

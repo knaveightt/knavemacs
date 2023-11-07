@@ -43,6 +43,7 @@
 (setq knavemacs/config-keybinds t)      ; [meow]
                                         ; [hydra]
                                         ; [general]
+(setq knavemacs/config-linux t)         ; [notifications]
 
 ;; Special Notes:
 ;; 1) modeline configuration :: depends on visual,visual-icons,keybinds
@@ -63,6 +64,7 @@
   (setq knavemacs/config-utils)            ; t
   (setq knavemacs/config-project t)        ; t
   (setq knavemacs/config-keybinds t)       ; t
+  (setq knavemacs/config-linux nil)        ; nil
   )
 
 ;; let's determine which profile to use, given all of the above and
