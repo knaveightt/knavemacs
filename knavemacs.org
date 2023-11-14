@@ -146,7 +146,7 @@ for fancy symbols.  This assumes the font is already present on the workspace.
 #+BEGIN_SRC emacs-lisp
   ;; set default font settings
   (add-to-list 'default-frame-alist
-               '(font . "JetBrainsMono NF 12"))
+               '(font . "JetBrainsMono NF 10"))
 #+END_SRC
 
 *** Backup File Rules
