@@ -90,6 +90,16 @@ my variables is needed.
   ;; -*- lexical-binding: t; -*-
 #+END_SRC
 
+*** Encoding Details
+I almost strictly deal with utf-8 file encodings.
+
+#+BEGIN_SRC emacs-lisp
+  (set-language-environment 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-keyboard-coding-system 'utf-8-unix)
+  (set-terminal-coding-system 'utf-8-unix) 
+#+END_SRC
+
 *** Garbage Collection
 I've read a lot about different ways to approach this. I'm going off a stack
 exchange post that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set
@@ -113,6 +123,7 @@ visual elements at play that I disable right from the get-go.
   (tooltip-mode -1)                ;; disable tooltips
   (set-fringe-mode 10)             ;; sets fringe size
   (menu-bar-mode -1)               ;; disable menu bar
+  (global-hl-line-mode 1)          ;; highlight the current line
 #+END_SRC
 
 *** Line Numbers and Configuration
@@ -223,21 +234,21 @@ dictate what packages should be active on my system.
 ** Visual Theme and Aesthetic
 Here is the section that I start defining the overall look and feel of my emacs
 configuration.
-*** Color Theme (modus-themes)
-I really enjoy the modus-themes from Protesilaos Stavrou
+*** Color Theme (modus and ef-themes)
+I really enjoy the modus-themes and ef-themes from Protesilaos Stavrou
 
 #+BEGIN_SRC emacs-lisp
-  ;; called after my selected modus-theme is loaded
-  (defun knavemacs/modus-themes-customize-mode-line ()
-    "Apply padding to mode-line via an overline"
-    (modus-themes-with-colors
-      (custom-set-faces
-       `(mode-line ((,c :overline "#CCCCCC")))
-       ;; `(mode-line-inactive ((,c :overline "#565656")))
-       )))
+  ;; called after my selected a modus-theme below
+  ;(defun knavemacs/modus-themes-customize-mode-line ()
+  ;  "Apply padding to mode-line via an overline"
+  ;  (modus-themes-with-colors
+  ;    (custom-set-faces
+  ;     `(mode-line ((,c :overline "#CCCCCC")))
+  ;     ;; `(mode-line-inactive ((,c :overline "#565656")))
+  ;     )))
 
   ;; PACKAGE: modus-themes
-  ;; PURPOSE: while this is built into emacs, makes sure I get the very latest
+  ;; PURPOSE: customizations should I choose to use modus themes over ef-themes
   (use-package modus-themes
     :if knavemacs/config-visual
     :config
@@ -286,8 +297,24 @@ I really enjoy the modus-themes from Protesilaos Stavrou
     (setq modus-themes-org-blocks 'gray-background)
 
     ;; activate theme
-    (load-theme 'modus-vivendi-tinted t)
-    (knavemacs/modus-themes-customize-mode-line))
+    ; (load-theme 'modus-vivendi-tinted t)
+    ; (knavemacs/modus-themes-customize-mode-line)
+    )
+
+  ;; PACKAGE: ef-themes
+  ;; PURPOSE: pretty and simple, colorful themes
+  (use-package ef-themes
+    :if knavemacs/config-visual
+    :config
+    (setq ef-themes-to-toggle '(ef-autumn ef-light))
+
+    ;; Use default font family settings
+    (setq ef-themes-mixed-fonts nil
+          ef-themes-variable-pitch-ui nil)
+
+    ;; use this to load the theme which also calls `ef-themes-post-load-hook':
+    (ef-themes-select 'ef-autumn)
+    )
 #+END_SRC
 
 *** Custom Faces
@@ -1604,6 +1631,7 @@ The below keymap updates are used for general, overall changes to keys.
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
+  (global-set-key "\M-p" 'ef-themes-toggle) ; quick key for toggling ef-themes (light/dark)
   
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
