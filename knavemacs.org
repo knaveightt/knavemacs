@@ -1658,6 +1658,9 @@ The below keymap updates are used for general, overall changes to keys.
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
   (global-set-key "\M-p" 'ef-themes-toggle) ; quick key for toggling ef-themes (light/dark)
+  (global-set-key "\M-9" 'kmacro-start-macro) ; better shortcut for my laptop for starting macros
+  (global-set-key "\M-0" 'kmacro-end-macro)   ; better shortcut for my laptop for ending macros
+  (global-set-key "\M-8" 'kmacro-call-macro)  ; better shortcut for my laptop for calling macros
   
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
