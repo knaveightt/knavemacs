@@ -1540,9 +1540,9 @@ editing system.
      '("K" . meow-prev-expand)
      '("l" . meow-right)
      '("L" . meow-right-expand)
-     '("n" . meow-join)
-     '("M" . avy-goto-char-timer)
-     '("m" . meow-search)
+     '("n" . meow-join) ; select newline to beginning of current line
+     '("m" . avy-goto-char-timer) ; move to word
+     '("M" . meow-search) ; move to next instance of selected word
      '("o" . meow-block)
      '("O" . meow-to-block)
      '("p" . meow-yank)
