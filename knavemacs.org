@@ -1142,12 +1142,12 @@ in the dependencies section at the top of this org file.
           '((nil :maxlevel . 1)
             (org-agenda-files :maxlevel . 2)))
     (setq org-todo-keywords
-          '((sequence "TASK(k)" "TODO(t)" "PROJ(p)" "NEXT(x)" "WAIT(w@/!)" "GAVE(v@/!)" "MEET(m@/!)" "|" "DONE(d!)" "CANCELED(c)")
+          '((sequence "TASK(k)" "TODO(t)" "PROJ(p)" "NEXT(x)" "FOLLOWUP(f@/!)" "HOLD(h@/!)" "JIRA(j)" "|" "DONE(d!)" "CANCELED(c)")
             (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
             (sequence "NOTE(f)" "|" "NOTED(z)" "TRASH(x)")
             ))
     (setq org-todo-keywoard-faces
-          '(("TODO" . org-warning) ("PROJ" . org-warning) ("NEXT" . "green") ("WAIT" . "yellow") ("GAVE" . "orange") ("MEET" . "yellow")
+          '(("TODO" . "green") ("PROJ" . "red") ("NEXT" . "green") ("FOLLOWUP" . "purple") ("HOLD" . "yellow") ("JIRA" . "green")
             ("DONE" . "blue") ("CANCELED" . "purple") ("NOTE" . org-warning) ("NOTED" . "green")))
 
     ;; custom agenda views
@@ -1156,17 +1156,12 @@ in the dependencies section at the top of this org file.
              (
               (todo "NOTICE" ((org-agenda-overriding-header "Notices for Today")))
               (agenda "" ((org-deadline-warning-days 7)))
-              (todo "TASK" ((org-agenda-overriding-header "Additional Tasks Today")))
-              (todo "TODO"
-                         ((org-agenda-overriding-header "Unscheduled TODOs")
+              (todo "TASK" ((org-agenda-overriding-header "Tasks for Today")))
+              (tags "PROJECT+TODO=\"NEXT\"|-PROJECT+TODO=\"TODO\""
+                         ((org-agenda-overriding-header "Activities to Schedule")
                           (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-              (todo "NEXT"
-                         ((org-agenda-overriding-header "Next Project Actions to Schedule")
-                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-              (todo "WAIT"
-                    ((org-agenda-overriding-header "Waiting on Confirmation")))
-              (todo "GAVE"
-                    ((org-agenda-overriding-header "TODOs Delegated to Someone Else")))))
+              (todo "FOLLOWUP"
+                    ((org-agenda-overriding-header "Need to Follow Up Items")))))
             ("f" "View Fleeting Notes Collection"
              (
               (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes"))))))
@@ -1182,10 +1177,13 @@ in the dependencies section at the top of this org file.
              "* TASK %?\n %i" :empty-lines 1)
 
             ("t" "New Todo" entry (file+olp "~/Documents/org/unfiled.org" "Todos")
-             "* TODO %? :unfiled:\n %i" :empty-lines 1)
+             "* TODO %? :To_Clarify:\n %i" :empty-lines 1)
+
+            ("j" "Track New JIRA" entry (file+olp "~/Documents/org/unfiled.org" "Todos")
+             "* JIRA [/] %^{Enter Issue Name} :PROJECT:%^{Enter Jira Number w Underscores}:\n** NEXT %^{Enter First Action}\n** TODO %?" :empty-lines 1)
 
             ("m" "Meeting Notes" entry (file+olp "~/Documents/org/unfiled.org" "Meetings")
-             "* %t %? :unfiled:\n %i" :empty-lines 1)
+             "* %t %? :To_Clarify:\n %i" :empty-lines 1)
 
             ("w" "Start Work Cycle" entry (file+olp+datetree "~/Documents/org/worklog.org" "Work Log")
              "* %? :WorkNew:\n%U Work Cycle Created\n%i" :empty-lines 1)
