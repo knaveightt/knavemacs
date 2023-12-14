@@ -1539,8 +1539,8 @@ editing system.
      '("l" . meow-right)
      '("L" . meow-right-expand)
      '("n" . meow-join) ; select newline to beginning of current line
-     '("m" . avy-goto-char-timer) ; move to word
-     '("M" . meow-search) ; move to next instance of selected word
+     '("M" . avy-goto-char-timer) ; move to word
+     '("m" . meow-search) ; move to next instance of selected word
      '("o" . meow-block)
      '("O" . meow-to-block)
      '("p" . meow-yank)
