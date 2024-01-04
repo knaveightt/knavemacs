@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: issue-log-level-3
+# key: >issue3
+# --
+*** Detail Table
+| Issue Origin: | TBD |
+| Time Taken:   | TBD |
+| Status:       | TBD |
+
+*** Issue Description
+TBD
+*** Issue Cause
+TBD
+*** Issue Fix
+TBD
+*** Lessons Learned
+TBD
+
+*** Cronologic Log
+
