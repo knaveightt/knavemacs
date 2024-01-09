@@ -538,6 +538,7 @@ I think using Dashboard works well when emacs is setup to be used in a daemon.
        :config
        (dashboard-setup-startup-hook)
        (add-hook 'dashboard-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+       (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
        :custom
        (dashboard-banner-ascii "
   ██╗  ██╗███╗   ██╗ █████╗ ██╗   ██╗███████╗███╗   ███╗ █████╗  ██████╗███████╗
