@@ -1528,7 +1528,7 @@ editing system.
      '("E" . meow-next-symbol)
      '("f" . meow-find)
      '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
+     '("G" . meow-pop-selection)
      '("h" . meow-left)
      '("H" . meow-left-expand)
      '("i" . meow-insert)
@@ -1539,6 +1539,7 @@ editing system.
      '("K" . meow-prev-expand)
      '("l" . meow-right)
      '("L" . meow-right-expand)
+     '("N" . meow-grab)
      '("n" . meow-join) ; select newline to beginning of current line
      '("M" . avy-goto-char-timer) ; move to word
      '("m" . meow-search) ; move to next instance of selected word
@@ -1546,7 +1547,6 @@ editing system.
      '("O" . meow-to-block)
      '("p" . meow-yank)
      '("q" . meow-quit)
-     '("Q" . meow-pop-selection)
      '("r" . meow-replace)
      '("R" . meow-swap-grab)
      '("s" . meow-kill)
