@@ -306,14 +306,14 @@ I really enjoy the modus-themes and ef-themes from Protesilaos Stavrou
   (use-package ef-themes
     :if knavemacs/config-visual
     :config
-    (setq ef-themes-to-toggle '(ef-autumn ef-light))
+    (setq ef-themes-to-toggle '(ef-winter ef-light))
 
     ;; Use default font family settings
     (setq ef-themes-mixed-fonts nil
           ef-themes-variable-pitch-ui nil)
 
     ;; use this to load the theme which also calls `ef-themes-post-load-hook':
-    (ef-themes-select 'ef-autumn)
+    (ef-themes-select 'ef-winter)
     )
 #+END_SRC
 
