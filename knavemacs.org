@@ -696,6 +696,17 @@ depending on where the point is.
                    (window-parameters (mode-line-format . none)))))
 #+END_SRC
 
+*** Verico Posframe
+Floating vertico completion lists!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico-posframe
+    :if knavemacs/config-compframework
+    :init
+    (vertico-posframe-mode 1)
+  )
+#+END_SRC
+
 *** Consult
 Enhanced commands utilizing the power of the completion framework packages
 previously loaded.
