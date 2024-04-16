@@ -1146,20 +1146,20 @@ in the dependencies section at the top of this org file.
     (setq org-ellipsis " ▾"
           ;org-hide-emphasis-markers t
     )
-    (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active" "~/Documents/org/info"))
+    (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active"))
     (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
     (setq org-stuck-projects
-          '("+LEVEL=2+PROJECT/-DONE" ("NEXT")))
+          '("+LEVEL=3+PROJECT/-DONE" ("NEXT")))
     (setq org-refile-targets
           '((nil :maxlevel . 1)
             (org-agenda-files :maxlevel . 2)))
     (setq org-todo-keywords
-          '((sequence "TASK(k)" "TODO(t)" "PROJ(p)" "NEXT(x)" "FOLLOWUP(f@/!)" "HOLD(h@/!)" "JIRA(j)" "|" "DONE(d!)" "CANCELED(c)")
+          '((sequence "TODO(t)" "BACKLOG(b@/!)" "PROJ(p)" "NEXT(x)" "HOLD(h@/!)" "|" "DONE(d!)" "CANCELED(c)")
             (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
             (sequence "NOTE(f)" "|" "NOTED(z)" "TRASH(x)")
             ))
     (setq org-todo-keywoard-faces
-          '(("TODO" . "green") ("PROJ" . "red") ("NEXT" . "green") ("FOLLOWUP" . "purple") ("HOLD" . "yellow") ("JIRA" . "green")
+          '(("TODO" . "green") ("BACKLOG" . "red") ("NEXT" . "green") ("HOLD" . "yellow") 
             ("DONE" . "blue") ("CANCELED" . "purple") ("NOTE" . org-warning) ("NOTED" . "green")))
 
     ;; custom agenda views
@@ -1168,15 +1168,14 @@ in the dependencies section at the top of this org file.
              (
               (todo "NOTICE" ((org-agenda-overriding-header "Notices for Today")))
               (agenda "" ((org-deadline-warning-days 7)))
-              (todo "TASK" ((org-agenda-overriding-header "Tasks for Today")))
               (tags "PROJECT+TODO=\"NEXT\"|-PROJECT+TODO=\"TODO\""
                          ((org-agenda-overriding-header "Activities to Schedule")
                           (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-              (todo "FOLLOWUP"
-                    ((org-agenda-overriding-header "Need to Follow Up Items")))))
+              ))
             ("f" "View Fleeting Notes Collection"
              (
-              (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes"))))))
+              (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes")))
+              )))
           )
 
     ;; capture templates
@@ -1185,17 +1184,14 @@ in the dependencies section at the top of this org file.
             ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notice")
              "* NOTICE %?\n%U Notice Created" :empty-lines 1)
 
-            ("k" "New Task Today" entry (file+olp "~/Documents/org/unfiled.org" "Tasks")
-             "* TASK %?\n %i" :empty-lines 1)
+            ("m" "Meeting Notes" entry (file+olp "~/Documents/org/meetings.org" "Unfiled Meeting Notes")
+             "* %t %^{Enter Meeting Title} :Clarify:%^G \n** Attendees\n*** \n** Notes\n*** \n** Action Items\n*** TODO " :tree-type week :clock-in t :clock-resume t :empty-lines 0)
 
-            ("t" "New Todo" entry (file+olp "~/Documents/org/unfiled.org" "Todos")
-             "* TODO %? :To_Clarify:\n %i" :empty-lines 1)
+            ("t" "New Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs")
+             "* TODO [#A] %^{Enter TODO Item} :Clarify:\n %?" :empty-lines 1)
 
-            ("j" "Track New JIRA" entry (file+olp "~/Documents/org/unfiled.org" "Todos")
-             "* JIRA [/] %^{Enter Issue Name} :PROJECT:%^{Enter Jira Number w Underscores}:\n** NEXT %^{Enter First Action}\n** TODO %?" :empty-lines 1)
-
-            ("m" "Meeting Notes" entry (file+olp "~/Documents/org/unfiled.org" "Meetings")
-             "* %t %? :To_Clarify:\n %i" :empty-lines 1)
+            ("z" "New Work File" entry (file "~/Documents/org/new.org")
+             "* Backlog\n* Meetings\n* Knowledge\nBe sure to add FILETAGS to the new file.\n%i")
 
             ("w" "Start Work Cycle" entry (file+olp+datetree "~/Documents/org/worklog.org" "Work Log")
              "* %? :WorkNew:\n%U Work Cycle Created\n%i" :empty-lines 1)
