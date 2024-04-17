@@ -1154,9 +1154,9 @@ in the dependencies section at the top of this org file.
           '((nil :maxlevel . 1)
             (org-agenda-files :maxlevel . 2)))
     (setq org-todo-keywords
-          '((sequence "TODO(t)" "BACKLOG(b@/!)" "PROJ(p)" "NEXT(x)" "HOLD(h@/!)" "|" "DONE(d!)" "CANCELED(c)")
+          '((sequence "TODO(t)" "BACKLOG(b@/!)" "PROJ(p)" "NEXT(x)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "|" "DONE(d!)" "CANCELED(c)")
             (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
-            (sequence "NOTE(f)" "|" "NOTED(z)" "TRASH(x)")
+            (sequence "NOTE(e)" "|" "NOTED(z)" "TRASH(x)")
             ))
     (setq org-todo-keywoard-faces
           '(("TODO" . "green") ("BACKLOG" . "red") ("NEXT" . "green") ("HOLD" . "yellow") 
@@ -1171,6 +1171,7 @@ in the dependencies section at the top of this org file.
               (tags "PROJECT+TODO=\"NEXT\"|-PROJECT+TODO=\"TODO\""
                          ((org-agenda-overriding-header "Activities to Schedule")
                           (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
+              (todo "FEEDBACK" ((org-agenda-overriding-header "Items Requiring Feedback")))
               ))
             ("f" "View Fleeting Notes Collection"
              (
@@ -1192,9 +1193,6 @@ in the dependencies section at the top of this org file.
 
             ("z" "New Work File" entry (file "~/Documents/org/new.org")
              "* Backlog\n* Meetings\n* Knowledge\nBe sure to add FILETAGS to the new file.\n%i")
-
-            ("w" "Start Work Cycle" entry (file+olp+datetree "~/Documents/org/worklog.org" "Work Log")
-             "* %? :WorkNew:\n%U Work Cycle Created\n%i" :empty-lines 1)
 
             ("f" "Fleeting Note" entry (file+olp "~/Documents/org/fleeting.org" "Fleeting Notes")
              "* NOTE %?\n %i" :empty-lines 1)
