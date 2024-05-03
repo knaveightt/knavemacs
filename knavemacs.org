@@ -379,6 +379,13 @@ Most of these are used specifically for my modeline.
          ))
     "Face for modified indicator"
     :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/modeline-faces-kmacrorec
+    '((t :foreground "#AA1122"
+         :weight bold
+         ))
+    "Face for kmacro record indicator"
+    :group 'knavemacs/mode-line-faces)
 #+END_SRC
 
 *** nerd-icons
@@ -480,32 +487,30 @@ and leveraging some nerd icons.
           mode-name))
     "Modeline module to provide major mode name.")
 
-  ;; modeline module: right display
-  (defvar-local knavemacs/modeline-right-display
-      '(""
-        " L%l:C%c "
-        "[%p]")
-    "Modeline module to provide minimal modeline info aligned right."
-    )
-
+  ;; modeline module: kmacro record indicator
+  (defvar-local knavemacs/modeline-kmacro-indicator
+      '(:eval
+        (when defining-kbd-macro
+          (propertize " (󰑋 MACRO)" 'face 'knavemacs/modeline-faces-kmacrorec)))
+    "Modeline module to provide an indicator for when recording kmacros")
 
   ;; making the modeline modules "risky" variables
   (dolist (construct '(knavemacs/modeline-meow-indicator
-                       knavemacs/modeline-readonly-indicator
-                       knavemacs/modeline-modified-indicator
-                       knavemacs/modeline-bufname
-                       knavemacs/modeline-major-mode-icon
-                       knavemacs/modeline-major-mode-name
-                       knavemacs/modeline-right-display))
+                        knavemacs/modeline-readonly-indicator
+                        knavemacs/modeline-modified-indicator
+                        knavemacs/modeline-bufname
+                        knavemacs/modeline-major-mode-icon
+                        knavemacs/modeline-major-mode-name
+                        knavemacs/modeline-right-display
+                        knavemacs/modeline-kmacro-indicator))
     (put construct 'risky-local-variable t)) ;; required for modeline local vars
 
   ;; modeline *function*: fill for alignment
   (defun knavemacs/modeline-fill-for-alignment ()
     "Modeline module to provide filler space until right-aligned items on the modeline"
-    (let ((r-length (length (format-mode-line knavemacs/modeline-right-display))))
+    (let ((r-length (length (concat (format-mode-line knavemacs/modeline-right-display) (format-mode-line knavemacs/modeline-kmacro-indicator)) )))
       (propertize " "
                   'display `(space :align-to (- right ,r-length)))))
-
 
   ;; now construct the actual mode-line
   (when (and
@@ -527,7 +532,8 @@ and leveraging some nerd icons.
                     " "
                     knavemacs/modeline-major-mode-name
                     (:eval (knavemacs/modeline-fill-for-alignment))
-                    knavemacs/modeline-right-display)))
+                    knavemacs/modeline-right-display
+                    knavemacs/modeline-kmacro-indicator)))
 #+END_SRC
 
 *** Dashboard
