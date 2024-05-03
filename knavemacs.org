@@ -487,6 +487,13 @@ and leveraging some nerd icons.
           mode-name))
     "Modeline module to provide major mode name.")
 
+  ;; modeline module: right display
+  (defvar-local knavemacs/modeline-right-display
+      '(""
+        " L%l:C%c "
+        "[%p]")
+    "Modeline module to provide minimal modeline info aligned right.")
+
   ;; modeline module: kmacro record indicator
   (defvar-local knavemacs/modeline-kmacro-indicator
       '(:eval
