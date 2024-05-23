@@ -1669,6 +1669,7 @@ built in functionality (although not sure I can fully accomplish this. We will s
 The below keymap updates are used for general, overall changes to keys.
 #+BEGIN_SRC emacs-lisp
   ;; global
+  (global-set-key "\M-m" 'meow-global-mode) ; global toggle key for meow (modal editing)
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
