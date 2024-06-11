@@ -1528,12 +1528,13 @@ editing system.
      '("b" . meow-back-word)
      '("B" . meow-back-symbol)
      '("c" . meow-change)
-     '("C" . scroll-down)
+     '("C" . my/scroll-down-half-page)
      '("d" . meow-delete)
      '("D" . meow-backward-delete)
      '("e" . meow-next-word)
      '("E" . meow-next-symbol)
      '("f" . meow-find)
+     '("F" . my/scroll-up-half-page)
      '("g" . meow-cancel-selection)
      '("G" . meow-pop-selection)
      '("h" . meow-left)
@@ -1555,7 +1556,7 @@ editing system.
      '("p" . meow-yank)
      '("q" . meow-quit)
      '("r" . meow-replace)
-     '("R" . meow-swap-grab)
+     '("R" . move-to-window-line-top-bottom) ; for convenience (M-r)
      '("s" . meow-kill)
      '("S" . meow-kill-whole-line)
      '("t" . meow-till)
@@ -1663,6 +1664,33 @@ built in functionality (although not sure I can fully accomplish this. We will s
       ("k" "Kill Buffer" kill-current-buffer)
       ("u" "See Undo Tree" vundo)]
      [("q" "Quit" transient-quit-one)])
+#+END_SRC
+
+*** Custom Key Functions
+Here are some custom functions I've gathered on the internet that also help my workflow.
+#+BEGIN_SRC emacs-lisp
+    ;; scroll half a screen
+  (defun my/scroll-down-half-page ()
+    "scroll down half a page while keeping the cursor centered"
+    (interactive)
+    (let ((ln (line-number-at-pos (point)))
+      (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) (move-to-window-line nil))
+        ((= ln lmax) (recenter (window-end)))
+        (t (progn
+             (move-to-window-line -1)
+             (recenter))))))
+
+  (defun my/scroll-up-half-page ()
+    "scroll up half a page while keeping the cursor centered"
+    (interactive)
+    (let ((ln (line-number-at-pos (point)))
+      (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) nil)
+        ((= ln lmax) (move-to-window-line nil))
+        (t (progn
+             (move-to-window-line 0)
+             (recenter))))))
 #+END_SRC
 
 *** Overall Key Updates
