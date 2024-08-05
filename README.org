@@ -12,65 +12,6 @@
 :     \|__| \|__|\|__| \|__|\|__|\|__|\|__|/       \|_______|\|__|     \|__|\|__|\|__|\|_______|\_________\
 :                                                                                              \|_________|
 
-* What is this?
-This is my [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration using an org file. ~knavemacs.org~ is the
-core configuration file that defines the behavior, packages, and settings used
-in my custom emacs setup. While this org file is the "engine", the other
-important file for my setup is the included ~config.org~ file. This file is the
-"brains" so to speak. For each package configured in my knavemacs.org file,
-there are variables that are being checked to determine if that package should
-actually be loaded. These variables are set in the config.org file.
+This is my GNU Emacs configuration - tested for Emacs 29.4
 
-The variables setup in the config.org file allow me to define different
-combinations of these variables for the various devices that I use my emacs
-configuration on. I call these "device profiles", which are setup as elisp
-functions, which in-turn set various variables that define which packages should
-be loaded on my device. I encourage you to take a look at the config.org file to
-understand how it influences which parts of knavemace.org get loaded.
-
-This brings me to how to load this config!  For your own emacs instance, you can
-add the following lines to your ~.emacs~ or ~.config/emacs/init.el~ file (the
-below is assuming that you are putting config.org and knavemacs.org files in the
-~/.config/emacs folder):
-
-: (require 'org)
-: (require 'ob-tangle)
-: (setq knavemacs/device-profile 'computer)
-: (load "~/.config/emacs/config.el")
-: (org-babel-load-file "~/.config/emacs/knavemacs.org")
-
-The first two lines above initalize org and ob-tangle which will allow the
-elisp blocks in knavemacs.org to be loaded as if they were part of a singluar
-.emacs configuration file. The third line sets my "device profile" variable
-to a specific value. This is important for the fourth line, which loads
-the config.el file - this file runs a function based on the value of the
-device-profile variable, and that function sets certain variables which tell
-knavemacs.org which packages to load for that specific device. The actual
-loading of the contents of knavemacs.org is done with the last line above.
-
-To run my configuration of emacs, some dependencies must be met. These are
-listed in the next section.
-
-Credit should be given where credit is due. Much of this config is heavily
-inspired (and sometimes copied verbatim) from System Crafter's *Emacs From Scratch*
-series on youtube. Definitely a must watch.
-
-* Dependencies
-The following bullet-list of dependencies must be satisfied to ensure this
-configuration is working as expected:
-
-- ~JetBrainsMono Nerd Font~ installed on system
-- ~Symbols Nerd Font Mono~ installed on system (try 'nerd-icons-install-fonts')
-- Git executable in PATH (check the config here if on windows)
-- Directory ~~/Shelf/snippets~ created to load snippet files
-- Org Mode Directory Setup - for my org workflow:
-  1) Org files go to ~~/Documents/org~
-  2) There should be a =fleeting.org=, =unfiled.org=, =notice.org=, and
-     =worklog.org= file in the top level org folder.
-  3) There should be an =active= and =info= folder in the top level org folder.
-- Org Roam Setup requires =gcc= (or another c compiler) in the execution path.
-  (check the config here if on windows)
-  1) Org Roam files go to ~~/Documents/knowledge~
-  2) There should be a =master.bib= bibliography file in the top level org roam folder.
-  3) There should be a =permanent=, =wiki=, =literature=, and =project= folder
-     in the top level org roam folder to support my workflow.
+For details and installation, see the main file ~knavemacs.org~
