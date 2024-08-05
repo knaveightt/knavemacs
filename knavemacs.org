@@ -1026,8 +1026,7 @@ multi-key press functionality.
     ["Org-Mode Actions"
      ("a" "Org Agenda" org-agenda)
      ("c" "Org Capture" org-capture)
-     ("l" "Store Link" org-store-link)
-     ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
+     ("l" "Store Link" org-store-link)]
     [("q" "Quit" transient-quit-one)])
 
   (transient-define-prefix knavemacs/transient-note-commands ()
@@ -1170,7 +1169,7 @@ the spirit of Emacs intact.
        '("1" . meow-expand-1)
 
        '("r" . rectangle-mark-mode)
-       ;'("o" . knavemacs/transient-org-commands)
+       '("o" . knavemacs/transient-org-commands)
        ;'("n" . knavemacs/transient-note-commands)
        '("b" . knavemacs/transient-buffer-commands)
        '("w" . ace-window)
