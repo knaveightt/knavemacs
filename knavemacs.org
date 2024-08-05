@@ -1,7 +1,7 @@
 #+TITLE: Knavemacs Emacs Configuration
 #+AUTHOR: John Osinski
 #+EMAIL: johnosinski80@gmail.com
-#+DATE: [2023-10-03 Tue 12:04]
+#+DATE: [2024-07-26 Fri 15:25]
 
 :  ___  __    ________   ________  ___      ___ _______   _____ ______   ________  ________  ________
 : |\  \|\  \ |\   ___  \|\   __  \|\  \    /  /|\  ___ \ |\   _ \  _   \|\   __  \|\   ____\|\   ____\
@@ -16,7 +16,7 @@
 This is my [[https://www.gnu.org/software/emacs/][GNU Emacs]] configuration using an org file. ~knavemacs.org~ is the
 core configuration file that defines the behavior, packages, and settings used
 in my custom emacs setup. While this org file is the "engine", the other
-important file for my setup is the included ~config.org~ file. This file is the
+important file for my setup is the included ~config.el~ file. This file is the
 "brains" so to speak. For each package configured in my knavemacs.org file,
 there are variables that are being checked to determine if that package should
 actually be loaded. These variables are set in the config.org file.
@@ -25,12 +25,12 @@ The variables setup in the config.org file allow me to define different
 combinations of these variables for the various devices that I use my emacs
 configuration on. I call these "device profiles", which are setup as elisp
 functions, which in-turn set various variables that define which packages should
-be loaded on my device. I encourage you to take a look at the config.org file to
+be loaded on my device. I encourage you to take a look at the config.el file to
 understand how it influences which parts of knavemace.org get loaded.
 
 This brings me to how to load this config!  For your own emacs instance, you can
 add the following lines to your ~.emacs~ or ~.config/emacs/init.el~ file (the
-below is assuming that you are putting config.org and knavemacs.org files in the
+below is assuming that you are putting config.el and knavemacs.org files in the
 ~/.config/emacs folder):
 
 : (require 'org)
@@ -55,634 +55,297 @@ Credit should be given where credit is due. Much of this config is heavily
 inspired (and sometimes copied verbatim) from System Crafter's *Emacs From Scratch*
 series on youtube. Definitely a must watch.
 
-* Dependencies
-The following bullet-list of dependencies must be satisfied to ensure this
-configuration is working as expected:
-
-- ~JetBrainsMono Nerd Font~ installed on system
-- ~Symbols Nerd Font Mono~ installed on system (try 'nerd-icons-install-fonts')
-- Git executable in PATH (check the config here if on windows)
-- Directory ~~/Shelf/snippets~ created to load snippet files
+* Installation
+Requirements:
+- FiraCode Nerd Font
+- Symbols Nerd Font (try 'nerd-icons-install-fonts')
+- git
+- Directory ~/Shelf/snippets created to load snippet files
 - Org Mode Directory Setup - for my org workflow:
-  1) Org files go to ~~/Documents/org~
+  1) Org files go to ~/Documents/org
   2) There should be a =fleeting.org=, =unfiled.org=, =notice.org=, and
      =worklog.org= file in the top level org folder.
   3) There should be an =active= and =info= folder in the top level org folder.
-- Org Roam Setup requires =gcc= (or another c compiler) in the execution path.
-  (check the config here if on windows)
-  1) Org Roam files go to ~~/Documents/knowledge~
-  2) There should be a =master.bib= bibliography file in the top level org roam folder.
-  3) There should be a =permanent=, =wiki=, =literature=, and =project= folder
-     in the top level org roam folder to support my workflow.
-  
-* Full Emacs Configuration
-The following sections both describe and provide the elisp used to
-configurevarious aspects of my emacs instance.
 
-** Basic Configuration
-Note that these settings are all global settings that do not have any dependency
-to variables set in the ~config.el~ file.
-*** Lexical Binding
-I start by declaring this at the top of my configuration. There is code
-(specifically around the note-taking I believe) that having lexical scoping for
-my variables is needed.
+* Configuration
+
+** Global Environment Settings
+*** Startup Environment Settings
+
+These options configure aspects about how my Emacs environment shoudl
+work (e.g. encoding settings, garbage collection, backup file rules etc).
+
+Just a special notes on garbage collection, I've read a lot about
+different ways to approach this. I'm going off a stack exchange post
+that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set this. I'm
+using a single command for now and we'll see how that goes.
+
 #+BEGIN_SRC emacs-lisp
   ;; -*- lexical-binding: t; -*-
-#+END_SRC
-
-*** Encoding Details
-I almost strictly deal with utf-8 file encodings.
-
-#+BEGIN_SRC emacs-lisp
   (set-language-environment 'utf-8)
   (set-default-coding-systems 'utf-8)
   (set-keyboard-coding-system 'utf-8-unix)
-  (set-terminal-coding-system 'utf-8-unix) 
-#+END_SRC
+  (set-terminal-coding-system 'utf-8-unix)
 
-*** Garbage Collection
-I've read a lot about different ways to approach this. I'm going off a stack
-exchange post that [[https://emacs.stackexchange.com/question/34342/is-there-any-downside-to-setting-gc-cons-threshold-very-high-and-collecting-ga][you can read here]] with some suggestions on how to set
-this. I'm using a single command for now and we'll see how that goes.
+  ;; warning level (will change if troubleshooting needed)
+  (setq warning-minimum-level :error)
 
-#+BEGIN_SRC emacs-lisp
-  ;; set the garbage collection threshold
-  (setq gc-cons-threshold (* 1024 1024 100)) ;; about 100MB
-#+END_SRC
+  ;; garbage collection threshold
+  (setq gc-cons-threshold (* 1024 1024 100)) ; about 100MB
 
-*** Basic Visual Changes
-Vanilla, unconfigured emacs starts with a tool bar, scroll bar, menus, and other
-visual elements at play that I disable right from the get-go.
+  ;; GUI specific adjustments
+  (setq inhibit-startup-message t) ; no more default start screen
+  (setq visible-bell t)            ; stop beeping
+  (scroll-bar-mode -1)             ; disable scroll bars
+  (tool-bar-mode -1)               ; disable tool bar
+  (tooltip-mode -1)                ; disable tooltips
+  (menu-bar-mode -1)               ; disable menu bar
 
-#+BEGIN_SRC emacs-lisp 
-  ;; setting some default settings to start with a minimal Emacs startup
-  (setq inhibit-startup-message t) ;; no more start up message
-  (setq visible-bell t)            ;; stop beeping
-  (scroll-bar-mode -1)             ;; disable scroll bars
-  (tool-bar-mode -1)               ;; disable tool bar
-  (tooltip-mode -1)                ;; disable tooltips
-  (set-fringe-mode 10)             ;; sets fringe size
-  (menu-bar-mode -1)               ;; disable menu bar
-  (global-hl-line-mode 1)          ;; highlight the current line
-#+END_SRC
-
-*** Line Numbers and Configuration
-I set the fill-column amount so that I can automatically wrap paragraphs using
-the keybind ~M-q~.  I like to use line numbers on the left-hand side, and like
-to have relative (visual!)  line numbers shown so I know how far apart various
-lines are from my current cursor location.
-
-#+BEGIN_SRC emacs-lisp
-  ;; set the fill-column amount to 80
-  (setq-default fill-column 80)
-
-  ;; function I hoook to modes I dont want to see line numbers on
-  (defun knavemacs/no-line-nums-hook ()
-    (display-line-numbers-mode 0))
-
-  ;; update line number settings
-  (setq display-line-numbers-type 'visual); enable relative line numbers
-  (column-number-mode)                    ; show column number in mode line
-  (global-display-line-numbers-mode t)    ; enable line numbers globally
-  (dolist (mode '(term-mode-hook          ; define modes we don't want line numbers
-                  eshell-mode-hook
-                  dired-mode-hook))
-    (add-hook mode 'knavemacs/no-line-nums-hook))
-#+END_SRC
-
-*** Font Configuration
-My current favorite font is *JetBrainsMono*. I use the Nerd Font version of this
-for fancy symbols.  This assumes the font is already present on the workspace.
-
-#+BEGIN_SRC emacs-lisp
-  ;; set default font settings
-  (add-to-list 'default-frame-alist
-               '(font . "JetBrainsMono NF 10"))
-#+END_SRC
-
-*** Backup File Rules
-It is worth nothing that the emacs manual has a good description of backups by
-copying vs renaming. Right now I am using the other mode (copy on backing up),
-so that I don't start causing issues with system links, I might need to change
-to the other method if it's too slow. In any case, I define a specific directory
-for my backup files.
-
-#+BEGIN_SRC emacs-lisp
   ;; set a default location for backup files
   (if (not (file-exists-p "~/.local/share/emacs-saves"))
       (make-directory "~/.local/share/emacs-saves" t))
   (setq backup-directory-alist '(("." . "~/.local/share/emacs-saves")))
   (setq make-backup-files t
-        backup-by-copying t
-        version-control t
-        delete-old-version t
-        delete-by-moving-to-trash t
-        kept-old-versions 6
-        kept-new-versions 6
-        auto-save-default t
-        auto-save-timeout 20
-        auto-save-interval 200
-        )
+	backup-by-copying t
+	version-control t
+	delete-old-version t
+	delete-by-moving-to-trash t
+	kept-old-versions 6
+	kept-new-versions 6
+	auto-save-default t
+	auto-save-timeout 20
+	auto-save-interval 200
+	)
 #+END_SRC
 
-*** Warning Rules
-I like to surpress warnings such that the *Warnings* buffer does not come up and
-harass me. Not the best practice, I will disable this if I need to troubleshoot
-an issue.
+*** Package Manager Setup
+This will be needed as this configuration file is read. Setup the package
+manager and package repository for these customizations.
 
 #+BEGIN_SRC emacs-lisp
-  ;; set the warning leve
-  (setq warning-minimum-level :error)
+    ;; define package sources and config
+    (require 'package)
+    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			     ("org" . "https://orgmode.org/elpa/")
+			     ("elpa" . "https://elpa.gnu.org/packages/")
+			     ))
+    (package-initialize)
+    (unless package-archive-contents
+      (package-refresh-contents))
+
+    ;; use-package setup
+    (unless (package-installed-p 'use-package)
+      (package-install 'use-package))
+    (require 'use-package)
+    (setq use-package-always-ensure t)
 #+END_SRC
 
-** Package Management and Setup
-Before we get into the next sections of configuration, I setup the package
-manager (use-package) and package repositories.
-*** Initialize Package Sources
-I use the following three sources for downloadable emacs packages:
- - elpa, the GNU ELPA package archive
- - melpa, the "big one"
- - org, to get the latest version of org-mode functionality
+
+** Visual Interface
+*** Colorscheme
+This section probably changes alot :)
 
 #+BEGIN_SRC emacs-lisp
-  ;; define package sources
-  (require 'package)
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
-#+END_SRC
-
-*** Setup of use-package
-I use use-package as my main package manager for downloading and configuring
-external emacs packages. I set use-package-always-ensure because I want all
-packages defined in this config file to be installed automatically if not
-already present on my system. I can do this because my ~config.el~ file helps
-dictate what packages should be active on my system.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: use-package
-  ;; PURPOSE: for easy installation of other packages
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-#+END_SRC
-
-** Visual Theme and Aesthetic
-Here is the section that I start defining the overall look and feel of my emacs
-configuration.
-*** Color Theme (modus and ef-themes)
-I really enjoy the modus-themes and ef-themes from Protesilaos Stavrou
-
-#+BEGIN_SRC emacs-lisp
-  ;; called after my selected a modus-theme below
-  ;(defun knavemacs/modus-themes-customize-mode-line ()
-  ;  "Apply padding to mode-line via an overline"
-  ;  (modus-themes-with-colors
-  ;    (custom-set-faces
-  ;     `(mode-line ((,c :overline "#CCCCCC")))
-  ;     ;; `(mode-line-inactive ((,c :overline "#565656")))
-  ;     )))
-
-  ;; PACKAGE: modus-themes
-  ;; PURPOSE: customizations should I choose to use modus themes over ef-themes
-  (use-package modus-themes
+  ;; define the colorscheme
+  (use-package doom-themes
     :if knavemacs/config-visual
+    :ensure t
     :config
-    ;; block regions
-    (setq modus-themes-region '(bg-only))
+    ; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-acario-dark t)
 
-    ;; palette overrides to define colors
-    (setq modus-vivendi-tinted-palette-overrides
-          '(
-            ;; mode line updates to border     ; =Original=
-            (bg-mode-line-active bg-main)      ; #484d67
-            (fg-mode-line-active "#ffffff")
-            (border-mode-line-active bg-main)  ; #979797
-            (bg-mode-line-inactive "#262626")  ; #292d48
-            (fg-mode-line-inactive "#565656")  ; #969696
-            (border-mode-line-inactive bg-dim) ; #606270
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+      ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+#+END_SRC
 
-            ;; block regions
-            (bg-region bg-ochre)
-            (fg-region unspecified)
+*** Font Configuration
+This section also probably changes alot :)
+Depending on the chosen font, I also add capability for ligatures!
 
-            ;; parenthesis overrides
-            (bg-paren-match bg-magenta-intense)
+#+BEGIN_SRC emacs-lisp
+  ;; define the font
+  (if (eq knavemacs/config-fonts t) (add-to-list 'default-frame-alist
+					       '(font . "FiraCode Nerd Font 12")))
 
-            ;; Make the fringe less intense
-            (fringe bg-main)
+  ;; setup ligatures
+  (use-package ligature
+    :if knavemacs/config-fonts
+    :config
+    ;; Enable the "www" ligature in every possible major mode
+    (ligature-set-ligatures 't '("www"))
+    ;; Enable traditional ligature support in eww-mode, if the
+    ;; `variable-pitch' face supports it
+    (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+    ;; Enable all Cascadia and Fira Code ligatures in programming modes
+    (ligature-set-ligatures 'prog-mode
+			    '(;; == === ==== => =| =>>=>=|=>==>> ==< =/=//=// =~
+			      ;; =:= =!=
+			      ("=" (rx (+ (or ">" "<" "|" "/" "~" ":" "!" "="))))
+			      ;; ;; ;;;
+			      (";" (rx (+ ";")))
+			      ;; && &&&
+			      ("&" (rx (+ "&")))
+			      ;; !! !!! !. !: !!. != !== !~
+			      ("!" (rx (+ (or "=" "!" "\." ":" "~"))))
+			      ;; ?? ??? ?:  ?=  ?.
+			      ("?" (rx (or ":" "=" "\." (+ "?"))))
+			      ;; %% %%%
+			      ("%" (rx (+ "%")))
+			      ;; |> ||> |||> ||||> |] |} || ||| |-> ||-||
+			      ;; |->>-||-<<-| |- |== ||=||
+			      ;; |==>>==<<==<=>==//==/=!==:===>
+			      ("|" (rx (+ (or ">" "<" "|" "/" ":" "!" "}" "\]"
+					      "-" "=" ))))
+			      ;; \\ \\\ \/
+			      ("\\" (rx (or "/" (+ "\\"))))
+			      ;; ++ +++ ++++ +>
+			      ("+" (rx (or ">" (+ "+"))))
+			      ;; :: ::: :::: :> :< := :// ::=
+			      (":" (rx (or ">" "<" "=" "//" ":=" (+ ":"))))
+			      ;; // /// //// /\ /* /> /===:===!=//===>>==>==/
+			      ("/" (rx (+ (or ">"  "<" "|" "/" "\\" "\*" ":" "!"
+					      "="))))
+			      ;; .. ... .... .= .- .? ..= ..<
+			      ("\." (rx (or "=" "-" "\?" "\.=" "\.<" (+ "\."))))
+			      ;; -- --- ---- -~ -> ->> -| -|->-->>->--<<-|
+			      ("-" (rx (+ (or ">" "<" "|" "~" "-"))))
+			      ;; *> */ *)  ** *** ****
+			      ("*" (rx (or ">" "/" ")" (+ "*"))))
+			      ;; www wwww
+			      ("w" (rx (+ "w")))
+			      ;; <> <!-- <|> <: <~ <~> <~~ <+ <* <$ </  <+> <*>
+			      ;; <$> </> <|  <||  <||| <|||| <- <-| <-<<-|-> <->>
+			      ;; <<-> <= <=> <<==<<==>=|=>==/==//=!==:=>
+			      ;; << <<< <<<<
+			      ("<" (rx (+ (or "\+" "\*" "\$" "<" ">" ":" "~"  "!"
+					      "-"  "/" "|" "="))))
+			      ;; >: >- >>- >--|-> >>-|-> >= >== >>== >=|=:=>>
+			      ;; >> >>> >>>>
+			      (">" (rx (+ (or ">" "<" "|" "/" ":" "=" "-"))))
+			      ;; #: #= #! #( #? #[ #{ #_ #_( ## ### #####
+			      ("#" (rx (or ":" "=" "!" "(" "\?" "\[" "{" "_(" "_"
+					   (+ "#"))))
+			      ;; ~~ ~~~ ~=  ~-  ~@ ~> ~~>
+			      ("~" (rx (or ">" "=" "-" "@" "~>" (+ "~"))))
+			      ;; __ ___ ____ _|_ __|____|_
+			      ("_" (rx (+ (or "_" "|"))))
+			      ;; Fira code: 0xFF 0x12
+			      ("0" (rx (and "x" (+ (in "A-F" "a-f" "0-9")))))
+			      ;; Fira code:
+			      "Fl"  "Tl"  "fi"  "fj"  "fl"  "ft"
+			      ;; The few not covered by the regexps.
+			      "{|"  "[|"  "]#"  "(*"  "}#"  "$>"  "^="))
+    ;; Enables ligature checks globally in all buffers. You can also do it
+    ;; per mode with `ligature-mode'.
+    (global-ligature-mode t))
+#+END_SRC
 
-            ;; tab bar mode
-            (bg-tab-bar bg-main)
-            (bg-tab-current bg-lavender)
-            (bg-tab-other border)
-            ))
+*** Line Number Configuration
+I set the fill-column amount so that I can automatically wrap
+paragraphs using the keybind ~M-q~.  I like to use line numbers on the
+left-hand side, and like to have relative (visual!)  line numbers
+shown so I know how far apart various lines are from my current cursor
+location.
 
-    ;; completions
-    (setq modus-themes-completions
-          '((matches . (extrabold))
-            (selection . (semibold text-also))))
+#+BEGIN_SRC emacs-lisp
+  ;; set fill column amount and line numbers style
+  (setq-default fill-column 80)
+  (column-number-mode)
 
-    ;; org-mode
-    (setq modus-themes-headings
-          '((1 . (1.4))
-            (2 . (1.3))
-            (3 . (extrabold))
-            (t . (semilight 1.1))))
-    (setq modus-themes-scale-headings t)
-    (setq modus-themes-org-blocks 'gray-background)
+  (defun knavemacs/no-line-nums-hook ()
+    (display-line-numbers-mode 0))
 
-    ;; activate theme
-    ; (load-theme 'modus-vivendi-tinted t)
-    ; (knavemacs/modus-themes-customize-mode-line)
-    )
+  (setq display-line-numbers-type 'visual)
+  (global-display-line-numbers-mode t)
+  (dolist (mode '(term-mode-hook
+		  eshell-mode-hook
+		  dired-mode-hook))
+    (add-hook mode 'knavemacs/no-line-nums-hook))
+#+END_SRC
 
-  ;; PACKAGE: ef-themes
-  ;; PURPOSE: pretty and simple, colorful themes
-  (use-package ef-themes
+*** Which Key
+Which key is a fantastic interface to inform the user what additional
+key-presses will correspond to what actions with a clean, sleak user
+interface.
+
+#+BEGIN_SRC emacs-lisp
+  ;; which-key configuration
+  (use-package which-key
     :if knavemacs/config-visual
+    :init (which-key-mode)
+    :diminish
     :config
-    (setq ef-themes-to-toggle '(ef-winter ef-light))
-
-    ;; Use default font family settings
-    (setq ef-themes-mixed-fonts nil
-          ef-themes-variable-pitch-ui nil)
-
-    ;; use this to load the theme which also calls `ef-themes-post-load-hook':
-    (ef-themes-select 'ef-winter)
-    )
+    (setq which-key-idle-delay 1.8))
 #+END_SRC
 
-*** Custom Faces
-Here are special custom faces I define for knavemacs.
-Most of these are used specifically for my modeline.
+*** Visual Undo
+Vundo is a great undo tree visualizer interface.
 
 #+BEGIN_SRC emacs-lisp
-  ;; Start with the faces for the meow mode indicator
-  (defface knavemacs/face-meow-normal
-    '((t :foreground "#bcbcbc"
-         ))
-    "Face for Normal Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/face-meow-insert
-    '((t :foreground "#66CC22"
-         :weight bold
-         ))
-    "Face for Insert Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/face-meow-keypad
-    '((t :foreground "#aa0066"
-         :background "#090909"
-         :weight bold
-         ))
-    "Face for keypad Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/face-meow-motion
-    '((t :foreground "#b57123"
-         ))
-    "Face for motion Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/face-meow-beacon
-    '((t :foreground "#bb1213"
-         :weight bold
-         ))
-    "Face for beacon Mode"
-    :group 'knavemacs/mode-line-faces)
-
-  ;; construct the meow mode indicator
-  (defun knavemacs/modeline-faces-meow ()
-    (cond (meow-normal-mode 'knavemacs/face-meow-normal)
-          (meow-insert-mode 'knavemacs/face-meow-insert)
-          (meow-motion-mode 'knavemacs/face-meow-motion)
-          (meow-keypad-mode 'knavemacs/face-meow-keypad)
-          (meow-beacon-mode 'knavemacs/face-meow-beacon)))
-
-  ;; misc mode line faces
-  (defface knavemacs/modeline-faces-readonly
-    '((t :foreground "#AA1523"
-         :weight bold
-         ))
-    "Face for readonly indicator"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/modeline-faces-modified
-    '((t :foreground "#d59123"
-         :weight bold
-         ))
-    "Face for modified indicator"
-    :group 'knavemacs/mode-line-faces)
-
-  (defface knavemacs/modeline-faces-kmacrorec
-    '((t :foreground "#AA1122"
-         :weight bold
-         ))
-    "Face for kmacro record indicator"
-    :group 'knavemacs/mode-line-faces)
-#+END_SRC
-
-*** nerd-icons
-I use nerd fonts as my go-to fonts. This package will allow me to use some nifty
-symbols in emacs, as well as unify the look between GUI and terminal instances!
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: nerd-icons
-  ;; PURPOSE: fancy icons in GUI and terminal emacs
-  (use-package nerd-icons
-    :if knavemacs/config-visual-icons
+  ;; vundo configuration
+  (use-package vundo
+    :if knavemacs/config-visual
     )
 #+END_SRC
 
-*** nerd-icons-dired
-Companion to nerd-icons, for fancy icons in dired buffers.
+*** Fuzzy Finding Framework
+Vertico and its ecosystem are unmatched in the area of fuzzy finding completions!
+| Vertico        | Minibuffer Completions                                    |
+| Savehist       | Most recent prior matches appear on top of list           |
+| Marginalia     | Extra information in the margins of vertico completions   |
+| Orderless      | Orderless fuzzy finding algorithm                         |
+| Embark         | Context menu mini-buffer actions using keys               |
+| Consult        | Streamlined, taylored commands using the verico framework |
+| Embark-Consult | Connection point between embark and consult               |
 
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: nerd-icons-dired
-  ;; PURPOSE: fancy icons in dired buffers
-  (use-package nerd-icons-dired
-    :if knavemacs/config-visual-icons
-    :after nerd-icons
-    :hook
-    (dired-mode . nerd-icons-dired-mode))
-#+END_SRC
-
-*** nerd-icons-completion
-Companion to nerd-icons, for fancy icons in completion buffers (vertico).
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: nerd-icons-completion
-  ;; PURPOSE: fancy icons in completion buffers
-  (use-package nerd-icons-completion
-    :if knavemacs/config-visual-icons
-    :after vertico marginalia nerd-icons
-    :config
-    (nerd-icons-completion-mode)
-    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-#+END_SRC
-
-*** nerd-icons-ibuffer
-Companion to nerd-icons, for fancy icons in the ibuffer buffer.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: nerd-icons-ibuffer
-  ;; PURPOSE: fancy icons in ibuffer
-  (use-package nerd-icons-ibuffer
-    :if knavemacs/config-visual-icons
-    :after nerd-icons
-    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
-#+END_SRC
-
-*** Modeline Configuration
-I've written my own custom modeline, using some custom faces, tapping into meow,
-and leveraging some nerd icons.
-
-#+BEGIN_SRC emacs-lisp
-  ;; Let's define the modules I will use.
-
-  ;; modeline module: meow indicator
-  (defvar-local knavemacs/modeline-meow-indicator
-      '(:eval
-        (when (mode-line-window-selected-p)
-          (propertize (meow-indicator) 'face (knavemacs/modeline-faces-meow))))
-    "Modeline module to provide a meow mode indicator.")
-
-  ;; modeline module: readonly indicator
-  (defvar-local knavemacs/modeline-readonly-indicator
-      '(:eval
-        (when buffer-read-only
-          (propertize "" 'face 'knavemacs/modeline-faces-readonly)))
-    "Modeline module to provide a readonly indicator for appropriate buffers")
-
-  ;; modeline module: modified indicator
-  (defvar-local knavemacs/modeline-modified-indicator
-      '(:eval
-        (when (buffer-modified-p)
-          (propertize "" 'face 'knavemacs/modeline-faces-modified)))
-    "Modeline module to provide a modified indicator for appropriate buffers")
-
-  ;; modeline module: buffer name
-  (defvar-local knavemacs/modeline-bufname
-      '(:eval
-        (propertize (buffer-name) 'help-echo (buffer-file-name)))
-    "Modeline module to provide the buffer name.")
-
-  ;; modeline module: major mode icon
-  (defvar-local knavemacs/modeline-major-mode-icon
-      '(:eval
-        (when (mode-line-window-selected-p)
-          (nerd-icons-icon-for-mode major-mode)))
-    "Modeline module to provide an icon based on the major mode.")
-
-  ;; modeline module: major mode name
-  (defvar-local knavemacs/modeline-major-mode-name
-      '(:eval
-        (when (mode-line-window-selected-p)
-          mode-name))
-    "Modeline module to provide major mode name.")
-
-  ;; modeline module: right display
-  (defvar-local knavemacs/modeline-right-display
-      '(""
-        " L%l:C%c "
-        "[%p]")
-    "Modeline module to provide minimal modeline info aligned right.")
-
-  ;; modeline module: kmacro record indicator
-  (defvar-local knavemacs/modeline-kmacro-indicator
-      '(:eval
-        (when defining-kbd-macro
-          (propertize " (󰑋 MACRO)" 'face 'knavemacs/modeline-faces-kmacrorec)))
-    "Modeline module to provide an indicator for when recording kmacros")
-
-  ;; making the modeline modules "risky" variables
-  (dolist (construct '(knavemacs/modeline-meow-indicator
-                        knavemacs/modeline-readonly-indicator
-                        knavemacs/modeline-modified-indicator
-                        knavemacs/modeline-bufname
-                        knavemacs/modeline-major-mode-icon
-                        knavemacs/modeline-major-mode-name
-                        knavemacs/modeline-right-display
-                        knavemacs/modeline-kmacro-indicator))
-    (put construct 'risky-local-variable t)) ;; required for modeline local vars
-
-  ;; modeline *function*: fill for alignment
-  (defun knavemacs/modeline-fill-for-alignment ()
-    "Modeline module to provide filler space until right-aligned items on the modeline"
-    (let ((r-length (length (concat (format-mode-line knavemacs/modeline-right-display) (format-mode-line knavemacs/modeline-kmacro-indicator)) )))
-      (propertize " "
-                  'display `(space :align-to (- right ,r-length)))))
-
-  ;; now construct the actual mode-line
-  (when (and
-         knavemacs/config-visual-icons
-         knavemacs/config-keybinds
-         knavemacs/config-visual)
-    (setq-default mode-line-format
-                  '("%e"
-                    " "
-                    knavemacs/modeline-meow-indicator
-                    mode-line-front-space
-                    knavemacs/modeline-readonly-indicator
-                    " "
-                    knavemacs/modeline-modified-indicator
-                    " "
-                    knavemacs/modeline-bufname
-                    " "
-                    knavemacs/modeline-major-mode-icon
-                    " "
-                    knavemacs/modeline-major-mode-name
-                    (:eval (knavemacs/modeline-fill-for-alignment))
-                    knavemacs/modeline-right-display
-                    knavemacs/modeline-kmacro-indicator)))
-#+END_SRC
-
-*** Dashboard
-I think using Dashboard works well when emacs is setup to be used in a daemon.
-
-#+BEGIN_SRC emacs-lisp
-     (use-package dashboard
-       :config
-       (dashboard-setup-startup-hook)
-       (add-hook 'dashboard-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
-       (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-       :custom
-       (dashboard-banner-ascii "
-  ██╗  ██╗███╗   ██╗ █████╗ ██╗   ██╗███████╗███╗   ███╗ █████╗  ██████╗███████╗
-  ██║ ██╔╝████╗  ██║██╔══██╗██║   ██║██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
-  █████╔╝ ██╔██╗ ██║███████║██║   ██║█████╗  ██╔████╔██║███████║██║     ███████╗
-  ██╔═██╗ ██║╚██╗██║██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
-  ██║  ██╗██║ ╚████║██║  ██║ ╚████╔╝ ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
-  ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
-   ")
-       (dashboard-startup-banner 'ascii)
-       (dashboard-banner-logo-title nil)
-       (dashboard-center-content t)
-       (dashboard-icon-type 'nerd-icons)
-       (dashboard-set-heading-icons t)
-       (dashboard-set-file-icons t)
-       (dashboard-set-init-info t)
-       (dashboard-set-footer nil)
-       (dashboard-projects-backend 'project-el)
-       (dashboard-display-icons-p t)
-       (dashboard-items '(
-                          (recents . 5)
-                          (agenda . 5)
-                          (projects . 5)
-                          (bookmarks . 5)
-                          )))
-#+END_SRC
-
-*** Rainbow Delimiters
-I use rainbow delimiters to see matching parenthesis better in my files.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: rainbow-delimiters
-  ;; PURPOSE: make apparent the nested parenthesis in program code like Elisp
-  (use-package rainbow-delimiters
-    :if knavemacs/config-visual
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+END_SRC
-
-*** Rainbow Mode
-I use rainbow mode so that I can get an in-text preview of colors when I use
-hex codes.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: rainbow-mode
-  ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
-  (use-package rainbow-mode
-    :if knavemacs/config-visual
-  )
-#+END_SRC
-
-** Completion, Hints, Help Framework
-The vertico completion system and its companion packages are the main completion
-packages I use.  I find them pretty indispensible in terms of their
-usefulness. Other helpful packages in terms of completing text or helping you
-complete a command are here as well.
-
-*** Vertico
-I currently use Vertico and its companion packages as my completion
-fuzzy-finding system.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: verico
   ;; PURPOSE: minimal completion system in the likes of helm and ivy
   (use-package vertico
-    :if knavemacs/config-compframework
+    :if knavemacs/config-fuzzyfind
     :bind (:map vertico-map
-                ("C-j" . vertico-next)
-                ("C-k" . vertico-previous)
-                ("C-f" . vertico-exit)
-                :map minibuffer-local-map
-                ("M-h" . backward-kill-word))
+		("C-j" . vertico-next)
+		("C-k" . vertico-previous)
+		("C-f" . vertico-exit)
+		:map minibuffer-local-map
+		("M-h" . backward-kill-word))
     :custom
     (vertico-cycle t)
     :init
     (vertico-mode))
-#+END_SRC 
 
-*** Savehist
-Saves the most recent completion selection so the next time you show completions, recent selections
-show on the top of the list.
 
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: savehist
   ;; PURPOSE: built in emacs package that works with vertico, show recent completion selections used
   (use-package savehist
-    :if knavemacs/config-compframework
+    :if knavemacs/config-fuzzyfind
     :init
     (savehist-mode))
-#+END_SRC
 
-*** Marginalia
-Provides extra metadata in margins of Vertico completions.
 
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: marginalia
   ;; PURPOSE: provides extra metadata in margins of vertico completions
   (use-package marginalia
-    :if knavemacs/config-compframework
+    :if knavemacs/config-fuzzyfind
     :after vertico
     :custom
     (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
     :init
     (marginalia-mode))
-#+END_SRC
 
-*** Orderless
-Provides fuzzy-finding enablement to completion system searches.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: orderless
-  ;; PURPOSE: enables fuzzy finding in vertico completion lists
-  (use-package orderless
-    :if knavemacs/config-compframework
+  ;; PURPOSE: provides extra metadata in margins of vertico completions
+  (use-package marginalia
+    :if knavemacs/config-fuzzyfind
+    :after vertico
+    :custom
+    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
     :init
-    ;; Configure a custom style dispatcher (see the Consult wiki)
-    ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless basic)
-          completion-category-defaults nil
-          completion-category-overrides '((file (styles partial-completion)))))
-#+END_SRC
+    (marginalia-mode))
 
-*** Embark
-Emacs Mini-Buffer Actions Rooted in Keymaps. Also provides smart actions
-depending on where the point is.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: embark
   ;; PURPOSE: Minibuffer actions based on vertico completions
   (use-package embark
-    :if knavemacs/config-compframework
+    :if knavemacs/config-fuzzyfind
     :ensure t
 
     :bind
@@ -704,72 +367,66 @@ depending on where the point is.
 
     ;; Hide the mode line of the Embark live/completions buffers
     (add-to-list 'display-buffer-alist
-                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                   nil
-                   (window-parameters (mode-line-format . none)))))
-#+END_SRC
+		 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		   nil
+		   (window-parameters (mode-line-format . none)))))
 
-*** Consult
-Enhanced commands utilizing the power of the completion framework packages
-previously loaded.
 
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: consult
   ;; PURPOSE: provides alternative, taylored commands for various search / switch functions using the current completion framework
   (use-package consult
-    :if knavemacs/config-compframework
+    :if knavemacs/config-fuzzyfind
     ;; Replace bindings. Lazily loaded due by `use-package'.
     :bind (;; C-c bindings in `mode-specific-map'
-           ("C-c M-x" . consult-mode-command)
-           ("C-c h" . consult-history)
-           ("C-c k" . consult-kmacro)
-           ("C-c m" . consult-man)
-           ("C-c i" . consult-info)
-           ([remap Info-search] . consult-info)
-           ;; C-x bindings in `ctl-x-map'
-           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-                                          ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
-           ;; Custom M-# bindings for fast register access
-           ("M-#" . consult-register-load)
-           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-           ("C-M-#" . consult-register)
-           ;; Other custom bindings
-           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-           ;; M-g bindings in `goto-map'
-           ("M-g e" . consult-compile-error)
-           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-           ("M-g g" . consult-goto-line)             ;; orig. goto-line
-           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-           ("M-g m" . consult-mark)
-           ("M-g k" . consult-global-mark)
-           ("M-g i" . consult-imenu)
-           ("M-g I" . consult-imenu-multi)
-           ;; M-s bindings in `search-map'
-           ("M-s d" . consult-find)
-           ("M-s D" . consult-locate)
-           ("M-s g" . consult-grep)
-           ("M-s G" . consult-git-grep)
-           ("M-s r" . consult-ripgrep)
-           ("C-s" . consult-line)
-           ("M-s L" . consult-line-multi)
-           ("M-s k" . consult-keep-lines)
-           ("M-s u" . consult-focus-lines)
-           ;; Isearch integration
-           ("M-s e" . consult-isearch-history)
-           :map isearch-mode-map
-           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-           ;; Minibuffer history
-           :map minibuffer-local-map
-           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+	   ("C-c M-x" . consult-mode-command)
+	   ("C-c h" . consult-history)
+	   ("C-c k" . consult-kmacro)
+	   ("C-c m" . consult-man)
+	   ("C-c i" . consult-info)
+	   ([remap Info-search] . consult-info)
+	   ;; C-x bindings in `ctl-x-map'
+	   ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+	   ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+	   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+	   ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+	   ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+					  ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
+	   ;; Custom M-# bindings for fast register access
+	   ("M-#" . consult-register-load)
+	   ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+	   ("C-M-#" . consult-register)
+	   ;; Other custom bindings
+	   ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+	   ;; M-g bindings in `goto-map'
+	   ("M-g e" . consult-compile-error)
+	   ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+	   ("M-g g" . consult-goto-line)             ;; orig. goto-line
+	   ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+	   ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+	   ("M-g m" . consult-mark)
+	   ("M-g k" . consult-global-mark)
+	   ("M-g i" . consult-imenu)
+	   ("M-g I" . consult-imenu-multi)
+	   ;; M-s bindings in `search-map'
+	   ("M-s d" . consult-find)
+	   ("M-s D" . consult-locate)
+	   ("M-s g" . consult-grep)
+	   ("M-s G" . consult-git-grep)
+	   ("M-s r" . consult-ripgrep)
+	   ("C-s" . consult-line)
+	   ("M-s L" . consult-line-multi)
+	   ("M-s k" . consult-keep-lines)
+	   ("M-s u" . consult-focus-lines)
+	   ;; Isearch integration
+	   ("M-s e" . consult-isearch-history)
+	   :map isearch-mode-map
+	   ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+	   ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+	   ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+	   ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+	   ;; Minibuffer history
+	   :map minibuffer-local-map
+	   ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+	   ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
     ;; Enable automatic preview at point in the *Completions* buffer. This is
     ;; relevant when you use the default completion UI.
@@ -782,7 +439,7 @@ previously loaded.
     ;; preview for `consult-register', `consult-register-load',
     ;; `consult-register-store' and the Emacs built-ins.
     (setq register-preview-delay 0.5
-          register-preview-function #'consult-register-format)
+	  register-preview-function #'consult-register-format)
 
     ;; Optionally tweak the register preview window.
     ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -790,7 +447,7 @@ previously loaded.
 
     ;; Use Consult to select xref locations with preview
     (setq xref-show-xrefs-function #'consult-xref
-          xref-show-definitions-function #'consult-xref)
+	  xref-show-definitions-function #'consult-xref)
 
     ;; Configure other variables and modes in the :config section,
     ;; after lazily loading the package.
@@ -813,7 +470,7 @@ previously loaded.
      :preview-key '(:debounce 0.4 any))
 
     ;; Optionally configure the narrowing key.
-    ;; Both < and C-+ work reasonably well.
+    ;; Both  and C-+ work reasonably well.
     (setq consult-narrow-key "<") ;; "C-+"
 
     ;; Optionally make narrowing help available in the minibuffer.
@@ -822,213 +479,303 @@ previously loaded.
 
     ;; By default `consult-project-function' uses `project-root' from project.el.
     ;; Optionally configure a different project root function.
-    ;;;; 1. project.el (the default)
+      ;;;; 1. project.el (the default)
     ;; (setq consult-project-function #'consult--default-project--function)
-    ;;;; 2. vc.el (vc-root-dir)
+      ;;;; 2. vc.el (vc-root-dir)
     ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-    ;;;; 3. locate-dominating-file
+      ;;;; 3. locate-dominating-file
     ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-    ;;;; 4. projectile.el (projectile-project-root)
+      ;;;; 4. projectile.el (projectile-project-root)
     ;; (autoload 'projectile-project-root "projectile")
     ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-    ;;;; 5. No project support
+      ;;;; 5. No project support
     ;; (setq consult-project-function nil)
     )
-#+END_SRC 
 
-*** Embark-Consult
-Provides a connection point between embark and consult.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: embark-consult
   ;; PURPOSE: provides an integration point between embark and consult packages
   (use-package embark-consult
-    :if knavemacs/config-compframework
+    :if knavemacs/config-fuzzyfind
+    )
+
+#+END_SRC
+
+*** Nerd Font Icons
+I use the nerd-icons family of packages for consistent nerd icons in GUI and
+terminal!
+
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: nerd-icons
+  ;; PURPOSE: fancy icons in GUI and terminal emacs
+  (use-package nerd-icons
+    :if knavemacs/config-visual-icons
     )
 #+END_SRC
 
-*** Which-key
-The definitive in-line helper to show what hotkeys are available and their
-associated functions
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: nerd-icons-dired
+  ;; PURPOSE: fancy icons in dired buffers
+  (use-package nerd-icons-dired
+    :if knavemacs/config-visual-icons
+    :after nerd-icons
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: which-key
-  ;; PURPOSE: provides assistance in showing what key permutations/options exist while entering commands
-  (use-package which-key
-    :if knavemacs/config-keyhelp
-    :init (which-key-mode)
-    :diminish
+  ;; PACKAGE: nerd-icons-completion
+  ;; PURPOSE: fancy icons in completion buffers
+  (use-package nerd-icons-completion
+    :if knavemacs/config-visual-icons
+    :after vertico marginalia nerd-icons
     :config
-    (setq which-key-idle-delay 0.9))
+    (nerd-icons-completion-mode)
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+END_SRC
 
-*** Yasnippet
-I put snippets in this section of the configuration, because I consider it fancy
-completion using text templates!  This configuration is looking for snippets in
-the ~~/Shelf/snippets~ directory, but this can be changed to taste.
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: nerd-icons-ibuffer
+  ;; PURPOSE: fancy icons in ibuffer
+  (use-package nerd-icons-ibuffer
+    :if knavemacs/config-visual-icons
+    :after nerd-icons
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+#+END_SRC
+
+*** Mode Line Configuration
+I wrote my own mode-line. First I have functions that provide font face
+configuration. Following that is the actual mode-line definition.
 
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: yasnippet
-  ;; PURPOSE: text templates to auto-complete common text
-  (use-package yasnippet
-    :if knavemacs/config-templates
+  ;; Start with the faces for the meow mode indicator
+  (defface knavemacs/face-meow-normal
+    '((t :foreground "#bcbcbc"
+	 ))
+    "Face for Normal Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/face-meow-insert
+    '((t :foreground "#66CC22"
+	 :weight bold
+	 ))
+    "Face for Insert Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/face-meow-keypad
+    '((t :foreground "#aa0066"
+	 :background "#090909"
+	 :weight bold
+	 ))
+    "Face for keypad Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/face-meow-motion
+    '((t :foreground "#b57123"
+	 ))
+    "Face for motion Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/face-meow-beacon
+    '((t :foreground "#bb1213"
+	 :weight bold
+	 ))
+    "Face for beacon Mode"
+    :group 'knavemacs/mode-line-faces)
+
+  ;; construct the meow mode indicator
+  (defun knavemacs/modeline-faces-meow ()
+    (cond (meow-normal-mode 'knavemacs/face-meow-normal)
+	  (meow-insert-mode 'knavemacs/face-meow-insert)
+	  (meow-motion-mode 'knavemacs/face-meow-motion)
+	  (meow-keypad-mode 'knavemacs/face-meow-keypad)
+	  (meow-beacon-mode 'knavemacs/face-meow-beacon)))
+
+  ;; misc mode line faces
+  (defface knavemacs/modeline-faces-readonly
+    '((t :foreground "#AA1523"
+	 :weight bold
+	 ))
+    "Face for readonly indicator"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/modeline-faces-modified
+    '((t :foreground "#d59123"
+	 :weight bold
+	 ))
+    "Face for modified indicator"
+    :group 'knavemacs/mode-line-faces)
+
+  (defface knavemacs/modeline-faces-kmacrorec
+    '((t :foreground "#AA1122"
+	 :weight bold
+	 ))
+    "Face for kmacro record indicator"
+    :group 'knavemacs/mode-line-faces)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; Let's define the modules I will use.
+
+  ;; modeline module: meow indicator
+  (defvar-local knavemacs/modeline-meow-indicator
+      '(:eval
+	(when (mode-line-window-selected-p)
+	  (propertize (meow-indicator) 'face (knavemacs/modeline-faces-meow))))
+    "Modeline module to provide a meow mode indicator.")
+
+  ;; modeline module: readonly indicator
+  (defvar-local knavemacs/modeline-readonly-indicator
+      '(:eval
+	(when buffer-read-only
+	  (propertize "" 'face 'knavemacs/modeline-faces-readonly)))
+    "Modeline module to provide a readonly indicator for appropriate buffers")
+
+  ;; modeline module: modified indicator
+  (defvar-local knavemacs/modeline-modified-indicator
+      '(:eval
+	(when (buffer-modified-p)
+	  (propertize "" 'face 'knavemacs/modeline-faces-modified)))
+    "Modeline module to provide a modified indicator for appropriate buffers")
+
+  ;; modeline module: buffer name
+  (defvar-local knavemacs/modeline-bufname
+      '(:eval
+	(propertize (buffer-name) 'help-echo (buffer-file-name)))
+    "Modeline module to provide the buffer name.")
+
+  ;; modeline module: major mode icon
+  (defvar-local knavemacs/modeline-major-mode-icon
+      '(:eval
+	(when (mode-line-window-selected-p)
+	  (nerd-icons-icon-for-mode major-mode)))
+    "Modeline module to provide an icon based on the major mode.")
+
+  ;; modeline module: major mode name
+  (defvar-local knavemacs/modeline-major-mode-name
+      '(:eval
+	(when (mode-line-window-selected-p)
+	  mode-name))
+    "Modeline module to provide major mode name.")
+
+  ;; modeline module: right display
+  (defvar-local knavemacs/modeline-right-display
+      '(""
+	" L%l:C%c "
+	"[%p]")
+    "Modeline module to provide minimal modeline info aligned right.")
+
+  ;; modeline module: kmacro record indicator
+  (defvar-local knavemacs/modeline-kmacro-indicator
+      '(:eval
+	(when defining-kbd-macro
+	  (propertize " (󰑋 MACRO)" 'face 'knavemacs/modeline-faces-kmacrorec)))
+    "Modeline module to provide an indicator for when recording kmacros")
+
+  ;; making the modeline modules "risky" variables
+  (dolist (construct '(knavemacs/modeline-meow-indicator
+			knavemacs/modeline-readonly-indicator
+			knavemacs/modeline-modified-indicator
+			knavemacs/modeline-bufname
+			knavemacs/modeline-major-mode-icon
+			knavemacs/modeline-major-mode-name
+			knavemacs/modeline-right-display
+			knavemacs/modeline-kmacro-indicator))
+    (put construct 'risky-local-variable t)) ;; required for modeline local vars
+
+  ;; modeline *function*: fill for alignment
+  (defun knavemacs/modeline-fill-for-alignment ()
+    "Modeline module to provide filler space until right-aligned items on the modeline"
+    (let ((r-length (length (concat (format-mode-line knavemacs/modeline-right-display) (format-mode-line knavemacs/modeline-kmacro-indicator)) )))
+      (propertize " "
+		  'display `(space :align-to (- right ,r-length)))))
+
+  ;; now construct the actual mode-line
+  (when (and
+	 knavemacs/config-visual-icons
+	 knavemacs/config-keybinds
+	 knavemacs/config-visual)
+    (setq-default mode-line-format
+		  '("%e"
+		    " "
+		    knavemacs/modeline-meow-indicator
+		    mode-line-front-space
+		    knavemacs/modeline-readonly-indicator
+		    " "
+		    knavemacs/modeline-modified-indicator
+		    " "
+		    knavemacs/modeline-bufname
+		    " "
+		    knavemacs/modeline-major-mode-icon
+		    " "
+		    knavemacs/modeline-major-mode-name
+		    (:eval (knavemacs/modeline-fill-for-alignment))
+		    knavemacs/modeline-right-display
+		    knavemacs/modeline-kmacro-indicator)))
+#+END_SRC
+
+*** Dashboard
+I think using dashboard as a starting buffer works well when emacs launches
+as a daemon on startup!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+    :if knavemacs/config-visual
     :config
-    (setq yas-snippet-dirs
-          '("~/Shelf/snippets"))
-    (yas-global-mode 1) ;; or M-x yas-reload-all if YASnippet is already started
-    )
-#+END_SRC
-
-** Misc Buffer Utilities
-*** Vundo
-I use vundu as a visual undo tree, to help me backtrack better on document
-changes.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: vundo
-  ;; PURPOSE: visual undo tree management
-  (use-package vundo
-    :if knavemacs/config-utils
-    )
-#+END_SRC
-
-*** Avy
-I use avy as a jump-to-location swiss army knife.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: avy
-  ;; PURPOSE: jump to location based on char decision tree
-  (use-package avy
-    :if knavemacs/config-utils
-    :config
-
-    ;; define an avy action to kill a while line based on a selection
-    ;; (see https://karthinks.com/software/avy-can-do-anything/)
-    (defun avy-action-kill-whole-line (pt)
-      (save-excursion
-        (goto-char pt)
-        (kill-whole-line))
-      (select-window
-       (cdr
-        (ring-ref avy-ring 0)))
-      t)
-
-    ;; define an avy action to activate embark on a selection
-    (defun avy-action-embark (pt)
-      (save-excursion
-        (goto-char pt)
-        (embark-act))
-      (select-window
-       (cdr
-        (ring-ref avy-ring 0)))
-      t)
-
-    ;; add custom avy actions to the action dispatcher
-    (setf (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
-          (alist-get ?o avy-dispatch-alist) 'avy-action-embark)
-    )
-#+END_SRC
-
-*** Ace Window
-For easy navigation of buffer windows, I use ace-window.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: ace-window
-  ;; PURPOSE: smart and easy window nagivation
-  (use-package ace-window
-    :if knavemacs/config-utils
-    :config
-    ;; defines hot keys to use for window switching
-    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-    )
-#+END_SRC
-
-** Project and Version Control
-Anything to help me with working in project spaces will go in this section.
-
-*** Magit
-The definitive git front-end package for emacs.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: magit
-  ;; PURPOSE: git interface with emacs
-  (use-package magit
-    :if knavemacs/config-project
-    :init
-    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/cmder/vendor/git-for-windows/bin"))))
-    )
-#+END_SRC
-
-** Programming Configurations
-*** eglot
-First, let's make sure we're using the latest version of eglot for lsp
-integration.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: eglot
-  ;; PURPOSE: provide lsp integration
-  (use-package eglot
-    :if knavemacs/config-programming
-    )
-#+END_SRC
-
-*** corfu
-Next let's make sure corfu is running for completions integrations
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: corfu
-  ;; PURPOSE: completion at point (lsp informed) completions
-  (use-package corfu
-    :if knavemacs/config-programming
+    (dashboard-setup-startup-hook)
+    (add-hook 'dashboard-mode-hook (lambda () (setq-local global-hl-line-mode nil)))
+    (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
     :custom
-    (corfu-auto t)
-    (corfu-popupinfo-delay 0.3)
-    :init
-    (global-corfu-mode)
-    (corfu-popupinfo-mode 1))
-#+END_SRC
+    (dashboard-banner-ascii "
+  ██╗  ██╗███╗   ██╗ █████╗ ██╗   ██╗███████╗███╗   ███╗ █████╗  ██████╗███████╗
+  ██║ ██╔╝████╗  ██║██╔══██╗██║   ██║██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
+  █████╔╝ ██╔██╗ ██║███████║██║   ██║█████╗  ██╔████╔██║███████║██║     ███████╗
+  ██╔═██╗ ██║╚██╗██║██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
+  ██║  ██╗██║ ╚████║██║  ██║ ╚████╔╝ ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
+  ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
+   ")
+    (dashboard-startup-banner 'ascii)
+    (dashboard-banner-logo-title nil)
+    (dashboard-center-content t)
+    (dashboard-icon-type 'nerd-icons)
+    (dashboard-set-heading-icons t)
+    (dashboard-set-file-icons t)
+    (dashboard-set-init-info t)
+    (dashboard-set-footer nil)
+    (dashboard-projects-backend 'project-el)
+    (dashboard-display-icons-p t)
+    (dashboard-items '(
+		       (recents . 5)
+		       (agenda . 5)
+		       (projects . 5)
+		       (bookmarks . 5)
+		       )))
+#+END_SRC 
 
-*** kind-icon
-Here we enable svg icon support in completions!!
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: kind-icon
-  ;; PURPOSE: provide icon support in completions from corfu
-
-  (use-package kind-icon
-    :if knavemacs/config-programming
-    :ensure t
-    :after corfu
-    :custom
-    (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
-    :config
-    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-
-  ;; =Alternative Below= using nerd-icons
-  ;; (use-package nerd-icons-corfu
-  ;; :config
-  ;; (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-
-#+END_SRC
-
-*** corfu-teriminal
-Configuration (optional) enable terminal support for completions!
+*** Smart Coloration
+I use Rainbow Delimiters to denote nested delims with different colors.
+I also use Rainbow Mode to highlight hex colors in their respective color
+definitions!
 
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: corfu-terminal
-  ;; PURPOSE: terminal completions with corfu
-  ;; NOTE: must be manually installed! Below is a use-package configuration once on M/ELPA
-  ;; (use-package corfu-terminal
-  ;;  :config
-  ;;  (unless (display-graphic-p)
-  ;;    (corfu-terminal-mode +1)))
+  ;; PACKAGE: rainbow-delimiters
+  ;; PURPOSE: make apparent the nested parenthesis in program code like Elisp
+  (use-package rainbow-delimiters
+    :if knavemacs/config-visual
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
-** File Management Configuration
-Here are my configurations for how I like to use dired in my workflow.
+#+BEGIN_SRC emacs-lisp
+  ;; PACKAGE: rainbow-mode
+  ;; PURPOSE: provide color highlighting for rgb/hex codes in the buffer
+  (use-package rainbow-mode
+    :if knavemacs/config-visual
+    )
+#+END_SRC
 
-*** Dired
-Some modifications to dired to support my usage of the functionality
+
+** File Management
+*** Dired Configuration
+Some modifications to the dired functionality.
+
 #+BEGIN_SRC emacs-lisp
   (defun knavemacs/dired-mode-setup ()
     (dired-hide-details-mode))
@@ -1044,41 +791,41 @@ Some modifications to dired to support my usage of the functionality
     ;; function declaration to create a dired sidebar
     (defun knavemacs/dired-vc-root-left ()
       "This function is taken closely verbatim from Protesilaos Stavrou's dired function.
-            Open the root directory of the current version-controlled repository or the present
-            working directory with `dired` with specific window parameters."
+	    Open the root directory of the current version-controlled repository or the present
+	    working directory with `dired` with specific window parameters."
       (interactive)
       (let ((dir (if (eq (vc-root-dir) nil)
-                     (dired-noselect default-directory)
-                   (dired-noselect (vc-root-dir)))))
-        (display-buffer-in-side-window
-         dir `((side . left)
-               (slot . 0)
-               (window-width . 0.2)
-               (window-parameters . (
-                                     (no-delete-other-windows . t)
-                                     (mode-line-format . (" "
-                                                          "%b"))))))
-        (with-current-buffer dir
-          (rename-buffer "*Dired-Side*"))
-        (with-current-buffer dir
-          (tab-line-mode -1)))
+		     (dired-noselect default-directory)
+		   (dired-noselect (vc-root-dir)))))
+	(display-buffer-in-side-window
+	 dir `((side . left)
+	       (slot . 0)
+	       (window-width . 0.2)
+	       (window-parameters . (
+				     (no-delete-other-windows . t)
+				     (mode-line-format . (" "
+							  "%b"))))))
+	(with-current-buffer dir
+	  (rename-buffer "*Dired-Side*"))
+	(with-current-buffer dir
+	  (tab-line-mode -1)))
 
       (with-eval-after-load 'ace-window
-        (when (boundp 'aw-ignored-buffers)
-          (add-to-list 'aw-ignored-buffers "*Dired-Side*"))))
+	(when (boundp 'aw-ignored-buffers)
+	  (add-to-list 'aw-ignored-buffers "*Dired-Side*"))))
 
     ;; function declaraction to have files opened in the next window when pressing "o"
     ;; from https://stackoverflow.com/questions/10073673/open-file-in-specified-window-in-emacs
     (defun dired-window () (window-at (frame-width) 1))
     (eval-after-load 'dired
       '(define-key dired-mode-map (kbd "o")
-                   (lambda ()
-                     (interactive)
-                     (let ((dired-window (dired-window)))
-                       (set-window-buffer dired-window
-                                          (find-file-noselect 
-                                           (dired-get-file-for-visit)))
-                       (select-window dired-window)))))
+		   (lambda ()
+		     (interactive)
+		     (let ((dired-window (dired-window)))
+		       (set-window-buffer dired-window
+					  (find-file-noselect 
+					   (dired-get-file-for-visit)))
+		       (select-window dired-window)))))
 
     ;; function declaration to setup a project-like tab mode style of working with
     ;; a directory tree on the left, and working files under tabs on the right
@@ -1086,626 +833,453 @@ Some modifications to dired to support my usage of the functionality
       (interactive)
       (global-tab-line-mode)
       (knavemacs/dired-vc-root-left))
-
-
     )
-#+End_SRC
 
-*** Dired-Single
-Prevents a bunch of dired buffers from accumulating in the buffer list
+#+END_SRC
+
+*** Additional Dired Functionality
+Companion dired packages.
 
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: dired-single
   ;; PURPOSE: prevents a bunch of dired buffers from accumulating in the buffer list
   (use-package dired-single
     :if knavemacs/config-dired
-  )
-#+END_SRC
+    )
 
-*** Dired-Hide-Dotfiles
-The name says it all.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: dired-hide-dotfiles
   ;; PURPOSE: hides hidden files from the default dired view
   (use-package dired-hide-dotfiles
     :if knavemacs/config-dired
     :hook (dired-mode . dired-hide-dotfiles-mode))
-#+END_SRC
 
-*** Dired-Subtree
-The name says it all.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: dired-subtree
   ;; PURPOSE: allows viewing the contents of a subdirectory, without changing the current dired view
   (use-package dired-subtree
     :if knavemacs/config-dired
+    )
+#+END_SRC
+
+
+** Productivity & Notetaking
+*** Org Mode
+There's a lot to unpack here, and this tends to be tweaked from time to time.
+Required folder setup is indicated in the Installation section at the beginning
+of this document.
+
+#+BEGIN_SRC emacs-lisp
+;; PURPOSE: this manages my getting things done workflow during work
+(defun knavemacs/org-mode-setup ()
+  (org-indent-mode))
+
+(use-package org
+  :if knavemacs/config-org
+  :hook (org-mode . knavemacs/org-mode-setup)
+  :custom
+  (setq org-cite-global-bibliography '("~/Documents/knowledge/master.bib"))
+  (setq org-cite-export-processors
+   '((latex biblatex)))
+
+  :config
+  (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
+  (setq org-ellipsis " ▾"
+        ;org-hide-emphasis-markers t
+  )
+  (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active"))
+  (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
+  (setq org-stuck-projects
+        '("+LEVEL=3+PROJECT/-DONE" ("NEXT")))
+  (setq org-refile-targets
+        '((nil :maxlevel . 1)
+          (org-agenda-files :maxlevel . 2)))
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "BACKLOG(b@/!)" "PROJ(p)" "NEXT(x)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "|" "DONE(d!)" "CANCELED(c)")
+          (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
+          (sequence "NOTE(e)" "|" "NOTED(z)" "TRASH(x)")
+          ))
+  (setq org-todo-keywoard-faces
+        '(("TODO" . "green") ("BACKLOG" . "red") ("NEXT" . "green") ("HOLD" . "yellow") 
+          ("DONE" . "blue") ("CANCELED" . "purple") ("NOTE" . org-warning) ("NOTED" . "green")))
+
+  ;; custom agenda views
+  (setq org-agenda-custom-commands
+        '(("d" "Work-Week Dashboard"
+           (
+            (todo "NOTICE" ((org-agenda-overriding-header "Notices for Today")))
+            (agenda "" ((org-deadline-warning-days 7)))
+            (tags "PROJECT+TODO=\"NEXT\"|-PROJECT+TODO=\"TODO\""
+                       ((org-agenda-overriding-header "Activities to Schedule")
+                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
+            (todo "FEEDBACK" ((org-agenda-overriding-header "Items Requiring Feedback")))
+            ))
+          ("f" "View Fleeting Notes Collection"
+           (
+            (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes")))
+            )))
+        )
+
+  ;; capture templates
+  (setq org-capture-templates
+        '(
+          ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notice")
+           "* NOTICE %?\n%U Notice Created" :empty-lines 1)
+
+          ("m" "Meeting Notes" entry (file+olp "~/Documents/org/meetings.org" "Unfiled Meeting Notes")
+           "* %t %^{Enter Meeting Title} :Clarify:%^G \n** Attendees\n*** \n** Notes\n*** \n** Action Items\n*** TODO " :tree-type week :clock-in t :clock-resume t :empty-lines 0)
+
+          ("t" "New Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs")
+           "* TODO [#A] %^{Enter TODO Item} :Clarify:\n %?" :empty-lines 1)
+
+          ("z" "New Work File" entry (file "~/Documents/org/new.org")
+           "* Backlog\n* Meetings\n* Knowledge\nBe sure to add FILETAGS to the new file.\n%i")
+
+          ("f" "Fleeting Note" entry (file+olp "~/Documents/org/fleeting.org" "Fleeting Notes")
+           "* NOTE %?\n %i" :empty-lines 1)
+          ))
   )
 #+END_SRC
 
-** Org-Mode Configuration
-My org-mode workflow works for both my personal and work devices. There's a lot
-to unpack here, and require some directories/files to exist which can be found
-in the dependencies section at the top of this org file.
 
-*** Org (general config)
+** Programming Configurations
+*** Snippets
+Yasnippets is the defacto standard for Emacs imo.
+
 #+BEGIN_SRC emacs-lisp
-  ;; PURPOSE: this manages my getting things done workflow during work
-  (defun knavemacs/org-mode-setup ()
-    (org-indent-mode))
-
-  (use-package org
-    :if knavemacs/config-org
-    :hook (org-mode . knavemacs/org-mode-setup)
-    :custom
-    (setq org-cite-global-bibliography '("~/Documents/knowledge/master.bib"))
-    (setq org-cite-export-processors
-     '((latex biblatex)))
-
+  ;; yasnippet snippets engine
+  (use-package yasnippet
+    :if knavemacs/config-snippets
     :config
-    (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
-    (setq org-ellipsis " ▾"
-          ;org-hide-emphasis-markers t
-    )
-    (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active"))
-    (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
-    (setq org-stuck-projects
-          '("+LEVEL=3+PROJECT/-DONE" ("NEXT")))
-    (setq org-refile-targets
-          '((nil :maxlevel . 1)
-            (org-agenda-files :maxlevel . 2)))
-    (setq org-todo-keywords
-          '((sequence "TODO(t)" "BACKLOG(b@/!)" "PROJ(p)" "NEXT(x)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "|" "DONE(d!)" "CANCELED(c)")
-            (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
-            (sequence "NOTE(e)" "|" "NOTED(z)" "TRASH(x)")
-            ))
-    (setq org-todo-keywoard-faces
-          '(("TODO" . "green") ("BACKLOG" . "red") ("NEXT" . "green") ("HOLD" . "yellow") 
-            ("DONE" . "blue") ("CANCELED" . "purple") ("NOTE" . org-warning) ("NOTED" . "green")))
-
-    ;; custom agenda views
-    (setq org-agenda-custom-commands
-          '(("d" "Work-Week Dashboard"
-             (
-              (todo "NOTICE" ((org-agenda-overriding-header "Notices for Today")))
-              (agenda "" ((org-deadline-warning-days 7)))
-              (tags "PROJECT+TODO=\"NEXT\"|-PROJECT+TODO=\"TODO\""
-                         ((org-agenda-overriding-header "Activities to Schedule")
-                          (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-              (todo "FEEDBACK" ((org-agenda-overriding-header "Items Requiring Feedback")))
-              ))
-            ("f" "View Fleeting Notes Collection"
-             (
-              (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes")))
-              )))
-          )
-
-    ;; capture templates
-    (setq org-capture-templates
-          '(
-            ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notice")
-             "* NOTICE %?\n%U Notice Created" :empty-lines 1)
-
-            ("m" "Meeting Notes" entry (file+olp "~/Documents/org/meetings.org" "Unfiled Meeting Notes")
-             "* %t %^{Enter Meeting Title} :Clarify:%^G \n** Attendees\n*** \n** Notes\n*** \n** Action Items\n*** TODO " :tree-type week :clock-in t :clock-resume t :empty-lines 0)
-
-            ("t" "New Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs")
-             "* TODO [#A] %^{Enter TODO Item} :Clarify:\n %?" :empty-lines 1)
-
-            ("z" "New Work File" entry (file "~/Documents/org/new.org")
-             "* Backlog\n* Meetings\n* Knowledge\nBe sure to add FILETAGS to the new file.\n%i")
-
-            ("f" "Fleeting Note" entry (file+olp "~/Documents/org/fleeting.org" "Fleeting Notes")
-             "* NOTE %?\n %i" :empty-lines 1)
-            ))
+    (setq yas-snippet-dirs
+	  '("~/Shelf/snippets"))
+    (yas-global-mode 1) ;; or M-x yas-reload-all if YASnippet is already started
     )
 #+END_SRC
 
-*** Org Bullets
-Nicer org bullets for aesthetic purposes.
+*** Version Control
+Some minor tweaks for magit.
 
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: org-bullets
-  ;; PURPOSE: nicer bullets when working in org files
-  (use-package org-bullets
-    :if knavemacs/config-org
-    :after org
-    :hook (org-mode . org-bullets-mode))
-#+END_SRC
-
-*** Pretty Hyphens
-This is done to transform dash hyphens into dots.
-#+BEGIN_SRC emacs-lisp
-  ;; make hyphens dots
-  ;; Replace list hyphen with dot
-    (font-lock-add-keywords 'org-mode
-			    '(("^ *\\([-]\\) "
-			       (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-#+END_SRC
-
-** Org-Roam Configuration
-I am currently using org-roam for note-taking and knowledge management.
-
-*** Org-Roam
-Main org-roam configuration is below, including capture templates I am using for
-my note-taking workflow
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: org-roam
-  ;; PURPOSE: providing note-taking / knowledge management atop org mode functionality
-  (use-package org-roam
-    :if knavemacs/config-notes
+  ;; PURPOSE: git interface with emacs
+  (use-package magit
+    :if knavemacs/config-programming
     :init
-    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/x86_64-12.2.0-release-posix-seh-ucrt-rt_v10-rev2/mingw64/bin"))))
-    :custom
-    (org-roam-directory "~/Documents/knowledge")
-    (org-roam-capture-templates
-     '(("d" "default" plain
-        "%?"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
-       ("l" "Literature Note" plain
-        "* Source Info\n\n- Title: ${title}\n- Author: %^{Author}\n\n- Year: %^{Year}\n\n- Date Accessed: %^{Accessed}\n\n* (Info)\nUse org-roam-add-ref if needed. Add tags to header levels.\n\n%?"
-        :if-new (file+head "literature/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Literature")
-        :unnarrowed t)
-       ("a" "(Permanent) Article Note" plain
-        "* Sources\n** Referenced Literature:\n - %?\n\n** Linked Notes\n\n"
-        :if-new (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Article")
-        :unnarrowed t)
-       ("i" "(Permanent) Idea Note" plain
-        "* Sources\n** Referenced Literature:\n - %?\n\n** Linked Notes\n\n"
-        :if-new (file+head "permanent/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Idea")
-        :unnarrowed t)
-       ("w" "Wiki Note" plain
-        "* Topic\n%?"
-        :if-new (file+head "wiki/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Wiki")
-        :unnarrowed t)
-       ("p" "Project Note" plain
-        "* ${title}\n%?"
-        :if-new (file+head "project/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-        :unnarrowed t)))
-    :config
-    (setq org-roam-db-location "~/Documents/knowledge/org-roam.db")
-    (setq org-roam-node-display-template
-          (concat "${title:*} " (propertize "${tags:20}" 'face 'org-tag)))
-    (org-roam-db-autosync-mode)
-    (org-roam-setup)
+    (if (eq system-type 'windows-nt) (setq exec-path (append exec-path '("C:/Users/josinski/auxiliary/other/lsys/cmder/vendor/git-for-windows/bin"))))
     )
 #+END_SRC
 
-*** Org-Roam-UI
-Visualizer for Org-Roam notes
+
+** Keybindings and Navigation
+*** Jump-To-Location
+Avy is a swiss army knife of jumping to a specific location!
+
 #+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: org-roam-ui
-  ;; PURPOSE: provides a navigation visualizer for my org roam notes
-  (use-package org-roam-ui
-    :if knavemacs/config-notes
-    :after org-roam
-    ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
-    ;;         a hookable mode anymore, you're advised to pick something yourself
-    ;;         if you don't care about startup time, use
-    ;;  :hook (after-init . org-roam-ui-mode)
+  ;; Install Avy - jump to location based on char decision tree
+  (use-package avy
+    :if knavemacs/config-keybinds
     :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t
-          org-roam-ui-open-on-start t))
-#+END_SRC
 
-*** Org-Roam Custom Functions
-**** Find Literature Notes Only
-This is a custom function based on something I found on the org-roam discourse group
-that allows me to search nodes that are my Literature notes. What's nice about the custom
-SQLite query in this function, is it only shows me my "top level" nodes - sometimes I have
-sub-headers in my literature notes that I turn into nodes, but I dont necessarily want to see
-those nodes when searching this way. This gives me a clean list of nodes - one for each source
-I used to capture literature notes.
+    ;; define an avy action to kill a while line based on a selection
+    ;; (see https://karthinks.com/software/avy-can-do-anything/)
+    (defun avy-action-kill-whole-line (pt)
+      (save-excursion
+	(goto-char pt)
+	(kill-whole-line))
+      (select-window
+       (cdr
+	(ring-ref avy-ring 0)))
+      t)
 
-#+BEGIN_SRC emacs-lisp
-  ;; https://org-roam.discourse.group/t/exclude-title-heading-from-the-results-of-org-roam-node-find-but-show-the-aliases/2964/2
-  (defun knavemacs/org-roam-node-find-literature-only ()
-    "It's like `org-roam-node-find' but only for nodes
-     that have one and only one tag - Literature."
-    (interactive)
-    ;; Temporarily replace `org-roam-node-list' to get only nodes from
-    ;; my custom query
-    (cl-letf (((symbol-function 'org-roam-node-list)
-               ;; Anonymus function. Return list of nodes based on just
-               ;; one (Literature) tag.
-               (lambda () (mapcar (lambda (e)
-                                    (org-roam-node-from-id (car e)))
-                                  (org-roam-db-query
-                                   "SELECT nodes.id
-    FROM nodes
-    INNER JOIN tags ON tags.node_id = nodes.id
-    WHERE nodes.level = 0
-    AND tags.tag = '\"Literature\"'")))))
-      (org-roam-node-find)))
-#+END_SRC
+    ;; define an avy action to activate embark on a selection
+    (defun avy-action-embark (pt)
+      (save-excursion
+	(goto-char pt)
+	(embark-act))
+      (select-window
+       (cdr
+	(ring-ref avy-ring 0)))
+      t)
 
-**** Find Notes/Nodes based on Selected Tags
-This collection of functions allows me to select from a completion list of all tags
-in my notes, and then present me with nodes to visit based on the selected tag.
-
-#+BEGIN_SRC emacs-lisp
-  (defun knavemacs/org-roam-filter-by-tag (tag-name)
-    (lambda (node)
-      (member tag-name (org-roam-node-tags node))))
-
-  (defun knavemacs/org-roam-get-tag-selection ()
-    (setq alltags (seq-uniq
-                   (org-roam-db-query [:select :distinct [tag] :from tags])))
-    (completing-read "Tag: " alltags))
-
-  (defun knavemacs/org-roam-find-by-tag ()
-    (interactive)
-    (setq selectedtag (knavemacs/org-roam-get-tag-selection))
-    (org-roam-node-find
-     nil
-     nil
-     (knavemacs/org-roam-filter-by-tag selectedtag)
-     ))
-#+END_SRC
-
-** Citation System
-I use a combination of packages to manage bibliograpic sources for notes,
-their citations, and overall literature note capturing in my workflow.
-
-*** Ebib
-I am using Ebib to manage my bibliography directly in Emacs.
-I manage this bibliography as a way to collect notes on literature works I consume.
-#+BEGIN_SRC emacs-lisp
-  (use-package ebib
-    :if knavemacs/config-cite
+    ;; add custom avy actions to the action dispatcher
+    (setf (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+	  (alist-get ?o avy-dispatch-alist) 'avy-action-embark)
     )
 #+END_SRC
 
-*** Org-Cite
-I opt to use the built in org-cite for managing exporting citation keys into my documents.
-See the ~:custom~ section of my Org config for the Org-Cite variable setup.
+*** Window Navigation
+Ace Window is a great extension for quick navigation of windows!
 
-*** Citar
-I use Citar as a front end to manage inserting and working with citations in my notes.
-I also pull in the integration package citar-embar, and citar-org-roam.
-
-In general, my workflow involves first adding a source to my bibliography with ebib.
-Once that is done, I use ~citar-open-notes~ to open/create a note related to a source.
-Now I can reference that source in any permanent note using ~citar-insert-citation~.
-I can also embark on a citation in my note to see the entry in my bib file, open the link if its an online source, or go directly to its note file.
-Since my notes for a particular source tend to have sub headlines that are nodes themselves in org roam,
-a permanent note will typically have the citation to reference the main source note file, and org roam links to
-specific nodes from that file.
 #+BEGIN_SRC emacs-lisp
-  (use-package citar
-    :if knavemacs/config-cite
-    :custom
-    (citar-bibliography '("~/Documents/knowledge/master.bib"))
-    (citar-notes-paths '("~/Documents/knowledge/literature"))
-    :config (require 'org-roam))
-
-  ;; use citar with embark
-  (use-package citar-embark
-    :if knavemacs/config-cite
-    :after citar embark
-    :no-require
-    :config (citar-embark-mode))
-
-  ;; use citar with org-roam
-  (use-package citar-org-roam
-    :if knavemacs/config-cite
-    :after citar org-roam
-    :config (citar-org-roam-mode))
-  (setq citar-org-roam-capture-template-key "l")
+  ;; Ace Window for quick window navigation
+  (use-package ace-window
+    :if knavemacs/config-keybinds
+    :config
+    ;; defines hot keys to use for window switching
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 #+END_SRC
 
-** General Custom Functions
-There custom functions are a miscellanous set of functions I use to enhance my
-usage of emacs.
-
-
-*** Navigation Functions
-*forward-or-backward-sexp*
-Grabbed from the Emacs Wiki, here is a custom function that 'smartly' emulates
-the '%' key from vi, to allow jumping between matching parenthesis (or sexp).
+*** Custom Transient Functions
+I am using the built in transient functions for quick menus and "hydra" like
+multi-key press functionality.
 
 #+BEGIN_SRC emacs-lisp
-  (defun forward-or-backward-sexp (&optional arg)
-  "Go to the matching parenthesis character if one is adjacent to point."
-  (interactive "^p")
-  (cond ((looking-at "\\s(") (forward-sexp arg))
-        ((looking-back "\\s)" 1) (backward-sexp arg))
-        ;; Now, try to succeed from inside of a bracket
-        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
-        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+  ;; custom transient menus and functionality
+  (transient-define-prefix knavemacs/transient-org-commands ()
+    "Custom Org Commands Transient"
+    :info-manual "Custom Org Commands Transient"
+    ["Org-Mode Actions"
+     ("a" "Org Agenda" org-agenda)
+     ("c" "Org Capture" org-capture)
+     ("l" "Store Link" org-store-link)
+     ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
+    [("q" "Quit" transient-quit-one)])
+
+  (transient-define-prefix knavemacs/transient-note-commands ()
+    "Custom Org-Roam Commands Transient"
+    :info-manual "Custom Note-Taking Commands Transient"
+    [["Note-Taking Actions"
+      ("f" "Create/Find a Note" org-roam-node-find)
+      ("b" "Show Linked Notes Buffer" org-roam-buffer-toggle)
+      ("l" "Insert Link to Note" org-roam-node-insert)]
+     ["View Specific Notes"
+      ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
+      ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]]
+    [["Miscellaneous Actions"
+      ("E" "Launch Ebib" ebib)
+      ("q" "Quit" transient-quit-one)]
+     ["Citation Actions"
+      ("cf" "Open Note from Biblio" citar-open-notes)
+      ("ci" "Insert Biblio Citation" citar-insert-citation)]])
+
+  (transient-define-prefix knavemacs/transient-viewport-commands ()
+    "Custom Viewport Commands Transient"
+    :info-manual "Custom Viewport Commands Transient"
+    ["Shift View"
+     ("z" "Recenter" recenter)
+     ("t" "Shift to Top" knavemacs/recenter-top)
+     ("b" "Shift to Bottom" knavemacs/recenter-bottom)]
+    [("q" "Quit" transient-quit-one)])
+
+  (transient-define-prefix knavemacs/transient-saveclose-commands ()
+    "Custom Save and Close Commands Transient"
+    :info-manual "Custom Save and Close Commands Transient"
+    ["Choose Action"
+     ("Z" "Save All and Close" save-buffers-kill-terminal)
+     ("Q" "Kill Emacs" kill-emacs)]
+    [("q" "Quit" transient-quit-one)])
+
+  (transient-define-prefix knavemacs/transient-buffer-commands ()
+    "Custom Buffer Commands Transient"
+    :info-manual "Custom Buffer Commands Transient"
+    ["Buffer Actions"
+     ("b" "Switch To Buffer" consult-buffer)
+     ("k" "Kill Buffer" kill-current-buffer)
+     ("u" "See Undo Tree" vundo)]
+    [("q" "Quit" transient-quit-one)])
+
 #+END_SRC
 
-*** Date Functions
-*org-quick-time-stamp-inactive*
-Provides a single function that can be mapped to a key, as a shortcut to insert
-an inactive timestamp of the current time without user prompt.
+*** Modal Editing
+I use the meow package as my modal editing system. Lots of customizations here
+to mirror many aspects of vim (and others) that I really enjoy, while keeping
+the spirit of Emacs intact.
 
 #+BEGIN_SRC emacs-lisp
-  (defun org-quick-time-stamp-inactive ()
-  "Insert an inactive time stamp of the current time without user prompt"
-  (interactive)
-  (let ((current-prefix-arg '(16)))
-    (call-interactively 'org-time-stamp-inactive)))
-#+END_SRC
+  ;; custom functions and menus used in my modal editing config
+    ;; scroll half a screen
+  (defun knavemacs/scroll-down-half-page ()
+    "scroll down half a page while keeping the cursor centered"
+    (interactive)
+    (let ((ln (line-number-at-pos (point)))
+	  (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) (move-to-window-line nil))
+	    ((= ln lmax) (recenter (window-end)))
+	    (t (progn
+		 (move-to-window-line -1)
+		 (recenter))))))
 
-** Key-Bind Modifications
-As a past, heavy user of vim and neovim, I am a huge fan of modal editing.
-However, evil mode felt too bulky for me, and I felt like it overwrote a lot of
-key emacs keys that I felt were core. Overall, it seemed to intrusive for my
-liking.
+  (defun knavemacs/scroll-up-half-page ()
+    "scroll up half a page while keeping the cursor centered"
+    (interactive)
+    (let ((ln (line-number-at-pos (point)))
+	  (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) nil)
+	    ((= ln lmax) (move-to-window-line nil))
+	    (t (progn
+		 (move-to-window-line 0)
+		 (recenter))))))
 
-Enter =meow= which I abosolutely love. I have built my custom keybindings around
-a combination of meow, custom transient commmands for menus, and some global
-tweaks.
+  ;; combined meow actions
+  (defun knavemacs/meow-append-end-line ()
+    "go directly to the end of a line to append additional text"
+    (interactive)
+    (call-interactively 'meow-line)
+    (call-interactively 'meow-append))
 
-*** Meow
-I use [[https://github.com/meow-edit/meow][meow]] as my modal editing system, and it is amazing!
+  (defun knavemacs/meow-insert-beginning-line ()
+    "go directly to the beginning of a line to append additonal text"
+    (interactive)
+    (call-interactively 'meow-line)
+    (call-interactively 'meow-insert))
 
-Scrolling around text, I have ~<~ and ~>~ as easy keys navigate up and down a
-full buffer. ~C~ and ~V~ allow me to page up and down in normal mode. ~X~ allows
-me to go to a specific line, and ~z~ works similar to vim in a limited capacity.
+  ;; shift cursor position functions
+  (defun knavemacs/recenter-top ()
+    "Recenter View to Top"
+    (interactive)
+    (recenter-top-bottom 0))
 
-The keypad (pressing space) is configured to allow me specific menus such as:
-- ~SPC b~ for buffer commands (switch buffer, kill buffer)
-- ~SPC n~ for note taking commands (org-roam and such)
-- ~SPC p~ for the built in project.el (I can access magit through here!)
-- ~SPC o~ for all things org mode
-- ~SPC w~ for ace-window and window management commands.
+  (defun knavemacs/recenter-bottom ()
+    "Recenter View to Bottom"
+    (interactive)
+    (recenter-top-bottom -1))
 
-I also heavily modified some of the basic meow QWERTY setup when it comes to
-some keys such as the number keys. Take a look below for how I configured my
-setup.  I also recommend launching ~meow-tutor~ for a overview of meow's modal
-editing system.
-
-#+BEGIN_SRC emacs-lisp
-  ;; PACKAGE: meow
-  ;; PURPOSE: more native modal editing mode for Emacs
+  
+  ;; modal editing keybind configuration
   (use-package meow
     :if knavemacs/config-keybinds
     :diminish
     :config
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-overwrite-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     ;; C-M-j/k will run the original command in MOTION state.
-     '("C-M-j" . "H-j")
-     '("C-M-k" . "H-k")
-     '("M-h" . windmove-left) ;; consistent window movement in special modes
-     '("M-j" . windmove-down) ;; consistent window movement in special modes
-     '("M-k" . windmove-up) ;; consistent window movement in special modes
-     '("M-l" . windmove-right) ;; consistent window movement in special modes
-     '("<escape>" . ignore))
-    (meow-leader-define-key
-     ;; Space-# is now used for number expansion
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("[" . tab-bar-close-tab)
-     '("]" . tab-bar-new-tab)
-     '("r" . rectangle-mark-mode)
-     '("o" . knavemacs/transient-org-commands)
-     '("n" . knavemacs/transient-note-commands)
-     '("b" . knavemacs/transient-buffer-commands)
-     '("w" . ace-window)
-     '("/" . meow-keypad-describe-key)
-     '("?" . meow-cheatsheet))
-    (meow-normal-define-key
-     '("M-h" . windmove-left) ;; normal mode mapping only
-     '("M-j" . windmove-down) ;; normal mode mapping only
-     '("M-k" . windmove-up) ;; normal mode mapping only
-     '("M-l" . windmove-right) ;; normal mode mapping only
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("C" . my/scroll-down-half-page)
-     '("d" . meow-delete)
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("F" . my/scroll-up-half-page)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-pop-selection)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above) 
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("N" . meow-grab)
-     '("n" . meow-join) ; select newline to beginning of current line
-     '("M" . avy-goto-char-timer) ; move to word
-     '("m" . meow-search) ; move to next instance of selected word
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("r" . meow-replace)
-     '("R" . move-to-window-line-top-bottom) ; for convenience (M-r)
-     '("s" . meow-kill)
-     '("S" . meow-kill-whole-line)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
-     '("V" . scroll-up)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . knavemacs/transient-viewport-commands)
-     '("Z" . knavemacs/transient-saveclose-commands)
-     '("'" . repeat)
-     '("<escape>" . ignore)
-     ;; deviating from the suggested map
-     ;; as well as getting to true beginning / ends of lines
-     '("{" . tab-line-switch-to-prev-tab)
-     '("}" . tab-line-switch-to-next-tab)
-     '("M-[" . tab-bar-switch-to-prev-tab)
-     '("M-]" . tab-bar-switch-to-next-tab)
-     '("<" . beginning-of-buffer)
-     '(">" . end-of-buffer)
-     '("-" . move-beginning-of-line)
-     '("=" . move-end-of-line)
-     '("+" . enlarge-window)
-     '("_" . shrink-window)
-     '("(" . shrink-window-horizontally)
-     '(")" . enlarge-window-horizontally)
-     ))
+    (defun meow-setup ()
+      (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
 
-  (meow-setup)
-  (meow-global-mode 1)
+      ; overwrites while in motion mode
+      (meow-motion-overwrite-define-key
+       '("j" . meow-next)
+       '("k" . meow-prev)
+       '("h" . meow-left)
+       '("l" . meow-right)
+       ;; C-M-* will run the original command in MOTION state.
+       '("C-M-j" . "H-j")
+       '("C-M-k" . "H-k")
+       '("C-M-h" . "H-h")
+       '("C-M-l" . "H-l")
+       '("M-h" . windmove-left) ;; consistent window movement in special modes
+       '("M-j" . windmove-down) ;; consistent window movement in special modes
+       '("M-k" . windmove-up) ;; consistent window movement in special modes
+       '("M-l" . windmove-right) ;; consistent window movement in special modes
+       '("<escape>" . ignore))
+
+      ; definitions active when pressing leader (i.e. space)
+      (meow-leader-define-key
+       ;; Space-# is now used for number expansion
+       '("0" . meow-expand-0)
+       '("9" . meow-expand-9)
+       '("8" . meow-expand-8)
+       '("7" . meow-expand-7)
+       '("6" . meow-expand-6)
+       '("5" . meow-expand-5)
+       '("4" . meow-expand-4)
+       '("3" . meow-expand-3)
+       '("2" . meow-expand-2)
+       '("1" . meow-expand-1)
+
+       '("r" . rectangle-mark-mode)
+       ;'("o" . knavemacs/transient-org-commands)
+       ;'("n" . knavemacs/transient-note-commands)
+       '("b" . knavemacs/transient-buffer-commands)
+       '("w" . ace-window)
+       '("?" . meow-keypad-describe-key))
+
+      ; normal mode definitions
+      (meow-normal-define-key
+       '("M-h" . windmove-left)  ;; normal mode mapping only
+       '("M-j" . windmove-down)  ;; normal mode mapping only
+       '("M-k" . windmove-up)    ;; normal mode mapping only
+       '("M-l" . windmove-right) ;; normal mode mapping only
+       '("1" . meow-digit-argument)
+       '("2" . meow-digit-argument)
+       '("3" . meow-digit-argument)
+       '("4" . meow-digit-argument)
+       '("5" . meow-digit-argument)
+       '("6" . meow-digit-argument)
+       '("7" . meow-digit-argument)
+       '("8" . meow-digit-argument)
+       '("9" . meow-digit-argument)
+       '("0" . meow-digit-argument)
+       '("-" . move-beginning-of-line)
+       '("=" . move-end-of-line)
+       ;'("$" . move-end-of-line)
+       '("%" . meow-block)
+       '(";" . meow-reverse)
+       '("," . meow-inner-of-thing)
+       '("." . meow-bounds-of-thing)
+       '("[" . meow-beginning-of-thing)
+       '("]" . meow-end-of-thing)
+
+       '("a" . meow-append)
+       '("A" . knavemacs/meow-append-end-line)
+       '("b" . meow-back-word)
+       '("B" . meow-back-symbol)
+       '("c" . meow-change)
+       ;'("C" . )
+       '("d" . meow-kill)
+       '("D" . meow-kill-whole-line)
+       '("e" . meow-next-word)
+       '("E" . meow-next-symbol)
+       '("f" . meow-find)
+       ;'("F" . )
+       '("g" . meow-cancel-selection)
+       '("G" . meow-pop-selection)
+       '("h" . meow-left)
+       '("H" . meow-left-expand)
+       '("i" . meow-insert)
+       '("I" . knavemacs/meow-insert-beginning-line) 
+       '("j" . meow-next)
+       '("J" . meow-next-expand)
+       '("k" . meow-prev)
+       '("K" . meow-prev-expand)
+       '("l" . meow-right)
+       '("L" . meow-right-expand)
+       '("N" . avy-goto-char-timer)
+       '("n" . meow-search)
+       '("M" . meow-grab)
+       '("m" . meow-join)
+       '("o" . meow-open-below)
+       '("O" . meow-open-above)
+       '("p" . meow-yank)
+       '("q" . meow-quit)
+       '("r" . meow-replace)
+       '("R" . meow-swap-grab)
+       '("s" . meow-line)
+       '("S" . meow-goto-line)
+       '("t" . meow-till)
+       '("u" . meow-undo)
+       '("U" . meow-undo-in-selection)
+       '("v" . knavemacs/scroll-down-half-page)
+       '("V" . knavemacs/scroll-up-half-page)
+       '("w" . meow-mark-word)
+       '("W" . meow-mark-symbol)
+       '("x" . meow-delete)
+       '("X" . meow-backward-delete)
+       '("y" . meow-save)
+       '("Y" . meow-sync-grab)
+       '("z" . knavemacs/transient-viewport-commands)
+       '("Z" . knavemacs/transient-saveclose-commands)
+       '("'" . repeat)
+       '("<escape>" . ignore)
+       '("/" . meow-visit)
+       '("<" . beginning-of-buffer)
+       '(">" . end-of-buffer)
+       '("+" . enlarge-window)
+       '("_" . shrink-window)
+       '("(" . shrink-window-horizontally)
+       '(")" . enlarge-window-horizontally)
+       ))
+
+    (meow-setup)
+    (meow-global-mode 1)
     )
 #+END_SRC
 
-*** Custom Transients
-I am beginning to incorporate transients into my workflow / keybinds.
-The potential goal here is to remove reliance on numerous keybind packages
-like hydra and general, if I can duplicate the value I get from them using
-built in functionality (although not sure I can fully accomplish this. We will see.)
+*** Overall Keymap Changes
+Given all the above, I make a few final overall changes to my keybindings
 
-#+BEGIN_SRC emacs-lisp
-   (transient-define-prefix knavemacs/transient-org-commands ()
-     "Custom Org Commands Transient"
-     :info-manual "Custom Org Commands Transient"
-     ["Org-Mode Actions"
-      ("a" "Org Agenda" org-agenda)
-      ("c" "Org Capture" org-capture)
-      ("l" "Store Link" org-store-link)
-      ("d" "Print Inactive Timestamp" org-quick-time-stamp-inactive)]
-     [("q" "Quit" transient-quit-one)])
-
-   (transient-define-prefix knavemacs/transient-note-commands ()
-     "Custom Org-Roam Commands Transient"
-     :info-manual "Custom Note-Taking Commands Transient"
-     [["Note-Taking Actions"
-       ("f" "Create/Find a Note" org-roam-node-find)
-       ("b" "Show Linked Notes Buffer" org-roam-buffer-toggle)
-       ("l" "Insert Link to Note" org-roam-node-insert)]
-      ["View Specific Notes"
-       ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
-       ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]]
-     [["Miscellaneous Actions"
-       ("E" "Launch Ebib" ebib)
-       ("q" "Quit" transient-quit-one)]
-      ["Citation Actions"
-       ("cf" "Open Note from Biblio" citar-open-notes)
-       ("ci" "Insert Biblio Citation" citar-insert-citation)]])
-
-   (defun knavemacs/recenter-top ()
-     "Recenter View to Top"
-     (interactive)
-     (recenter-top-bottom 0))
-
-   (defun knavemacs/recenter-bottom ()
-     "Recenter View to Bottom"
-     (interactive)
-     (recenter-top-bottom -1))
-
-   (transient-define-prefix knavemacs/transient-viewport-commands ()
-     "Custom Viewport Commands Transient"
-     :info-manual "Custom Viewport Commands Transient"
-     ["Shift View"
-      ("z" "Recenter" recenter)
-      ("t" "Shift to Top" knavemacs/recenter-top)
-      ("b" "Shift to Bottom" knavemacs/recenter-bottom)]
-     [("q" "Quit" transient-quit-one)])
-
-   (transient-define-prefix knavemacs/transient-saveclose-commands ()
-     "Custom Save and Close Commands Transient"
-     :info-manual "Custom Save and Close Commands Transient"
-     ["Choose Action"
-      ("Z" "Save All and Close" save-buffers-kill-terminal)
-      ("Q" "Kill Emacs" kill-emacs)]
-     [("q" "Quit" transient-quit-one)])
-
-  (transient-define-prefix knavemacs/transient-buffer-commands ()
-     "Custom Buffer Commands Transient"
-     :info-manual "Custom Buffer Commands Transient"
-     ["Buffer Actions"
-      ("b" "Switch To Buffer" consult-buffer)
-      ("k" "Kill Buffer" kill-current-buffer)
-      ("u" "See Undo Tree" vundo)]
-     [("q" "Quit" transient-quit-one)])
-#+END_SRC
-
-*** Custom Key Functions
-Here are some custom functions I've gathered on the internet that also help my workflow.
-#+BEGIN_SRC emacs-lisp
-    ;; scroll half a screen
-  (defun my/scroll-down-half-page ()
-    "scroll down half a page while keeping the cursor centered"
-    (interactive)
-    (let ((ln (line-number-at-pos (point)))
-      (lmax (line-number-at-pos (point-max))))
-      (cond ((= ln 1) (move-to-window-line nil))
-        ((= ln lmax) (recenter (window-end)))
-        (t (progn
-             (move-to-window-line -1)
-             (recenter))))))
-
-  (defun my/scroll-up-half-page ()
-    "scroll up half a page while keeping the cursor centered"
-    (interactive)
-    (let ((ln (line-number-at-pos (point)))
-      (lmax (line-number-at-pos (point-max))))
-      (cond ((= ln 1) nil)
-        ((= ln lmax) (move-to-window-line nil))
-        (t (progn
-             (move-to-window-line 0)
-             (recenter))))))
-#+END_SRC
-
-*** Overall Key Updates
-The below keymap updates are used for general, overall changes to keys.
 #+BEGIN_SRC emacs-lisp
   ;; global
   (global-set-key "\M-m" 'meow-global-mode) ; global toggle key for meow (modal editing)
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
-  (global-set-key "\M-p" 'ef-themes-toggle) ; quick key for toggling ef-themes (light/dark)
   (global-set-key "\M-9" 'kmacro-start-macro) ; better shortcut for my laptop for starting macros
   (global-set-key "\M-0" 'kmacro-end-macro)   ; better shortcut for my laptop for ending macros
   (global-set-key "\M-8" 'kmacro-call-macro)  ; better shortcut for my laptop for calling macros
-  
+
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
   (define-key project-prefix-map "v" 'magit-status)
@@ -1723,14 +1297,4 @@ The below keymap updates are used for general, overall changes to keys.
   (define-key dired-mode-map "K" 'dired-do-kill-lines)
   (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode)
   (define-key dired-mode-map ";" 'dired-subtree-toggle)
-#+END_SRC
-
-** Notifications
-As part of my setup for emacs, I like to run emacs as a daemon on my linux
-machines.  To ensure emacs properly started up correctly, I print a system
-notification assuming the config-linux variable is set to true to ensure I get a
-notification via dunst.
-
-#+BEGIN_SRC emacs-lisp
-  (if knavemacs/config-linux (shell-command "notify-send 'Emacs Configuration Loaded'"))
 #+END_SRC

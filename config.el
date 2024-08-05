@@ -1,74 +1,64 @@
+;; Config.el - part of Knavemacs
 (message "[Knavemacs] Determining device profile settings for > %s"
 	 knavemacs/device-profile)
 
-;; Set Defaults - these are loaded if the knavemacs/device-profile variable
-;; is not recognized as a value that triggers a profile function below
-;;
-;; Note: packages in [,] brackets are externally downloaded
-;;       packages in (,) parenthesis are internal package configs
-(setq knavemacs/config-visual t)        ; [modus-themes]
-                                        ; [rainbow-delimiters]
-                                        ; [rainbow-mode]
-(setq knavemacs/config-visual-icons t)  ; [nerd-icons]
-                                        ; [nerd-icons-dired]
-                                        ; [nerd-icons-completion]
-                                        ; [nerd-icons-ibuffer]
-(setq knavemacs/config-compframework t) ; [vertico]
-                                        ; [savehist]
-                                        ; [marginalia]
-                                        ; [orderless]
-                                        ; [embark]
-                                        ; [consult]
-                                        ; [embark-consult]
-(setq knavemacs/config-keyhelp t)       ; [Which-key]
-(setq knavemacs/config-templates t)     ; [yasnippet]
-(setq knavemacs/config-utils t)         ; [vundo]
-                                        ; [avy]
-                                        ; [ace-window]
-(setq knavemacs/config-project t)       ; [magit]
-(setq knavemacs/config-programming t)   ; (eglot)
-                                        ; [corfu]
-                                        ; [kind-icon]
-                                        ; [corfu-terminal]
-(setq knavemacs/config-dired t)         ; (dired)
-                                        ; [dired-single]
-                                        ; [dired-hide-dotfiles]
-                                        ; [dired-subtree]
-(setq knavemacs/config-org t)           ; (org)
-                                        ; [org-bullets]
-(setq knavemacs/config-notes t)         ; [org-roam]
-                                        ; [org-roam-ui]
-(setq knavemacs/config-cite t)          ; [ebib]
-                                        ; [citar] [citar-embark] [citar-org-roam]
-(setq knavemacs/config-keybinds t)      ; [meow]
-                                        ; [hydra]
-                                        ; [general]
-(setq knavemacs/config-linux t)         ; [notifications]
+;; Default Settings - these are loaded if the knavemacs/device-profile
+;; is not recongized as a value that triggers a profile function
+(setq knavemacs/config-visual nil)
+					; config-visual manages [doom-themes]
+					; [whick-key]
+					; [vundo]
 
-;; Special Notes:
-;; 1) modeline configuration :: depends on visual,visual-icons,keybinds
+(setq knavemacs/config-visual-icons nil)
+					; config-visual-icons manages [nerd-icons]
+					; [nerd-icons-dired]
+					; [nerd-icons-completion]
+					; [nerd-icons-ibuffer]
 
-;; functions for specific profiles get added here
-;; "mobile" profile
-(defun knavemacs/profile-mobile ()
-  (message "[Knavemacs] Loading profile for Mobile")
-  (setq knavemacs/config-compframework t)  ; t
-  (setq knavemacs/config-keyhelp nil)      ; nil
-  (setq knavemacs/config-templates nil)    ; nil
-  (setq knavemacs/config-dired t)          ; t
-  (setq knavemacs/config-org t)            ; t
-  (setq knavemacs/config-notes t)          ; t
-  (setq knavemacs/config-cite t)           ; t
-  (setq knavemacs/config-visual-icons nil) ; nil
-  (setq knavemacs/config-visual t)         ; t
-  (setq knavemacs/config-utils)            ; t
-  (setq knavemacs/config-project t)        ; t
-  (setq knavemacs/config-keybinds t)       ; t
-  (setq knavemacs/config-linux nil)        ; nil
-  )
+(setq knavemacs/config-fonts nil)
+					; config-fonts manages fonts and [ligatures]
 
-;; let's determine which profile to use, given all of the above and
-;; the value of knavemacs/device-profile
-(if (eq knavemacs/device-profile 'mobile) 
-  (knavemacs/profile-mobile) 
-  )
+(setq knavemacs/config-keybinds nil)
+					; config-keybinds manages [meow]
+					; [avy]
+					; [ace-window]
+(setq knavemacs/config-fuzzyfind nil)
+					; config-fuzzyfind manages [vertico]
+					; [savehist]
+					; [marginalia]
+					; [orderless]
+					; [embark]
+					; [consult]
+					; [embark-consult]
+
+(setq knavemacs/config-snippets nil)
+					; config-snippets manages [yasnippets]
+
+(setq knavemacs/config-programming nil)
+					; config-programming manages [magit]
+
+(setq knavemacs/config-dired nil)
+					; config-dired manages dired customizations
+					; [dired-single]
+					; [dired-hide-dotfiles]
+					; [dired-subtree]
+
+(setq knavemacs/config-org nil)
+					; config-org manages org mode configurations
+
+;; Profile definitions
+(defun knavemacs/profile-computer ()
+  (message "[Knavemacs] Loading Profile for *Computer*")
+  (setq knavemacs/config-visual t)
+  (setq knavemacs/config-visual-icons t)
+  (setq knavemacs/config-fonts t)
+  (setq knavemacs/config-keybinds t)
+  (setq knavemacs/config-fuzzyfind t)
+  (setq knavemacs/config-snippets t)
+  (setq knavemacs/config-programming t)
+  (setq knavemacs/config-dired t)
+  (setq knavemacs/config-org t))
+
+;; Profile Determination Logic
+(if (eq knavemacs/device-profile 'computer)
+    (knavemacs/profile-computer))
