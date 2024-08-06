@@ -1086,23 +1086,23 @@ the spirit of Emacs intact.
     "scroll down half a page while keeping the cursor centered"
     (interactive)
     (let ((ln (line-number-at-pos (point)))
-	  (lmax (line-number-at-pos (point-max))))
+          (lmax (line-number-at-pos (point-max))))
       (cond ((= ln 1) (move-to-window-line nil))
-	    ((= ln lmax) (recenter (window-end)))
-	    (t (progn
-		 (move-to-window-line -1)
-		 (recenter))))))
+            ((= ln lmax) (recenter (window-end)))
+            (t (progn
+                 (move-to-window-line -1)
+                 (recenter))))))
 
   (defun knavemacs/scroll-up-half-page ()
     "scroll up half a page while keeping the cursor centered"
     (interactive)
     (let ((ln (line-number-at-pos (point)))
-	  (lmax (line-number-at-pos (point-max))))
+          (lmax (line-number-at-pos (point-max))))
       (cond ((= ln 1) nil)
-	    ((= ln lmax) (move-to-window-line nil))
-	    (t (progn
-		 (move-to-window-line 0)
-		 (recenter))))))
+            ((= ln lmax) (move-to-window-line nil))
+            (t (progn
+                 (move-to-window-line 0)
+                 (recenter))))))
 
   ;; combined meow actions
   (defun knavemacs/meow-append-end-line ()
@@ -1128,7 +1128,7 @@ the spirit of Emacs intact.
     (interactive)
     (recenter-top-bottom -1))
 
-  
+
   ;; modal editing keybind configuration
   (use-package meow
     :if knavemacs/config-keybinds
@@ -1263,6 +1263,13 @@ the spirit of Emacs intact.
 
     (meow-setup)
     (meow-global-mode 1)
+
+    ;; custom configuration for cursor types
+    (setq meow-cursor-type-default 'hollow)
+    (setq meow-cursor-type-normal 'hollow)
+    (setq meow-cursor-type-motion 'hollow)
+    (setq meow-cursor-type-insert 'box)
+    (setq meow-cursor-type-keypad 'hollow)
     )
 #+END_SRC
 
