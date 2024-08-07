@@ -154,7 +154,7 @@ This section probably changes alot :)
     ; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-acario-dark t)
+    (load-theme 'doom-one-light t)
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -771,6 +771,91 @@ definitions!
     )
 #+END_SRC
 
+*** Tab Line Configuration
+Yes I use tab-line tabs, and I am very choosy about how I like the tab line
+represented. Below is some elips that is heavily refractored from a script
+written by thread314, much credit goes to them for a lot of the structure
+and concepts of the below. Their script can be [[https://github.com/thread314/intuitive-tab-line-mode][found here.]] 
+
+#+BEGIN_SRC emacs-lisp
+  ;; manually installed elisp script
+  ;; Define the function to be used for tab-line management and
+  ;; create the buffer list that will be used for holding the tab buffers
+  (setq tab-line-tabs-function 'knavemacs/tab-line-buffers)
+  (setq knavemacs/tab-line-buffers-list (list (current-buffer)))
+  (defun knavemacs/tab-line-buffers ()
+    "Provides a list containing buffers to be shown on the tab line"
+    knavemacs/tab-line-buffers-list)
+
+  ;; function to add a new tab for a buffer
+  (defun knavemacs/tab-line-add-current-buffer ()
+    "Adds the current buffer to the list of tabs."
+    (interactive)
+    (if
+        (and
+         (not (seq-contains-p knavemacs/tab-line-buffers-list (current-buffer))) ; exclude already added
+         (not (string-match (rx "magit") (buffer-name (current-buffer)))) ;; exclude magit buffers
+         (not (string-match (rx "COMMIT_EDITMSG") (buffer-name (current-buffer)))) ;; exclude COMMIT buffers
+         (not (string-match (rx "CAPTURE-") (buffer-name (current-buffer)))) ;; exclude capture buffers
+         (not (string-match (rx "*org-roam*") (buffer-name (current-buffer)))) ;; exclude org-roam buffers
+         (not (string-match (rx "*scratch*") (buffer-name (current-buffer)))) ;; exclude *scratch*
+         (not (string-match (rx "*Messages*") (buffer-name (current-buffer)))) ;; exclude *Messages*
+         (not (string-match (rx "*Mini") (buffer-name (current-buffer)))) ;; exclude mini buffer completions
+         (not (string-match (rx "*dashboard*") (buffer-name (current-buffer)))) ;; exclude *dashboard*
+         (not (string-match (rx "*eldoc") (buffer-name (current-buffer)))) ;; exclude eldoc buffers
+         (not (string-match (rx ".org") (buffer-name (current-buffer)))) ;; exclude org files
+         (not (string-match (rx "*Dired") (buffer-name (current-buffer)))) ;; exclude other dired buffers
+         (not (string-match (rx "*Completions") (buffer-name (current-buffer)))) ;; exclude completion buffers
+         )
+        (setq knavemacs/tab-line-buffers-list (append knavemacs/tab-line-buffers-list (list (current-buffer)))))
+
+                                          ; buffer must have a buffer name. Some dired or other system buffers do not have a name, so filter those out
+    (setq knavemacs/tab-line-buffers-list (seq-remove (lambda (elt) (not (buffer-name elt))) knavemacs/tab-line-buffers-list)) 
+    (set-window-parameter nil 'tab-line-cache nil)
+    (force-mode-line-update))
+
+  ;; this function is not called directly, but helps in removing tabs
+  (defun knavemacs/tab-line-switch-before-drop-kill ()
+    "Switch to another tab, before dropping/killing current buffer (to prevent backgrounded buffers unexpectedly returning to knavemacs/tab-line-buffers-list)."
+    (let ((n (seq-position knavemacs/tab-line-buffers-list (current-buffer))))
+      (cond
+       ((= (length knavemacs/tab-line-buffers-list) 1)
+        ;;If only one tab, return error
+        (message "Only one tab open, cannot drop"))
+       ;;If left most tab, switch right
+       ((= n 0)
+        (switch-to-buffer (nth 1 knavemacs/tab-line-buffers-list)))
+       ;;otherwise switch left
+       (t
+        (switch-to-buffer (nth (- n 1) knavemacs/tab-line-buffers-list))))))
+
+  ;; function for removing a tab for a buffer - non-nil argument ensures buffer is killed
+  (defun knavemacs/tab-line-drop-tab (&optional kill)
+    "Remove the tab for the current buffer. Will KILL indirect buffers, but leave all others open."
+    (interactive)
+    (let ((buffer-to-drop (current-buffer)))
+      (knavemacs/tab-line-switch-before-drop-kill)
+      ;;if buffer is indirect, dired, help or kill is non-nil, kill-this-buffer, otherwise remove from tab-list (keeping buffer open)
+      (if (or kill
+              (buffer-base-buffer buffer-to-drop)
+              ;;buffer-file-name is blank for dired and help descriptions, so kill those buffers
+              (not (buffer-file-name buffer-to-drop)))
+          (kill-buffer buffer-to-drop)
+        (setq knavemacs/tab-line-buffers-list (delete buffer-to-drop knavemacs/tab-line-buffers-list))))
+    (set-window-parameter nil 'tab-line-cache nil)
+    (force-mode-line-update))
+
+  ;; convieneince function for killing a buffer/tab
+  (defun knavemacs/tab-line-kill-tab ()
+    "Kill the buffer and tab active in the tab-line"
+    (interactive)
+    (knavemacs/tab-line-drop-tab t))
+
+
+  ;; set the hook to update the tab-line on buffer changes
+  (add-hook 'buffer-list-update-hook #'knavemacs/tab-line-add-current-buffer)
+#+END_SRC
+
 
 ** File Management
 *** Dired Configuration
@@ -1069,8 +1154,18 @@ multi-key press functionality.
     ["Buffer Actions"
      ("b" "Switch To Buffer" consult-buffer)
      ("k" "Kill Buffer" kill-current-buffer)
-     ("K" "Kill Selected Buffer" kill-buffer)
+     ("K" "Kill Some Buffer" kill-buffer)
      ("u" "See Undo Tree" vundo)]
+    [("q" "Quit" transient-quit-one)])
+
+  (transient-define-prefix knavemacs/transient-tab-line-commands ()
+    "Custom Tab Line Commands Transient"
+    :info-manual "Custom Tab Line Commands Transient"
+    ["Tab Line Actions"
+     ("n" "Next Tab" tab-line-switch-to-next-tab)
+     ("p" "Prev Tab" tab-line-switch-to-prev-tab)
+     ("d" "Drop Tab" knavemacs/tab-line-drop-tab)
+     ("k" "Kill Buffer Tab" knavemacs/tab-line-kill-tab)]
     [("q" "Quit" transient-quit-one)])
 
 #+END_SRC
@@ -1172,6 +1267,7 @@ the spirit of Emacs intact.
        '("r" . rectangle-mark-mode)
        '("o" . knavemacs/transient-org-commands)
        ;'("n" . knavemacs/transient-note-commands)
+       '("t" . knavemacs/transient-tab-line-commands)
        '("b" . knavemacs/transient-buffer-commands)
        '("w" . ace-window)
        '("?" . meow-keypad-describe-key))
@@ -1194,7 +1290,8 @@ the spirit of Emacs intact.
        '("0" . meow-digit-argument)
        '("-" . move-beginning-of-line)
        '("=" . move-end-of-line)
-       ;'("$" . move-end-of-line)
+       '("{" . tab-line-switch-to-prev-tab)
+       '("}" . tab-line-switch-to-next-tab)
        '("%" . meow-block)
        '(";" . meow-reverse)
        '("," . meow-inner-of-thing)
