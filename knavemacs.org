@@ -1069,6 +1069,7 @@ multi-key press functionality.
     ["Buffer Actions"
      ("b" "Switch To Buffer" consult-buffer)
      ("k" "Kill Buffer" kill-current-buffer)
+     ("K" "Kill Selected Buffer" kill-buffer)
      ("u" "See Undo Tree" vundo)]
     [("q" "Quit" transient-quit-one)])
 
