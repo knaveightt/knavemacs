@@ -334,14 +334,13 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
     :init
     (marginalia-mode))
 
-  ;; PURPOSE: provides extra metadata in margins of vertico completions
-  (use-package marginalia
+  ;; PURPOSE: provides and orderless algorithm for fuzzy finding
+  (use-package orderless
     :if knavemacs/config-fuzzyfind
-    :after vertico
+    :ensure t
     :custom
-    (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
-    :init
-    (marginalia-mode))
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion)))))
 
   ;; PURPOSE: Minibuffer actions based on vertico completions
   (use-package embark
