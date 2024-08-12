@@ -66,7 +66,7 @@ Requirements:
   2) There should be a =fleeting.org=, =unfiled.org=, =notice.org=, and
      =worklog.org= file in the top level org folder.
   3) There should be an =active= and =info= folder in the top level org folder.
-
+     
 * Configuration
 
 ** Global Environment Settings
@@ -154,7 +154,7 @@ This section probably changes alot :)
     ; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-acario-dark t)
+    (load-theme 'doom-one-light t)
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -307,11 +307,11 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
   (use-package vertico
     :if knavemacs/config-fuzzyfind
     :bind (:map vertico-map
-		("C-j" . vertico-next)
-		("C-k" . vertico-previous)
-		("C-f" . vertico-exit)
-		:map minibuffer-local-map
-		("M-h" . backward-kill-word))
+                ("C-j" . vertico-next)
+                ("C-k" . vertico-previous)
+                ("C-f" . vertico-exit)
+                :map minibuffer-local-map
+                ("M-h" . backward-kill-word))
     :custom
     (vertico-cycle t)
     :init
@@ -366,9 +366,9 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
 
     ;; Hide the mode line of the Embark live/completions buffers
     (add-to-list 'display-buffer-alist
-		 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-		   nil
-		   (window-parameters (mode-line-format . none)))))
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
 
 
   ;; PURPOSE: provides alternative, taylored commands for various search / switch functions using the current completion framework
@@ -376,56 +376,55 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
     :if knavemacs/config-fuzzyfind
     ;; Replace bindings. Lazily loaded due by `use-package'.
     :bind (;; C-c bindings in `mode-specific-map'
-	   ("C-c M-x" . consult-mode-command)
-	   ("C-c h" . consult-history)
-	   ("C-c k" . consult-kmacro)
-	   ("C-c m" . consult-man)
-	   ("C-c i" . consult-info)
-	   ([remap Info-search] . consult-info)
-	   ;; C-x bindings in `ctl-x-map'
-	   ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-	   ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-	   ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-	   ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-	   ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-					  ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
-	   ;; Custom M-# bindings for fast register access
-	   ("M-#" . consult-register-load)
-	   ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-	   ("C-M-#" . consult-register)
-	   ;; Other custom bindings
-	   ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-	   ;; M-g bindings in `goto-map'
-	   ("M-g e" . consult-compile-error)
-	   ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-	   ("M-g g" . consult-goto-line)             ;; orig. goto-line
-	   ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-	   ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-	   ("M-g m" . consult-mark)
-	   ("M-g k" . consult-global-mark)
-	   ("M-g i" . consult-imenu)
-	   ("M-g I" . consult-imenu-multi)
-	   ;; M-s bindings in `search-map'
-	   ("M-s d" . consult-find)
-	   ("M-s D" . consult-locate)
-	   ("M-s g" . consult-grep)
-	   ("M-s G" . consult-git-grep)
-	   ("M-s r" . consult-ripgrep)
-	   ("C-s" . consult-line)
-	   ("M-s L" . consult-line-multi)
-	   ("M-s k" . consult-keep-lines)
-	   ("M-s u" . consult-focus-lines)
-	   ;; Isearch integration
-	   ("M-s e" . consult-isearch-history)
-	   :map isearch-mode-map
-	   ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-	   ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-	   ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-	   ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-	   ;; Minibuffer history
-	   :map minibuffer-local-map
-	   ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-	   ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h" . consult-history)
+           ("C-c k" . consult-kmacro)
+           ("C-c m" . consult-man)
+           ("C-c i" . consult-info)
+           ([remap Info-search] . consult-info)
+           ;; C-x bindings in `ctl-x-map'
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+                                          ; ("C-x p b" . consult-project-buffer)    ;; moved to overall key binds section
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings in `goto-map'
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings in `search-map'
+           ("M-s d" . consult-find)
+           ("M-s D" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
     ;; Enable automatic preview at point in the *Completions* buffer. This is
     ;; relevant when you use the default completion UI.
@@ -438,7 +437,7 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
     ;; preview for `consult-register', `consult-register-load',
     ;; `consult-register-store' and the Emacs built-ins.
     (setq register-preview-delay 0.5
-	  register-preview-function #'consult-register-format)
+          register-preview-function #'consult-register-format)
 
     ;; Optionally tweak the register preview window.
     ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -446,7 +445,7 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
 
     ;; Use Consult to select xref locations with preview
     (setq xref-show-xrefs-function #'consult-xref
-	  xref-show-definitions-function #'consult-xref)
+          xref-show-definitions-function #'consult-xref)
 
     ;; Configure other variables and modes in the :config section,
     ;; after lazily loading the package.
@@ -963,9 +962,6 @@ of this document.
 
   :config
   (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
-  (setq org-ellipsis " ▾"
-        ;org-hide-emphasis-markers t
-  )
   (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active"))
   (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
   (setq org-stuck-projects
@@ -1377,7 +1373,7 @@ Given all the above, I make a few final overall changes to my keybindings
   ;; global
   (global-set-key "\M-m" 'meow-global-mode) ; global toggle key for meow (modal editing)
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
-  (global-set-key "\M-ss" 'isearch-forward) ; remap isearch to the global search map
+  (global-set-key "\M-ss" 'consult-line) ; remap this from recommended consult maps to keep this under M-s
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
   (global-set-key "\M-9" 'kmacro-start-macro) ; better shortcut for my laptop for starting macros
