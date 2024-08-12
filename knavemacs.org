@@ -1331,7 +1331,7 @@ the spirit of Emacs intact.
        '("p" . meow-yank)
        '("q" . meow-quit)
        '("r" . meow-replace)
-       '("R" . meow-swap-grab)
+       '("R" . query-replace)
        '("s" . meow-line)
        '("S" . meow-goto-line)
        '("t" . meow-till)
