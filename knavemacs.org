@@ -1377,6 +1377,7 @@ Given all the above, I make a few final overall changes to my keybindings
   ;; global
   (global-set-key "\M-m" 'meow-global-mode) ; global toggle key for meow (modal editing)
   (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
+  (global-set-key "\M-ss" 'isearch-forward) ; remap isearch to the global search map
   (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
   (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
   (global-set-key "\M-9" 'kmacro-start-macro) ; better shortcut for my laptop for starting macros
