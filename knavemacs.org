@@ -1359,7 +1359,7 @@ the spirit of Emacs intact.
        '("S" . meow-goto-line)
        '("t" . meow-till)
        '("u" . meow-undo)
-       '("U" . meow-undo-in-selection)
+       '("U" . undo-redo)
        '("v" . knavemacs/scroll-down-half-page)
        '("V" . knavemacs/scroll-up-half-page)
        '("w" . meow-mark-word)
