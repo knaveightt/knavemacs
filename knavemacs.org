@@ -1153,15 +1153,6 @@ multi-key press functionality.
       ("cf" "Open Note from Biblio" citar-open-notes)
       ("ci" "Insert Biblio Citation" citar-insert-citation)]])
 
-  (transient-define-prefix knavemacs/transient-viewport-commands ()
-    "Custom Viewport Commands Transient"
-    :info-manual "Custom Viewport Commands Transient"
-    ["Shift View"
-     ("z" "Recenter" recenter)
-     ("t" "Shift to Top" knavemacs/recenter-top)
-     ("b" "Shift to Bottom" knavemacs/recenter-bottom)]
-    [("q" "Quit" transient-quit-one)])
-
   (transient-define-prefix knavemacs/transient-saveclose-commands ()
     "Custom Save and Close Commands Transient"
     :info-manual "Custom Save and Close Commands Transient"
@@ -1246,6 +1237,12 @@ the spirit of Emacs intact.
     (interactive)
     (recenter-top-bottom -1))
 
+  ;; some prefix keymaps I use in meow normal mode
+  (defvar-keymap meow-z-prefix-map
+    :doc "Provide's Quick z key commands using meow"
+    "z" #'recenter
+    "t" #'knavemacs/recenter-top
+    "b" #'knavemacs/recenter-bottom)
 
   ;; modal editing keybind configuration
   (use-package meow
@@ -1368,7 +1365,7 @@ the spirit of Emacs intact.
        '("X" . meow-backward-delete)
        '("y" . meow-save)
        '("Y" . meow-sync-grab)
-       '("z" . knavemacs/transient-viewport-commands)
+       ;'("z" . meow-z-prefix-map) - see below
        '("Z" . knavemacs/transient-saveclose-commands)
        '("'" . repeat)
        '("<escape>" . ignore)
@@ -1390,6 +1387,11 @@ the spirit of Emacs intact.
     (setq meow-cursor-type-motion 'hollow)
     (setq meow-cursor-type-insert 'box)
     (setq meow-cursor-type-keypad 'hollow)
+    
+    ;; attach the custom z keymap to the z key in normal mode
+    (meow-define-keys
+        'normal
+      (cons "z" meow-z-prefix-map))
     )
 #+END_SRC
 
