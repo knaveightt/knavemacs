@@ -1246,7 +1246,7 @@ the spirit of Emacs intact.
 
   ;; modal editing keybind configuration
   (use-package meow
-    :if knavemacs/config-keybinds
+      :if knavemacs/config-keybinds
     :diminish
     :config
     (defun meow-setup ()
@@ -1263,10 +1263,6 @@ the spirit of Emacs intact.
        '("C-M-k" . "H-k")
        '("C-M-h" . "H-h")
        '("C-M-l" . "H-l")
-       '("M-h" . windmove-left) ;; consistent window movement in special modes
-       '("M-j" . windmove-down) ;; consistent window movement in special modes
-       '("M-k" . windmove-up) ;; consistent window movement in special modes
-       '("M-l" . windmove-right) ;; consistent window movement in special modes
        '("<escape>" . ignore))
 
       ; definitions active when pressing leader (i.e. space)
@@ -1293,10 +1289,6 @@ the spirit of Emacs intact.
 
       ; normal mode definitions
       (meow-normal-define-key
-       '("M-h" . windmove-left)  ;; normal mode mapping only
-       '("M-j" . windmove-down)  ;; normal mode mapping only
-       '("M-k" . windmove-up)    ;; normal mode mapping only
-       '("M-l" . windmove-right) ;; normal mode mapping only
        '("1" . meow-digit-argument)
        '("2" . meow-digit-argument)
        '("3" . meow-digit-argument)
@@ -1307,16 +1299,18 @@ the spirit of Emacs intact.
        '("8" . meow-digit-argument)
        '("9" . meow-digit-argument)
        '("0" . meow-digit-argument)
-       '("-" . move-beginning-of-line)
-       '("=" . move-end-of-line)
-       '("{" . tab-line-switch-to-prev-tab)
-       '("}" . tab-line-switch-to-next-tab)
+       '("-" . delete-other-windows)
+       '("_" . delete-window)
+       '("=" . split-window-below)
+       '("+" . split-window-right)
+       '("{" . meow-beginning-of-thing)
+       '("}" . meow-end-of-thing)
+       '("[" . meow-inner-of-thing)
+       '("]" . meow-bounds-of-thing)
        '("%" . meow-block)
        '(";" . meow-reverse)
-       '("," . meow-inner-of-thing)
-       '("." . meow-bounds-of-thing)
-       '("[" . meow-beginning-of-thing)
-       '("]" . meow-end-of-thing)
+       '("," . move-beginning-of-line)
+       '("." . move-end-of-line)
 
        '("a" . meow-append)
        '("A" . knavemacs/meow-append-end-line)
@@ -1372,10 +1366,6 @@ the spirit of Emacs intact.
        '("/" . meow-visit)
        '("<" . beginning-of-buffer)
        '(">" . end-of-buffer)
-       '("+" . enlarge-window)
-       '("_" . shrink-window)
-       '("(" . shrink-window-horizontally)
-       '(")" . enlarge-window-horizontally)
        ))
 
     (meow-setup)
@@ -1408,6 +1398,14 @@ Given all the above, I make a few final overall changes to my keybindings
   (global-set-key "\M-9" 'kmacro-start-macro) ; better shortcut for my laptop for starting macros
   (global-set-key "\M-0" 'kmacro-end-macro)   ; better shortcut for my laptop for ending macros
   (global-set-key "\M-8" 'kmacro-call-macro)  ; better shortcut for my laptop for calling macros
+  (global-set-key "\M-L" 'enlarge-window-horizontally)
+  (global-set-key "\M-K" 'shrink-window)
+  (global-set-key "\M-J" 'enlarge-window)
+  (global-set-key "\M-H" 'shrink-window-horizontally)
+  (global-set-key "\M-l" 'windmove-right)
+  (global-set-key "\M-k" 'windmove-up)
+  (global-set-key "\M-j" 'windmove-down)
+  (global-set-key "\M-h" 'windmove-left)
 
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
