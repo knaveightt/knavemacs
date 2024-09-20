@@ -1311,6 +1311,8 @@ the spirit of Emacs intact.
        '(";" . meow-reverse)
        '("," . move-beginning-of-line)
        '("." . move-end-of-line)
+       '("(" . tab-line-switch-to-prev-tab)
+       '(")" . tab-line-switch-to-next-tab)
 
        '("a" . meow-append)
        '("A" . knavemacs/meow-append-end-line)
