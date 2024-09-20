@@ -314,7 +314,7 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
                 ("C-k" . vertico-previous)
                 ("C-f" . vertico-exit)
                 :map minibuffer-local-map
-                ("M-h" . backward-kill-word))
+                ("C-h" . backward-kill-word))
     :custom
     (vertico-cycle t)
     :init
@@ -1392,22 +1392,37 @@ Given all the above, I make a few final overall changes to my keybindings
 
 #+BEGIN_SRC emacs-lisp
   ;; global
-  (global-set-key "\M-m" 'meow-global-mode) ; global toggle key for meow (modal editing)
-  (global-set-key "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
-  (global-set-key "\M-ss" 'consult-line) ; remap this from recommended consult maps to keep this under M-s
-  (global-set-key "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
-  (global-set-key "\M-o" 'ace-window) ; quick key for window changes, so I can do this in insert mode too
-  (global-set-key "\M-9" 'kmacro-start-macro) ; better shortcut for my laptop for starting macros
-  (global-set-key "\M-0" 'kmacro-end-macro)   ; better shortcut for my laptop for ending macros
-  (global-set-key "\M-8" 'kmacro-call-macro)  ; better shortcut for my laptop for calling macros
-  (global-set-key "\M-L" 'enlarge-window-horizontally)
-  (global-set-key "\M-K" 'shrink-window)
-  (global-set-key "\M-J" 'enlarge-window)
-  (global-set-key "\M-H" 'shrink-window-horizontally)
-  (global-set-key "\M-l" 'windmove-right)
-  (global-set-key "\M-k" 'windmove-up)
-  (global-set-key "\M-j" 'windmove-down)
-  (global-set-key "\M-h" 'windmove-left)
+  ;; I opt to put my global keymaps into a custom minor mode
+  ;; Good reference for the reasoning why: https://emacs.stackexchange.com/questions/27926/avoiding-overwriting-global-key-bindings
+  (define-minor-mode knavemacs-mode
+    "Custom minor mode for Knavemacs global keymaps"
+    ;; enable by default
+    1
+    ;; mode indicator
+    " Knavemacs"
+    ;; minor mode keymap
+    '(
+      ("\M-m" . meow-global-mode) ; global toggle key for meow modal editing
+      ("\M-o" . ace-window) ; quick key for window changes, so I can do this in insert mode too
+      ("\M-8" . kmacro-call-macro)
+      ("\M-9" . kmacro-start-macro)
+      ("\M-0" . kmacro-end-macro)
+      ("\M-L" . enlarge-window-horizontally)
+      ("\M-K" . shrink-window)
+      ("\M-J" . enlarge-window)
+      ("\M-H" . shrink-window-horizontally)
+      ("\M-l" . windmove-right)
+      ("\M-k" . windmove-up)
+      ("\M-j" . windmove-down)
+      ("\M-h" . windmove-left)
+    )
+    ;; make global vs buffer specific
+    :global 1)
+
+  ;; general global remaps
+  (define-key global-map "\M-ss" 'consult-line) ; remap this from recommended consult maps to keep this under M-s
+  (define-key global-map "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
+  (define-key global-map "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
 
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
