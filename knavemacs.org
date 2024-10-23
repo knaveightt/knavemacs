@@ -858,6 +858,32 @@ and concepts of the below. Their script can be [[https://github.com/thread314/in
 #+END_SRC
 
 
+*** Frame-Window-Buffer Session Management
+I have the need to save certain the configuration of my windows, buffers, and layouts as "activities" that I can open quickly later.
+There is an excellent package for this, activities, that provides me this functionality.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package activities
+    :if knavemacs/config-visual
+    :init
+    (activities-mode)
+    (activities-tabs-mode)
+    ;; Prevent `edebug' default bindings from interfering.
+    (setq edebug-inhibit-emacs-lisp-mode-bindings t)
+
+    :bind
+    (("C-x C-a C-n" . activities-new)
+     ("C-x C-a C-d" . activities-define)
+     ("C-x C-a C-a" . activities-resume)
+     ("C-x C-a C-s" . activities-suspend)
+     ("C-x C-a C-k" . activities-kill)
+     ("C-x C-a RET" . activities-switch)
+     ("C-x C-a b" . activities-switch-buffer)
+     ("C-x C-a g" . activities-revert)
+     ("C-x C-a l" . activities-list)))
+#+END_SRC
+
+
 ** File Management
 *** Dired Configuration
 Some modifications to the dired functionality.
@@ -1404,9 +1430,11 @@ Given all the above, I make a few final overall changes to my keybindings
     '(
       ("\M-m" . meow-global-mode) ; global toggle key for meow modal editing
       ("\M-o" . ace-window) ; quick key for window changes, so I can do this in insert mode too
+      ("\M-0" . tab-bar-switch-to-next-tab)
+      ("\M-9" . tab-bar-switch-to-prev-tab)
       ("\M-8" . kmacro-call-macro)
-      ("\M-9" . kmacro-start-macro)
-      ("\M-0" . kmacro-end-macro)
+      ("\M-6" . kmacro-start-macro)
+      ("\M-7" . kmacro-end-macro)
       ("\M-L" . enlarge-window-horizontally)
       ("\M-K" . shrink-window)
       ("\M-J" . enlarge-window)

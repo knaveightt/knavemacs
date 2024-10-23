@@ -8,6 +8,7 @@
 					; config-visual manages [doom-themes]
 					; [whick-key]
 					; [vundo]
+					; [activities]
 
 (setq knavemacs/config-visual-icons nil)
 					; config-visual-icons manages [nerd-icons]
