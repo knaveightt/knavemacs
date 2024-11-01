@@ -1451,6 +1451,8 @@ Given all the above, I make a few final overall changes to my keybindings
   (define-key global-map "\M-ss" 'consult-line) ; remap this from recommended consult maps to keep this under M-s
   (define-key global-map "\C-x\C-b" 'ibuffer) ; remap buffer list to interactive list
   (define-key global-map "\C-cp" project-prefix-map) ; remap project commands so I can use <spc>-p with meow
+  (define-key global-map "\C-x\C-t" tab-prefix-map) ; remap tabbar commands from C-x t to C-x C-t for better use with keypad
+  (define-key global-map "\C-xt" 'transpose-lines) ; switch the original C-x C-t command per the above
 
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
