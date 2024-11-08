@@ -1454,6 +1454,9 @@ Given all the above, I make a few final overall changes to my keybindings
   (define-key global-map "\C-x\C-t" tab-prefix-map) ; remap tabbar commands from C-x t to C-x C-t for better use with keypad
   (define-key global-map "\C-xt" 'transpose-lines) ; switch the original C-x C-t command per the above
 
+  ;; tab-prefix-map changes
+  (define-key tab-prefix-map "x" 'tab-bar-mode) ; toggle the tab bar globally
+
   ;; project map changes
   (define-key project-prefix-map "V" 'project-vc-dir)
   (define-key project-prefix-map "v" 'magit-status)
