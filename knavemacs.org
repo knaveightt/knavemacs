@@ -1098,6 +1098,20 @@ Some minor tweaks for magit.
 #+END_SRC
 
 
+*** Shell Integration
+5-line function I found on the internet for launching PowerShell on windows in a buffer
+
+#+BEGIN_SRC emacs-lisp
+  (defun powershell (&optional buffer)
+    "Launches a powershell in buffer *powershell* and switches to it."
+    (interactive)
+    (let ((buffer (or buffer "*powershell*"))
+          (powershell-prog "c:\\windows\\system32\\WindowsPowerShell\\v1.0\\powershell.exe"))
+      (make-comint-in-buffer "shell" "*powershell*" powershell-prog)
+      (switch-to-buffer buffer)))
+#+END_SRC
+
+
 ** Keybindings and Navigation
 *** Jump-To-Location
 Avy is a swiss army knife of jumping to a specific location!
