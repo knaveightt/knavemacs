@@ -1121,6 +1121,41 @@ Shows breadcrumb information in the buffer when using eglot / project / imenu.
 #+END_SRC
 
 
+*** Eglot Language Server
+Let's just make sure we have the latest version of the Eglot LSP
+
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot
+    :if knavemacs/config-programming)
+#+END_SRC
+
+*** Corfu In-Buffer Completions
+This package gives us in-buffer completion popup lists
+
+#+BEGIN_SRC emacs-lisp
+  (use-package corfu
+    :if knavemacs/config-programming
+    :init
+    (global-corfu-mode)
+    (corfu-popupinfo-mode 1))
+#+END_SRC
+
+
+*** Kind Icons in Corfu Completion Buffers
+SVG Icon support!
+
+#+BEGIN_SRC emacs-lisp
+  (use-package kind-icon
+    :if knavemacs/config-programming
+    :ensure t
+    :after corfu
+    :custom
+    (kind-icon-default-face 'corfu-default) ; for blended backgrounds
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+END_SRC
+
+
 ** Keybindings and Navigation
 *** Jump-To-Location
 Avy is a swiss army knife of jumping to a specific location!
