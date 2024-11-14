@@ -1112,6 +1112,15 @@ Some minor tweaks for magit.
 #+END_SRC
 
 
+*** Breadcrumbs
+Shows breadcrumb information in the buffer when using eglot / project / imenu.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package breadcrumb
+    :if knavemacs/config-programming)
+#+END_SRC
+
+
 ** Keybindings and Navigation
 *** Jump-To-Location
 Avy is a swiss army knife of jumping to a specific location!
