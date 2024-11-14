@@ -351,8 +351,8 @@ Vertico and its ecosystem are unmatched in the area of fuzzy finding completions
     :ensure t
 
     :bind
-    (("C-." . embark-act)         ;; pick some comfortable binding
-     ("C-;" . embark-dwim)        ;; good alternative: M-.
+    (("C-;" . embark-act)         ;; pick some comfortable binding
+     ("C-M-;" . embark-dwim)        ;; good alternative: M-.
      ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
     :init
@@ -1485,7 +1485,7 @@ Given all the above, I make a few final overall changes to my keybindings
     ;; mode indicator
     " Knavemacs"
     ;; minor mode keymap
-    '(
+    `(
       ("\M-m" . meow-global-mode) ; global toggle key for meow modal editing
       ("\M-o" . ace-window) ; quick key for window changes, so I can do this in insert mode too
       ("\M-0" . tab-bar-switch-to-next-tab)
@@ -1501,6 +1501,7 @@ Given all the above, I make a few final overall changes to my keybindings
       ("\M-k" . windmove-up)
       ("\M-j" . windmove-down)
       ("\M-h" . windmove-left)
+      (,(kbd "C-.") . completion-at-point)
     )
     ;; make global vs buffer specific
     :global 1)
