@@ -1522,6 +1522,9 @@ Given all the above, I make a few final overall changes to my keybindings
   (define-key project-prefix-map "\C-b" 'consult-project-buffer) ;; use over project-switch-to-buffer
   (define-key project-prefix-map "t" 'knavemacs/dired-vc-root-left) ;; show project tree
   (define-key project-prefix-map "T" 'knavemacs/tabbed-workspace-with-dired) ;; enable tab-line, open new tabs with dired
+  (define-key project-prefix-map "i" 'consult-imenu)
+  (define-key project-prefix-map "m" 'flymake-show-buffer-diagnostics)
+  (define-key project-prefix-map "M" 'flymake-show-project-diagnostics)
 
   ;; dired configurations
   ;; note, <space>-j to jump (dired-goto-file) in dired buffers
