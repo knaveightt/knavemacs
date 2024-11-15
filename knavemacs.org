@@ -1125,10 +1125,12 @@ Shows breadcrumb information in the buffer when using eglot / project / imenu.
 Let's just make sure we have the latest version of the Eglot LSP
 
 #+BEGIN_SRC emacs-lisp
-  (use-package eglot
+(use-package eglot
     :if knavemacs/config-programming
     :config
-    (setq eldoc-echo-area-use-multiline-p nil))
+    (setq eldoc-echo-area-use-multiline-p nil)
+    (electric-pair-mode 1) ; always insert matching pairs
+    )
 #+END_SRC
 
 *** Corfu In-Buffer Completions
