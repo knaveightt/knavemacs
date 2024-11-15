@@ -1126,7 +1126,9 @@ Let's just make sure we have the latest version of the Eglot LSP
 
 #+BEGIN_SRC emacs-lisp
   (use-package eglot
-    :if knavemacs/config-programming)
+    :if knavemacs/config-programming
+    :config
+    (setq eldoc-echo-area-use-multiline-p nil))
 #+END_SRC
 
 *** Corfu In-Buffer Completions
