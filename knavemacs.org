@@ -63,9 +63,9 @@ Requirements:
 - Directory ~/Shelf/snippets created to load snippet files
 - Org Mode Directory Setup - for my org workflow:
   1) Org files go to ~/Documents/org
-  2) There should be a =fleeting.org=, =unfiled.org=, =notice.org=, and
-     =worklog.org= file in the top level org folder.
-  3) There should be an =active= and =info= folder in the top level org folder.
+  2) There should be a =backlog.org=, =inbox.org=, =notice.org=, and
+     =tickler.org= file in the top level org folder.
+  3) There should be a =workstreams= folder in the top level org folder.
      
 * Configuration
 
@@ -157,7 +157,7 @@ This section probably changes alot :)
     ; Global settings (defaults)
     (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	  doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-palenight t)
+    (load-theme 'doom-snazzy t)
 
     ;; Enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
@@ -973,76 +973,92 @@ Companion dired packages.
 ** Productivity & Notetaking
 *** Org Mode
 There's a lot to unpack here, and this tends to be tweaked from time to time.
-Required folder setup is indicated in the Installation section at the beginning
-of this document.
 
 #+BEGIN_SRC emacs-lisp
-;; PURPOSE: this manages my getting things done workflow during work
-(defun knavemacs/org-mode-setup ()
-  (org-indent-mode))
+  ;; PURPOSE: this manages my getting things done workflow during work
+  (defun knavemacs/org-mode-setup ()
+    (org-indent-mode))
 
-(use-package org
-  :if knavemacs/config-org
-  :hook (org-mode . knavemacs/org-mode-setup)
-  :custom
-  (setq org-cite-global-bibliography '("~/Documents/knowledge/master.bib"))
-  (setq org-cite-export-processors
-   '((latex biblatex)))
+  (defun org-quick-time-stamp-inactive ()
+    "Insert an inactive time stamp of the current time without user prompt"
+    (interactive)
+    (let ((current-prefix-arg '(16)))
+      (call-interactively 'org-time-stamp-inactive))
+    (insert " "))
 
-  :config
-  (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
-  (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/active"))
-  (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
-  (setq org-stuck-projects
-        '("+LEVEL=3+PROJECT/-DONE" ("NEXT")))
-  (setq org-refile-targets
-        '((nil :maxlevel . 1)
-          (org-agenda-files :maxlevel . 2)))
-  (setq org-todo-keywords
-        '((sequence "TODO(t)" "BACKLOG(b@/!)" "PROJ(p)" "NEXT(x)" "HOLD(h@/!)" "FEEDBACK(f@/!)" "|" "DONE(d!)" "CANCELED(c)")
-          (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
-          (sequence "NOTE(e)" "|" "NOTED(z)" "TRASH(x)")
-          ))
-  (setq org-todo-keywoard-faces
-        '(("TODO" . "green") ("BACKLOG" . "red") ("NEXT" . "green") ("HOLD" . "yellow") 
-          ("DONE" . "blue") ("CANCELED" . "purple") ("NOTE" . org-warning) ("NOTED" . "green")))
 
-  ;; custom agenda views
-  (setq org-agenda-custom-commands
-        '(("d" "Work-Week Dashboard"
-           (
-            (todo "NOTICE" ((org-agenda-overriding-header "Notices for Today")))
-            (agenda "" ((org-deadline-warning-days 7)))
-            (tags "PROJECT+TODO=\"NEXT\"|-PROJECT+TODO=\"TODO\""
-                       ((org-agenda-overriding-header "Activities to Schedule")
-                        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled))))
-            (todo "FEEDBACK" ((org-agenda-overriding-header "Items Requiring Feedback")))
+  (use-package org
+    :if knavemacs/config-org
+    :hook (org-mode . knavemacs/org-mode-setup)
+
+    :config
+    (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
+    (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/workstreams"))
+    (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
+    (setq org-stuck-projects '("+TODO=\"ACTION\"" ("TODO")))
+    (setq org-refile-targets '((org-agenda-files :level . 1)))
+    (setq org-todo-keywords
+          '((sequence "BACKLOG(b)" "TODO(t)" "ACTION(a)" "NEXT(x)" "WAITING(w@)" "|" "DONE(d!)" "CANCELLED(c)")
+            (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
             ))
-          ("f" "View Fleeting Notes Collection"
-           (
-            (todo "NOTE" ((org-agenda-overriding-header "Fleeting Notes")))
-            )))
-        )
+    (setq org-todo-keywoard-faces
+          '(("TODO" . "green")
+            ("BACKLOG" . "red")
+            ("OUTCOME" . "purple")
+            ("NEXT" . "green")
+            ("WAITING" . "yellow")
+            ("DONE" . "blue")
+            ("CANCELLED" . "blue")
+            ("NOTICE" . org-warning)
+            ("RESOLVED" . "green")
+            ))
 
-  ;; capture templates
-  (setq org-capture-templates
-        '(
-          ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notice")
-           "* NOTICE %?\n%U Notice Created" :empty-lines 1)
+    ;; custom agenda views
+    (setq org-agenda-custom-commands
+          '(
+            ("d" "Todo Dashboard"
+             (
+              (todo "NOTICE" ((org-agenda-overriding-header "Today's Notices")))
+              (agenda "" ((org-deadline-warning-days 7)))
+              (tags "+TODO=\"TODO\"-SCHEDULED={.+}"
+                         ((org-agenda-overriding-header "Today's TODO Entries")
+                          (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+              (todo "WAITING" ((org-agenda-overriding-header "Items Being Waited On")))
+              ))
+            ))
 
-          ("m" "Meeting Notes" entry (file+olp "~/Documents/org/meetings.org" "Unfiled Meeting Notes")
-           "* %t %^{Enter Meeting Title} :Clarify:%^G \n** Attendees\n*** \n** Notes\n*** \n** Action Items\n*** TODO " :tree-type week :clock-in t :clock-resume t :empty-lines 0)
+    (defun my-org-agenda-skip-all-siblings-but-first ()
+      "Skip all but the first non-done entry."
+      (let (should-skip-entry)
+        (unless (org-current-is-todo)
+          (setq should-skip-entry t))
+        (save-excursion
+          (while (and (not should-skip-entry) (org-goto-sibling t))
+            (when (org-current-is-todo)
+              (setq should-skip-entry t))))
+        (when should-skip-entry
+          (or (outline-next-heading)
+              (goto-char (point-max))))))
 
-          ("t" "New Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs")
-           "* TODO [#A] %^{Enter TODO Item} :Clarify:\n %?" :empty-lines 1)
+    (defun org-current-is-todo ()
+      (string= "TODO" (org-get-todo-state)))
 
-          ("z" "New Work File" entry (file "~/Documents/org/new.org")
-           "* Backlog\n* Meetings\n* Knowledge\nBe sure to add FILETAGS to the new file.\n%i")
+    ;; capture templates
+    (setq org-capture-templates
+          '(
+            ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notices")
+             "* NOTICE %?\n%U Notice Created" :empty-lines 1)
 
-          ("f" "Fleeting Note" entry (file+olp "~/Documents/org/fleeting.org" "Fleeting Notes")
-           "* NOTE %?\n %i" :empty-lines 1)
-          ))
-  )
+            ("t" "New Todo" entry (file+olp "~/Documents/org/inbox.org" "TODOs")
+             "* TODO %i%?")
+
+            ("T" "New Scheduled Todo" entry (file+olp "~/Documents/org/tickler.org" "Scheduled TODOs")
+             "* TODO %i%?")
+
+            ("m" "Meeting Notes" entry (file+olp "~/Documents/org/inbox.org" "Meeting Notes")
+             "* %t %^{Enter Meeting Title}\n** Attendees\n*** \n** Notes\n*** \n** Action Items\n*** TODO " :tree-type week :clock-in t :clock-resume t :empty-lines 0)
+            ))
+    )
 #+END_SRC
 
 
@@ -1221,7 +1237,8 @@ multi-key press functionality.
     ["Org-Mode Actions"
      ("a" "Org Agenda" org-agenda)
      ("c" "Org Capture" org-capture)
-     ("l" "Store Link" org-store-link)]
+     ("l" "Store Link" org-store-link)
+     ("t" "Timestamp" org-quick-time-stamp-inactive)]
     [("q" "Quit" transient-quit-one)])
 
   (transient-define-prefix knavemacs/transient-note-commands ()
