@@ -995,7 +995,7 @@ There's a lot to unpack here, and this tends to be tweaked from time to time.
     (setf (cdr (rassoc 'find-file-other-window org-link-frame-setup)) 'find-file) ; open links in same buffer
     (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/workstreams"))
     (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
-    (setq org-stuck-projects '("+TODO=\"ACTION\"" ("TODO")))
+    (setq org-stuck-projects '("+TODO=\"ACTION\"" ("NEXT")))
     (setq org-refile-targets '((org-agenda-files :level . 1)))
     (setq org-todo-keywords
           '((sequence "BACKLOG(b)" "TODO(t)" "ACTION(a)" "NEXT(x)" "WAITING(w@)" "|" "DONE(d!)" "CANCELLED(c)")
@@ -1004,7 +1004,7 @@ There's a lot to unpack here, and this tends to be tweaked from time to time.
     (setq org-todo-keywoard-faces
           '(("TODO" . "green")
             ("BACKLOG" . "red")
-            ("OUTCOME" . "purple")
+            ("ACTION" . "purple")
             ("NEXT" . "green")
             ("WAITING" . "yellow")
             ("DONE" . "blue")
@@ -1020,29 +1020,12 @@ There's a lot to unpack here, and this tends to be tweaked from time to time.
              (
               (todo "NOTICE" ((org-agenda-overriding-header "Today's Notices")))
               (agenda "" ((org-deadline-warning-days 7)))
-              (tags "+TODO=\"TODO\"-SCHEDULED={.+}"
-                         ((org-agenda-overriding-header "Today's TODO Entries")
-                          (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))
+              (tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\""
+                         ((org-agenda-overriding-header "Today's TODO Entries")))
+              (stuck "" ((org-agenda-overriding-header "Stuck Actions")))
               (todo "WAITING" ((org-agenda-overriding-header "Items Being Waited On")))
-              (todo "ACTION" ((org-agenda-overriding-header "In-Flight Actions")))
               ))
             ))
-
-    (defun my-org-agenda-skip-all-siblings-but-first ()
-      "Skip all but the first non-done entry."
-      (let (should-skip-entry)
-        (unless (org-current-is-todo)
-          (setq should-skip-entry t))
-        (save-excursion
-          (while (and (not should-skip-entry) (org-goto-sibling t))
-            (when (org-current-is-todo)
-              (setq should-skip-entry t))))
-        (when should-skip-entry
-          (or (outline-next-heading)
-              (goto-char (point-max))))))
-
-    (defun org-current-is-todo ()
-      (string= "TODO" (org-get-todo-state)))
 
     ;; capture templates
     (setq org-capture-templates
