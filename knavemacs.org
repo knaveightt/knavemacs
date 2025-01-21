@@ -66,6 +66,7 @@ Requirements:
   2) There should be a =backlog.org=, =inbox.org=, =notice.org=, and
      =tickler.org= file in the top level org folder.
   3) There should be a =workstreams= folder in the top level org folder.
+- Directory ~/Documents/knowledge should exist for note-taking workflow
      
 * Configuration
 
