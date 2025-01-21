@@ -1045,6 +1045,83 @@ There's a lot to unpack here, and this tends to be tweaked from time to time.
     )
 #+END_SRC
 
+*** Note Taking using howm
+I have worked out a pretty roubust workflow using the howm note taking package.
+With a few tweaks, I take notes in a zettlekasten-esque fashion using markdown.
+This package helps me save, organize, tag, link, and search through my notes.
+With my custom functions for creating and linking notes, I am also able to use
+my howm note repository as an obsidian vault, and search tags / walk through
+note links as well!
+
+#+BEGIN_SRC emacs-lisp
+  ;; I take notes in markdown, this is a requirement.
+  (use-package markdown-mode)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+  (use-package howm
+    :init
+    (setq howm-directory "~/Documents/knowledge/")
+    (setq howm-home-directory howm-directory)
+    (setq howm-keyword-file (expand-file-name ".howm-keys" howm-home-directory))
+    (setq howm-history-file (expand-file-name ".howm-history" howm-home-directory))
+    (setq howm-file-name-format "%Y/%m/%Y%m%d%H%M%S.md")
+    (setq howm-view-title-header "#")
+    (setq howm-prefix (kbd "C-c N")) ; shortcut using meow keypad <SPC>-N
+    )
+
+  ;; The following macro creates a link in
+  ;; the current howm note to another howm note
+  ;; *NOTE* This assumes the howm note to be linked
+  ;; is the most recently visited buffer besides the current one
+  ;;
+  ;; The link that is created is in the format below:
+  ;; [[filename without extension]] >>> Note Header
+  ;; This is useful since the part of the link after >>> can be followed
+  ;; in howm, but the first part of the link in [[]] can be followed
+  ;; using a tool like obsidian
+  (defalias 'knavemacs-howm-link-from-buffers-kmacro
+    (kmacro "C-x b <return> C-c n K C-x b <return> i > > > SPC <escape> p , i [ [ <right> <right> SPC <left> <left> <left> <escape> C-x b <return> C-u C-c n K C-x b <return> p <left> <left> <left> x x x C-u - f / g C-u - f ~ d x ."))
+
+
+  ;; The following functions allow me to create howm notes with not
+  ;; just the default datetime stamp as the note file name, but also
+  ;; incorporate the sluggified main header within the note file name as well,
+  ;; which is helpful for my own personal tastes and workflow.
+  (defun knavemacs/denote-slug-hyphenate (str)
+    "Replace spaces and underscores with hyphens in STR.
+  Also replace multiple hyphens with a single one and remove any
+  leading and trailing hyphen. This was taken from the denote package."
+    (replace-regexp-in-string
+     "^-\\|-$" ""
+     (replace-regexp-in-string
+      "-\\{2,\\}" "-"
+      (replace-regexp-in-string "_\\|\s+" "-" str))))
+
+  (defun knavemacs/denote-sluggify-value (str)
+    "Make STR an appropriate slug for title. This
+  was taken from the denote package."
+    (downcase
+     (knavemacs/denote-slug-hyphenate
+      (replace-regexp-in-string "[][{}!@#$%^&*()+'\"?,.\|;:~`‘’“”/=]*" "" str))))
+
+  (defun knavemacs/howm-create-with-descriptive-filename ()
+    "Create a new howm note using the standard file naming scheme,
+  with the addition of the first header sluggified and added to the filename."
+    (interactive)
+    (let* ((header (read-string "Enter Note Title: "))
+           (sluggified-header (knavemacs/denote-sluggify-value header))
+           (datestamp (format-time-string "%Y%m%d%H%M%S"))
+           (descriptive-filename (concat datestamp "-" sluggified-header ".md"))
+           (descriptive-directory (format-time-string "%Y/%m/"))
+           )
+      (find-file (concat howm-directory descriptive-directory descriptive-filename))
+      (goto-char (point-max))
+      (howm-create-here)
+      (insert header)
+      ))
+#+END_SRC
 
 ** Programming Configurations
 *** Indentation
@@ -1226,21 +1303,13 @@ multi-key press functionality.
     [("q" "Quit" transient-quit-one)])
 
   (transient-define-prefix knavemacs/transient-note-commands ()
-    "Custom Org-Roam Commands Transient"
+    "Custom Note-taking Commands Transient"
     :info-manual "Custom Note-Taking Commands Transient"
-    [["Note-Taking Actions"
-      ("f" "Create/Find a Note" org-roam-node-find)
-      ("b" "Show Linked Notes Buffer" org-roam-buffer-toggle)
-      ("l" "Insert Link to Note" org-roam-node-insert)]
-     ["View Specific Notes"
-      ("L" "View Literature Notes" knavemacs/org-roam-node-find-literature-only)
-      ("T" "View Notes with Tag" knavemacs/org-roam-find-by-tag)]]
-    [["Miscellaneous Actions"
-      ("E" "Launch Ebib" ebib)
-      ("q" "Quit" transient-quit-one)]
-     ["Citation Actions"
-      ("cf" "Open Note from Biblio" citar-open-notes)
-      ("ci" "Insert Biblio Citation" citar-insert-citation)]])
+    ["Note-Taking Actions"
+     ("c" "Create a Note" knavemacs/howm-create-with-descriptive-filename)
+     ("l" "Link to Existing Note" knavemacs-howm-link-from-buffers-kmacro)
+     ("n" "Show Howm Menu" howm-menu)]
+    [("q" "Quit" transient-quit-one)])
 
   (transient-define-prefix knavemacs/transient-saveclose-commands ()
     "Custom Save and Close Commands Transient"
@@ -1370,7 +1439,7 @@ the spirit of Emacs intact.
 
        '("r" . rectangle-mark-mode)
        '("o" . knavemacs/transient-org-commands)
-       ;'("n" . knavemacs/transient-note-commands)
+       '("n" . knavemacs/transient-note-commands)
        '("t" . knavemacs/transient-tab-line-commands)
        '("b" . knavemacs/transient-buffer-commands)
        '("w" . ace-window)
