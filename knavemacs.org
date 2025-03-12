@@ -264,6 +264,7 @@ location.
     (display-line-numbers-mode 0))
 
   (setq display-line-numbers-type 'visual)
+  (setq display-line-numbers-current-absolute nil)
   (global-display-line-numbers-mode t)
   (dolist (mode '(term-mode-hook
 		  eshell-mode-hook
@@ -868,7 +869,7 @@ There is an excellent package for this, activities, that provides me this functi
     :if knavemacs/config-visual
     :init
     (activities-mode)
-    (activities-tabs-mode)
+    ; (activities-tabs-mode)
     ;; Prevent `edebug' default bindings from interfering.
     (setq edebug-inhibit-emacs-lisp-mode-bindings t)
 
