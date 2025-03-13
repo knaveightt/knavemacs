@@ -12,6 +12,6 @@
 :     \|__| \|__|\|__| \|__|\|__|\|__|\|__|/       \|_______|\|__|     \|__|\|__|\|__|\|_______|\_________\
 :                                                                                              \|_________|
 
-This is my GNU Emacs configuration - tested for Emacs 29.4
+This is my GNU Emacs configuration - tested for Emacs 30.1
 
 For details and installation, see the main file ~knavemacs.org~
