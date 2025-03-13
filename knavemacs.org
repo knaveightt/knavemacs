@@ -61,6 +61,7 @@ Requirements:
 - Symbols Nerd Font (try 'nerd-icons-install-fonts')
 - git
 - Directory ~/Shelf/snippets created to load snippet files
+- dunst (notifications) if on linux
 - Org Mode Directory Setup - for my org workflow:
   1) Org files go to ~/Documents/org
   2) There should be a =backlog.org=, =inbox.org=, =notice.org=, and
@@ -1480,4 +1481,12 @@ Given all the above, I make a few final overall changes to my keybindings
   (define-key dired-mode-map "K" 'dired-do-kill-lines)
   (define-key dired-mode-map "H" 'dired-hide-dotfiles-mode)
   (define-key dired-mode-map ";" 'dired-subtree-toggle)
+#+END_SRC
+
+** Wrap Up Processes
+If I'm running linux, I'm probably using emacs as a daemon.
+Based on this, I run a shell command to notify that the emacs configuration has been loaded.
+This requires dunst or an equivalent notification system to be installed.
+#+BEGIN_SRC emacs-lisp
+(if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
 #+END_SRC
