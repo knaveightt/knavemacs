@@ -1058,7 +1058,7 @@ Yasnippets is the defacto standard for Emacs imo.
     :if knavemacs/config-programming
     :config
     (setq yas-snippet-dirs
-	  '("~/Shelf/snippets"))
+	  '("~/.config/emacs/snippets"))
     (yas-global-mode 1) ;; or M-x yas-reload-all if YASnippet is already started
     )
 #+END_SRC
