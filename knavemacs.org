@@ -1050,6 +1050,17 @@ Here are my tab / indentation configurations:
   (add-hook 'c-mode-hook 'coding-hooks)
 #+END_SRC
 
+*** Elisp Slime Nav
+Slime-style navigation of Emacs Lisp source with M-. & M-,
+#+BEGIN_SRC emacs-lisp
+  (use-package elisp-slime-nav
+    :if knavemacs/config-programming
+    :config
+    (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+      (add-hook hook 'elisp-slime-nav-mode))
+    )
+#+END_SRC
+
 *** Snippets
 Yasnippets is the defacto standard for Emacs imo.
 
