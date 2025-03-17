@@ -48,6 +48,8 @@
 ;; howm
 
 (setq knavemacs/config-programming nil)
+;; [elisp-slime-nav]
+;; elisp-slime-nav
 ;; [Snippets]
 ;; yasnippets
 ;; [Eglot Language Server]
