@@ -917,11 +917,12 @@ There's a lot to unpack here, and this tends to be tweaked from time to time.
           '(
             ("d" "Todo Dashboard"
              (
-              (todo "NOTICE" ((org-agenda-overriding-header "Today's Notices")))
               (agenda "" ((org-deadline-warning-days 7)))
+              (todo "NOTICE" ((org-agenda-overriding-header "Today's Notices")))
               (tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\""
-                         ((org-agenda-overriding-header "Today's TODO Entries")))
+                         ((org-agenda-overriding-header "Today's Open TODOs")))
               (stuck "" ((org-agenda-overriding-header "Stuck Actions")))
+              (todo "ACTION" ((org-agenda-overriding-header "In-Progress Actions")))
               (todo "WAITING" ((org-agenda-overriding-header "Items Being Waited On")))
               ))
             ))
@@ -930,7 +931,7 @@ There's a lot to unpack here, and this tends to be tweaked from time to time.
     (setq org-capture-templates
           '(
             ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notices")
-             "* NOTICE %?\n%U Notice Created" :empty-lines 1)
+             "* NOTICE %?\n- %U Notice Created" :empty-lines 1)
 
             ("t" "New Todo" entry (file+olp "~/Documents/org/inbox.org" "TODOs")
              "* TODO %i%?")
