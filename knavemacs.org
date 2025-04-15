@@ -1062,6 +1062,11 @@ Slime-style navigation of Emacs Lisp source with M-. & M-,
     )
 #+END_SRC
 
+*** Programming Language Configurations
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode)
+#+END_SRC
+
 *** Snippets
 Yasnippets is the defacto standard for Emacs imo.
 
