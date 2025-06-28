@@ -1,17 +1,28 @@
-#+TITLE: Knavemacs Emacs Configuration
-#+AUTHOR: John Osinski
-#+EMAIL: johnosinski80@gmail.com
-#+DATE: [2023-10-03 Tue 12:04]
+* Knavemacs - Emacs Configuration
+** What is it?
+This is my emacs configuration, tested for **Emacs 30.1**.
 
-:  ___  __    ________   ________  ___      ___ _______   _____ ______   ________  ________  ________
-: |\  \|\  \ |\   ___  \|\   __  \|\  \    /  /|\  ___ \ |\   _ \  _   \|\   __  \|\   ____\|\   ____\
-: \ \  \/  /|\ \  \\ \  \ \  \|\  \ \  \  /  / | \   __/|\ \  \\\__\ \  \ \  \|\  \ \  \___|\ \  \___|
-:  \ \   ___  \ \  \\ \  \ \   __  \ \  \/  / / \ \  \_|/_\ \  \\|__| \  \ \   __  \ \  \    \ \_____  \
-:   \ \  \\ \  \ \  \\ \  \ \  \ \  \ \    / /   \ \  \_|\ \ \  \    \ \  \ \  \ \  \ \  \____\|____|\  \
-:    \ \__\\ \__\ \__\\ \__\ \__\ \__\ \__/ /     \ \_______\ \__\    \ \__\ \__\ \__\ \_______\____\_\  \
-:     \|__| \|__|\|__| \|__|\|__|\|__|\|__|/       \|_______|\|__|     \|__|\|__|\|__|\|_______|\_________\
-:                                                                                              \|_________|
+It has been put together with heavy inspiration (sometimes overt copy and paste)
+from a variety of sources, most notebly [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][System Crafter's Emacs from Scratch]] and
+[[https://github.com/LionyxML/emacs-solo][Emacs-Solo from LionyxML]]. Of course there are several additions and
+customizations from myself as well. :)
 
-This is my GNU Emacs configuration - tested for Emacs 30.1
+Just ensure the ~init.el~ file is in the ~/.config/emacs folder, and ensure
+the dependencies below are all met, then you should be good to go.
 
-For details and installation, see the main file ~knavemacs.org~
+** Dependencies
+The following dependencies must be met for this configuration to run properly:
+
+- ~ripgrep~ must be installed
+- ~JetBrainsMono~ Nerd Font must be installed
+- included ~snippets~ folder moved to ~/Documents/data/snippets
+- ensure included ~modal~ folder is in ~/.config/emacs
+- Ensure the following items are created under ~/Documents/org/
+  - notice.org
+  - ticker.org
+  - inbox.org
+  - backlog.org
+  - workstreams/ (note: this is a directory)
+- consider running ~nerd-icons-instal-fonts~ once after loading emacs
+- on linux, have a notification system installed (e.g. dunst)
+  
