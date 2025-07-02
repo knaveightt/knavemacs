@@ -830,7 +830,7 @@
    ("r" delete-region :then '(yank))
    ("R" backward-delete-char-untabify :read t)
    ("s" avy-goto-word-1 :then '(set-mark-command)) ; select from word start
-   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line)) ; select from line (or line num)
+   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
    ("t" transpose-words)
    ("T" transpose-lines)
    ("u" undo)
@@ -1076,4 +1076,5 @@
           	  (emacs-init-time)
           	  (number-to-string (length package-activated-list)))))
 (message (emacs-init-time))
+(load-theme 'manoj-dark t)
 (if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
