@@ -603,7 +603,7 @@
 
 (defun knavemacs/highlight-keywords-hook ()
   "Function that runs on a hook to highlight keywords after a moment."
-  (run-at-time "1 sec" nil #'knavemacs/highlight-keywords-mode))
+  (run-at-time "1 sec" nil #'knavemacs/highlight-keywords-mode-on))
 
 (add-hook 'prog-mode-hook #'knavemacs/highlight-keywords-hook)
 
