@@ -114,7 +114,7 @@
 (load-theme 'leuven-dark t)
 (set-cursor-color "#b4d273")
 (add-to-list 'default-frame-alist
-	     '(font . "JetBrainsMono NF 10"))
+	     '(font . "JetBrainsMono NF 12"))
 
 ;; Visual Line Handling
 (set-default 'truncate-lines t)
@@ -561,11 +561,31 @@
 ;;
 ;; This is built off of emacs-solo by LionyxML
 ;; --------------------------------------------------
+(defface knavemacs/HL-hack
+  '((t :foreground "#221111" :background "#bb4411" :weight bold))
+  "Face for HACK tags."
+  :group 'knavemacs/highlight-faces)
+
+(defface knavemacs/HL-todo
+  '((t :foreground "#AAA" :background "#223388" :weight bold))
+  "Face for TODO tags."
+  :group 'knavemacs/highlight-faces)
+
+(defface knavemacs/HL-fixme
+  '((t :foreground "#221111" :background "#a97900" :weight bold))
+  "Face for FIXME tags."
+  :group 'knavemacs/highlight-faces)
+
+(defface knavemacs/HL-note
+  '((t :foreground "#221111" :background "#226633" :weight bold))
+  "Face for NOTE tags."
+  :group 'knavemacs/highlight-faces)
+
 (defcustom +highlight-keywords-faces
-  '(("TODO" . error)
-    ("FIXME" . error)
-    ("HACK" . warning)
-    ("NOTE" . warning))
+  '(("TODO" . knavemacs/HL-todo)
+    ("FIXME" . knavemacs/HL-fixme)
+    ("HACK" . knavemacs/HL-hack)
+    ("NOTE" . knavemacs/HL-note))
   "Alist of keywords to highlight and their face."
   :group '+highlight-keywords
   :type '(alist :key-type (string :tag "Keyword")
