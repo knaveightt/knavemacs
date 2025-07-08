@@ -324,86 +324,78 @@
 ;; --------------------------------------------------
 ;;; tab-line-mode
 ;; --------------------------------------------------
+;; I use the tab-line as a way to "pin" buffers for quick
+;; visiting, I have functions to pin / unpin buffers to the
+;; tab line, as well as to cycle in a way that allows me
+;; to quickly access the buffers that have been pinned to the
+;; tab line. I can also call a function that allows me to
+;; switch to a buffer that is represented on the tab line
+;; only. 
 (use-package tab-line
-  :ensure nil
-  :defer t
-  :custom
-  ;; manually installed elisp script
-  ;; Define the function to be used for tab-line management and
-  ;; create the buffer list that will be used for holding the tab buffers
-  (setq tab-line-tabs-function 'knavemacs/tab-line-buffers)
+  :ensure t
+  :config
+  ;; set the function and variables used to keep track of pinned buffers
+  (setq tab-line-tabs-function 'knavemacs/tab-line-pinned-buffers)
   (setq knavemacs/tab-line-buffers-list (list (current-buffer)))
-  (defun knavemacs/tab-line-buffers ()
-    "Provides a list containing buffers to be shown on the tab line"
+  (defun knavemacs/tab-line-pinned-buffers ()
+    "Provides a list containing buffers that have been explicitly set to show on the tab line"
     knavemacs/tab-line-buffers-list)
 
-  ;; function to add a new tab for a buffer
-  (defun knavemacs/tab-line-add-current-buffer ()
-    "Adds the current buffer to the list of tabs."
+  ;; pin buffer to tab line
+  (defun knavemacs/tab-line-pinned-pin-buffer ()
+    "Pins the current buffer to the tab buffer list"
     (interactive)
-    (if
-        (and
-         (not (seq-contains-p knavemacs/tab-line-buffers-list (current-buffer))) ; exclude already added
-         (not (string-match (rx "magit") (buffer-name (current-buffer)))) ;; exclude magit buffers
-         (not (string-match (rx "COMMIT_EDITMSG") (buffer-name (current-buffer)))) ;; exclude COMMIT buffers
-         (not (string-match (rx "CAPTURE-") (buffer-name (current-buffer)))) ;; exclude capture buffers
-         (not (string-match (rx "*org-roam*") (buffer-name (current-buffer)))) ;; exclude org-roam buffers
-         (not (string-match (rx "*scratch*") (buffer-name (current-buffer)))) ;; exclude *scratch*
-         (not (string-match (rx "*Messages*") (buffer-name (current-buffer)))) ;; exclude *Messages*
-         (not (string-match (rx "*Mini") (buffer-name (current-buffer)))) ;; exclude mini buffer completions
-         (not (string-match (rx "*dashboard*") (buffer-name (current-buffer)))) ;; exclude *dashboard*
-         (not (string-match (rx "*eldoc") (buffer-name (current-buffer)))) ;; exclude eldoc buffers
-         (not (string-match (rx ".org") (buffer-name (current-buffer)))) ;; exclude org files
-         (not (string-match (rx "*Dired") (buffer-name (current-buffer)))) ;; exclude other dired buffers
-         (not (string-match (rx "*Completions") (buffer-name (current-buffer)))) ;; exclude completion buffers
-         )
-        (setq knavemacs/tab-line-buffers-list (append knavemacs/tab-line-buffers-list (list (current-buffer)))))
-
-                                        ; buffer must have a buffer name. Some dired or other system buffers do not have a name, so filter those out
+    (if (not (seq-contains-p knavemacs/tab-line-buffers-list (current-buffer)))
+	(setq knavemacs/tab-line-buffers-list (append knavemacs/tab-line-buffers-list (list (current-buffer)))))
+    ;; buffer must have a buffer name. Some dired or other system buffers do not have a name, so filter those out
     (setq knavemacs/tab-line-buffers-list (seq-remove (lambda (elt) (not (buffer-name elt))) knavemacs/tab-line-buffers-list)) 
-    (set-window-parameter nil 'tab-line-cache nil)
+    (set-window-parameter nil 'tab-line-cache nil) ; for updating
     (force-mode-line-update))
 
-  ;; this function is not called directly, but helps in removing tabs
-  (defun knavemacs/tab-line-switch-before-drop-kill ()
-    "Switch to another tab, before dropping/killing current buffer (to prevent backgrounded buffers unexpectedly returning to knavemacs/tab-line-buffers-list)."
-    (let ((n (seq-position knavemacs/tab-line-buffers-list (current-buffer))))
-      (cond
-       ((= (length knavemacs/tab-line-buffers-list) 1)
-        ;;If only one tab, return error
-        (message "Only one tab open, cannot drop"))
-       ;;If left most tab, switch right
-       ((= n 0)
-        (switch-to-buffer (nth 1 knavemacs/tab-line-buffers-list)))
-       ;;otherwise switch left
-       (t
-        (switch-to-buffer (nth (- n 1) knavemacs/tab-line-buffers-list))))))
-
-  ;; function for removing a tab for a buffer - non-nil argument ensures buffer is killed
-  (defun knavemacs/tab-line-drop-tab (&optional kill)
-    "Remove the tab for the current buffer. Will KILL indirect buffers, but leave all others open."
+  ;; unpin buffer to tab line
+  (defun knavemacs/tab-line-pinned-unpin-buffer ()
+    "Removes the current buffer from the tab buffer list"
     (interactive)
-    (let ((buffer-to-drop (current-buffer)))
-      (knavemacs/tab-line-switch-before-drop-kill)
-      ;;if buffer is indirect, dired, help or kill is non-nil, kill-this-buffer, otherwise remove from tab-list (keeping buffer open)
-      (if (or kill
-              (buffer-base-buffer buffer-to-drop)
-              ;;buffer-file-name is blank for dired and help descriptions, so kill those buffers
-              (not (buffer-file-name buffer-to-drop)))
-          (kill-buffer buffer-to-drop)
-        (setq knavemacs/tab-line-buffers-list (delete buffer-to-drop knavemacs/tab-line-buffers-list))))
-    (set-window-parameter nil 'tab-line-cache nil)
+    (if (seq-contains-p knavemacs/tab-line-buffers-list (current-buffer))
+	(setq knavemacs/tab-line-buffers-list (delete (current-buffer) knavemacs/tab-line-buffers-list)))
+    (set-window-parameter nil 'tab-line-cache nil) ; for updating
     (force-mode-line-update))
 
-  ;; convieneince function for killing a buffer/tab
-  (defun knavemacs/tab-line-kill-tab ()
-    "Kill the buffer and tab active in the tab-line"
+  ;; switch to a pinned buffer (uses completions)
+  (defun knavemacs/tab-line-pinned-switch-to-buffer ()
+    "Switches to a buffer that is explicitly pinned to the tab-line"
     (interactive)
-    (knavemacs/tab-line-drop-tab t))
+    (switch-to-buffer (completing-read "Choose Tab:" (mapcar 'buffer-name (knavemacs/tab-line-pinned-buffers)))))
 
+  ;; I dont typically call this directly, but jump to the last pinned buffer
+  (defun knavemacs/tab-line-pinned-switch-to-last ()
+    "Automatically switches the active buffer to the last pinned buffer in the tab line."
+    (interactive)
+    (let ((num-buffers (length knavemacs/tab-line-buffers-list)))
+      (setq bufindx (- num-buffers 1))
+      (switch-to-buffer (nth bufindx knavemacs/tab-line-buffers-list))))
 
-  ;; set the hook to update the tab-line on buffer changes
-  (add-hook 'buffer-list-update-hook #'knavemacs/tab-line-add-current-buffer))
+  ;; I dont typically call this directly, but jump to the first pinned buffer
+  (defun knavemacs/tab-line-pinned-switch-to-first ()
+    "Automatically switches the active buffer to the first pinned buffer in the tab line."
+    (interactive)
+    (switch-to-buffer (nth 0 knavemacs/tab-line-buffers-list)))
+
+  ;; cycle forward the tabs of pinned buffers
+  (defun knavemacs/tab-line-pinned-next-tab ()
+    "Cycle to the next tab-line tab, selecting the first if no tab is selected"
+    (interactive)
+    (if (seq-contains-p knavemacs/tab-line-buffers-list (current-buffer))
+	(tab-line-switch-to-next-tab)
+      (knavemacs/tab-line-pinned-switch-to-first)))
+
+  ;; cycle backwards the tabs of pinned buffers:
+  (defun knavemacs/tab-line-pinned-prev-tab ()
+    "Cycle to the previous tab-line tab, selecting the last if no tab is selected"
+    (interactive)
+    (if (seq-contains-p knavemacs/tab-line-buffers-list (current-buffer))
+	(tab-line-switch-to-prev-tab)
+      (knavemacs/tab-line-pinned-switch-to-last))))
 
 ;; --------------------------------------------------
 ;;; dired-mode
@@ -765,6 +757,10 @@
    "SPC" '(("b" switch-to-buffer)
   	   ("k" kill-current-buffer)
   	   ("i" ibuffer)
+	   ("t t" tab-line-mode)
+	   ("t b" knavemacs/tab-line-pinned-switch-to-buffer)
+	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
+	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
   	   ("o t" knavemacs/org-quick-time-stamp-inactive)
@@ -775,6 +771,12 @@
    ("." knavemacs/modal--scroll-down-half-page)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
+   ("["
+    (("t"
+      knavemacs/tab-line-pinned-prev-tab)))
+   ("]"
+    (("t"
+      knavemacs/tab-line-pinned-next-tab)))
    ("{" backward-paragraph)
    ("}" forward-paragraph)
    (";" ryo-modal-repeat)
