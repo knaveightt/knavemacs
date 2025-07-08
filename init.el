@@ -790,8 +790,8 @@
    ("D" kill-whole-line)
    ("e" knavemacs/modal--increment-expression)
    ("E" knavemacs/modal--decrement-expression)
-   ("f" avy-goto-char) ; find
-   ("F" avy-goto-char-timer)
+   ("F" avy-goto-char-timer) ; find
+   ("f" avy-goto-char-in-line)
    ("g"
     (("v"
       knavemacs/modal--jump-back-to-mark)
@@ -849,9 +849,9 @@
       shrink-window-horizontally
       :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))))
    ("Q" revert-buffer)
-   ("r" delete-region :then '(yank))
-   ("R" backward-delete-char-untabify :read t)
-   ("s" avy-goto-word-1 :then '(set-mark-command)) ; select from word start
+   ("R" delete-region :then '(yank))
+   ("r" backward-delete-char-untabify :read t)
+   ("s" avy-goto-word-1 :then '(set-mark-command forward-word)) ; select from word start
    ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
    ("t" transpose-words)
    ("T" transpose-lines)
