@@ -460,11 +460,15 @@
   (defun knavemacs/window-dired-open-directory ()
     "Open the current directory in *Dired-Side* side window."
     (interactive)
-    (emacs-solo/window-dired-vc-root-left (dired-get-file-for-visit)))
+    (knavemacs/window-dired-vc-root-left (dired-get-file-for-visit)))
 
   (eval-after-load 'dired
     '(progn
-       (define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory))))
+       (define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory) 
+       ;; q to go back to parent
+       ;; i to show subdir in same buffer
+       (define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
+       (define-key dired-mode-map (kbd "C-q") 'dired-kill-subdir))))
 
 ;; ==================================================
 ;;; SECTION 5 Elisp-Built Functionality
@@ -639,6 +643,7 @@
 ;;; SECTION 6 Global Set Keybinds
 ;; ==================================================
 (global-set-key (kbd "M-p") #'knavemacs/quick-window-jump)
+(global-set-key (kbd "M-o") #'knavemacs/window-dired-vc-root-left)
 (global-set-key (kbd "M-n") #'completion-at-point)
 (global-set-key (kbd "M-g r") #'recentf)
 (global-set-key (kbd "M-s g") #'grep)
