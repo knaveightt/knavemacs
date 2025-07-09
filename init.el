@@ -658,10 +658,21 @@
 (add-hook 'prog-mode-hook #'knavemacs/highlight-keywords-hook)
 
 ;; ==================================================
-;;; SECTION 6 Global Set Keybinds
+;;; SECTION 6 Manually Installed Elisp Files
+;; ==================================================
+;;; sr-speedbar.el
+;; --------------------------------------------------
+(add-to-list 'load-path "~/.config/emacs/speedbar")
+(require 'sr-speedbar)
+(setq speedbar-use-images nil)
+(setq speedbar-show-unknown-files t)
+
+;; ==================================================
+;;; SECTION 7 Global Set Keybinds
 ;; ==================================================
 (global-set-key (kbd "M-p") #'knavemacs/quick-window-jump)
 (global-set-key (kbd "M-o") #'knavemacs/window-dired-vc-root-left)
+(global-set-key (kbd "M-i") #'sr-speedbar-toggle)
 (global-set-key (kbd "M-n") #'completion-at-point)
 (global-set-key (kbd "M-g r") #'recentf)
 (global-set-key (kbd "M-s g") #'grep)
@@ -669,7 +680,7 @@
 (global-set-key (kbd "RET") #'newline-and-indent)
 
 ;; ==================================================
-;;; SECTION 7 {External Packages}
+;;; SECTION 8 {External Packages}
 ;; ==================================================
 ;;; {core} vertico packages
 ;; - vertico
@@ -746,7 +757,6 @@
 ;; --------------------------------------------------
 (use-package avy
   :ensure t
-  :bind ("M-i" . avy-goto-char)
   :config
   ;; define an avy action to kill a while line based on a selection
   ;; (see https://karthinks.com/software/avy-can-do-anything/)
