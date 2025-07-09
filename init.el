@@ -381,6 +381,12 @@
     (interactive)
     (switch-to-buffer (nth 0 knavemacs/tab-line-buffers-list)))
 
+  ;; reset the pinned buffer list
+  (defun knavemacs/tab-line-pinned-reset-buffers ()
+    "Reduce the buffers pinned to the tab line to just the current buffer"
+    (interactive)
+    (setq knavemacs/tab-line-buffers-list (list (current-buffer))))
+
   ;; cycle forward the tabs of pinned buffers
   (defun knavemacs/tab-line-pinned-next-tab ()
     "Cycle to the next tab-line tab, selecting the first if no tab is selected"
@@ -757,10 +763,6 @@
    "SPC" '(("b" switch-to-buffer)
   	   ("k" kill-current-buffer)
   	   ("i" ibuffer)
-	   ("t t" tab-line-mode)
-	   ("t b" knavemacs/tab-line-pinned-switch-to-buffer)
-	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
-	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
   	   ("o t" knavemacs/org-quick-time-stamp-inactive)
@@ -853,7 +855,17 @@
    ("r" backward-delete-char-untabify :read t)
    ("s" avy-goto-word-1 :then '(set-mark-command forward-word)) ; select from word start
    ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
-   ("t" transpose-words)
+   ("t"
+    (("t"
+      tab-line-mode)
+     ("b"
+      knavemacs/tab-line-pinned-switch-to-buffer)
+     ("r"
+      knavemacs/tab-line-pinned-reset-buffers)
+     ("p"
+      knavemacs/tab-line-pinned-pin-buffer)
+     ("u"
+      knavemacs/tab-line-pinned-unpin-buffer)))
    ("T" transpose-lines)
    ("u" undo)
    ("U" undo-redo)
