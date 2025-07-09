@@ -298,7 +298,17 @@
   (setq which-key-idle-delay 1.5)
   (setq which-key-idle-secondary-delay 0.25)
   (setq which-key-add-column-padding 1)
-  (setq which-key-max-description-length 40))
+  (setq which-key-max-description-length 40)
+
+  (which-key-add-key-based-replacements
+    "SPC o" "Org Commands"
+    "SPC p" "Project Commands"
+    "SPC h" "Help Commands"
+    "SPC v" "Version Control"
+    "SPC x" "Ctrl-X Commands"
+    "SPC b" "Switch Buffer"
+    "SPC k" "Kill Buffer"
+    "SPC i" "IBuffer"))
 
 ;; --------------------------------------------------
 ;;; tab-bar-mode
