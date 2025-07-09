@@ -979,6 +979,14 @@
   (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 
 ;; --------------------------------------------------
+;;; {programming} diff-hl
+;; --------------------------------------------------
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode))
+
+;; --------------------------------------------------
 ;;; {visual} rainbow-mode
 ;; --------------------------------------------------
 (use-package rainbow-mode
