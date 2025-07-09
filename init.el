@@ -753,6 +753,8 @@
   ;; hook into existing maps using SPC as a leader
   (define-key ryo-modal-mode-map (kbd "SPC h") 'help-command)
   (define-key ryo-modal-mode-map (kbd "SPC x") ctl-x-map)
+  (define-key ryo-modal-mode-map (kbd "SPC v") vc-prefix-map)
+  (define-key ryo-modal-mode-map (kbd "SPC p") project-prefix-map)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if ryo-modal-mode (save-buffer) (save-some-buffers))))
   (define-key ctl-x-map (kbd "f") #'knavemacs/modal--find-file) ;; needs to be called interactively
   (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
