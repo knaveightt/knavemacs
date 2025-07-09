@@ -462,12 +462,30 @@
     (interactive)
     (knavemacs/window-dired-vc-root-left (dired-get-file-for-visit)))
 
+  ;; In dired mode, visit the file at the cursor in the right/below/left/above window.
+  ;; https://news.ycombinator.com/item?id=44075388
+  (defun knavemacs/dired-open-display-direction ()
+    (interactive)
+    (let* ((file-or-dir (dired-get-file-for-visit))   ;; get the file at cursor
+           (buffer (find-file-noselect file-or-dir))) ;; load the file into a buffer
+      (let ((window                                   ;; figure out the window to use
+             (cond ((get-buffer-window buffer (selected-frame)))
+                   ((window-in-direction 'right))     ;; try window in each direction
+                   ((window-in-direction 'below))     ;; and default to right
+                   ((window-in-direction 'left))      ;; if no window found.
+                   ((window-in-direction 'above))
+                   (t (split-window (selected-window) nil 'right)))))
+        (window--display-buffer buffer window 'window nil)
+        window))
+    (knavemacs/quick-window-jump))
+
   (eval-after-load 'dired
     '(progn
        (define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory) 
        ;; q to go back to parent
        ;; i to show subdir in same buffer
        (define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
+       (define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
        (define-key dired-mode-map (kbd "C-q") 'dired-kill-subdir))))
 
 ;; ==================================================
