@@ -225,62 +225,74 @@
 ;; --------------------------------------------------
 (use-package org
   :config
-  (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/workstreams"))
+  (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/areas"))
   (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
-  (setq org-stuck-projects '("+TODO=\"ACTION\"" ("NEXT")))
+  (setq org-stuck-projects '("+TODO=\"PROJECT\"" ("TODO" "NEXT")))
   (setq org-refile-targets '((org-agenda-files :level . 1)))
+  (setq org-id-link-to-org-use-id t)
   (setq org-todo-keywords
-		'((sequence "BACKLOG(b)" "TODO(t)" "ACTION(a)" "NEXT(x)" "FOLLOWUP(w@)" "|" "DONE(d!)" "CANCELLED(c)")
-          (sequence "NOTICE(n)" "|" "RESOLVED(r@)")
-          ))
-  (setq org-todo-keywoard-faces
-		'(("TODO" . "green")
-          ("BACKLOG" . "red")
-          ("ACTION" . "purple")
-          ("NEXT" . "green")
-          ("FOLLOWUP" . "yellow")
-          ("DONE" . "blue")
-          ("CANCELLED" . "blue")
-          ("NOTICE" . org-warning)
-          ("RESOLVED" . "green")
+	'((sequence "BACKLOG(b)" "TODO(t)" "NEXT(n)" "PROJECT(p)" "FOLLOWUP(w@)" "|" "DONE(d!)" "CANCELLED(c)")))
+  (setq org-todo-keyword-faces
+	'(("BACKLOG" . org-warning)
+          ("TODO" . org-todo)
+          ("NEXT" . org-todo)
+          ("PROJECT" . org-drawer)
+          ("FOLLOWUP" . org-macro)
+          ("DONE" . org-done)
+          ("CANCELLED" . org-property-value)
           ))
 
   ;; custom agenda views
   (setq org-agenda-custom-commands
-		'(
+	'(
           ("d" "Todo Dashboard"
            (
-			(todo "NOTICE" ((org-agenda-overriding-header "Today's Notices")))
-			(agenda "" ((org-deadline-warning-days 7)))
-			(tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
-                  ((org-agenda-overriding-header "This Week's TODOs")))
-			(stuck "" ((org-agenda-overriding-header "Stuck Actions")))
-			(tags "+TODO=\"FOLLOWUP\"-SCHEDULED={.+}" ((org-agenda-overriding-header "Requires Follow Up")))
-			))
+	    (agenda "" ((org-deadline-warning-days 7)))
+	    (tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
+		  ((org-agenda-overriding-header "TODOs This Week")))
+	    (stuck "" ((org-agenda-overriding-header "Stuck Projects")))
+	    (tags "+TODO=\"FOLLOWUP\"-SCHEDULED={.+}"
+		  ((org-agenda-overriding-header "Requires Follow Up")))
+	    ))
           ))
 
   ;; org function for printing out a quick timestamp
   (defun knavemacs/org-quick-time-stamp-inactive ()
-	"Insert an inactive time stamp of the current time without user prompt"
-	(interactive)
-	(let ((current-prefix-arg '(16)))
+    "Insert an inactive time stamp of the current time without user prompt"
+    (interactive)
+    (let ((current-prefix-arg '(16)))
       (call-interactively 'org-time-stamp-inactive))
-	(insert " "))
+    (insert " "))
+
+  ;; org function and advice for leaving a link behind when refiling to another org file
+  ;; very slightly modified from the below:
+  ;; https://emacs.stackexchange.com/questions/47011/org-refile-and-leave-a-link-behind
+  (defun knavemacs/org-refile--insert-link ( &rest _ )
+    (org-back-to-heading)
+    (let* ((refile-region-marker (point-marker))
+           (source-link (org-store-link nil)))
+      (org-insert-heading-after-current)
+      (insert source-link)
+      (goto-char refile-region-marker)))
+
+  (advice-add 'org-refile
+              :before
+              #'knavemacs/org-refile--insert-link)
 
   ;; capture templates
   (setq org-capture-templates
-		'(
-          ("n" "Post Notice" entry (file+olp "~/Documents/org/notice.org" "Notices")
-           "* NOTICE %?\n- %U Notice Created" :empty-lines 1)
+	'(
+          ("n" "Work Note" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
+           "* %^{Note Title} %^G\n%U\n%?" :empty-lines-after 1)
 
-          ("t" "New Todo" entry (file+olp "~/Documents/org/inbox.org" "TODOs")
-           "* TODO %i%?")
+          ("t" "Todo" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
+           "* TODO %^{Enter Task} %^G\n%?" :empty-lines-after 1)
 
-          ("T" "New Scheduled Todo" entry (file+olp "~/Documents/org/tickler.org" "Scheduled TODOs")
-           "* TODO %i%?")
+          ("s" "Scheduled Todo" entry (file+olp "~/Documents/org/tickler.org" "Scheduled TODOs")
+           "* TODO %^{Enter Scheduled Task} %?")
 
-          ("m" "Meeting Notes" entry (file+olp "~/Documents/org/inbox.org" "Meeting Notes")
-           "* %t %^{Enter Meeting Title}\n** Attendees\n*** \n** Notes\n*** \n** Action Items\n*** TODO " :tree-type week :clock-in t :clock-resume t :empty-lines 0)
+          ("m" "Meeting Notes" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
+           "* %t %^{Meeting Title} %^G\n** Attendees\n- [ ] %?\n** Notes\n** Action Items\n*** TODO " :empty-lines-after 1)
           )))
 
 ;; --------------------------------------------------
