@@ -1,0 +1,74 @@
+* Org Mode Usage
+** Introduction
+This is a brief, living document describing how I use org-mode for the
+management of my professional tasks and responsibilities.  It is
+loosely built around the [[https://fortelabs.com/blog/para/][PARA Method]] for simple organization of
+digital information, but contains several deviations based on my own
+needs.
+
+** Main Files
+The main files I interact with are the =journal.org= and
+=projects.org= files.
+
+*** Journal.org
+This file is the entry point for the new information that I work
+with. I have capture templates that I use to capture meeting notes,
+individual TODO items, and general work notes on a specific topic.
+Each item that I capture I tag with a specific identifier that should
+match the name of an org file in the =areas/= subdirectory. The org
+files in this subdirectory contain headings for *Knowledge*,
+*Projects and Tasks*, and *Meetings*, so you should see how they
+correspond.
+
+The main needs I have when maintaining the journal.org file are to
+refile meeting notes to the correct org file in the areas subdirectory,
+refile general notes to the correct org file in the areas subdirectory,
+and either complete or refile TODOs to the =projects.org= file, of which
+I will update the TODO signifier to PROJECT for tracking.
+
+I have elisp advice functions that will leave a link in the journal file
+to where the org heading was refiled to so that I am left with a log of
+sorts of what information I captured on what dates in the journal.org file.
+
+*** Projects.org
+This file retains short-term actions I need to complete that should have
+well-defined end dates, or are items I am trying to complete and get off
+my plate swiftly. This is in contrast to the org files in the areas
+subdirectory, which signifies areas of long-term responsibility or capabilities
+that don't necessarily have an end date, but I am responsible for maintaining
+as part of my professional responsibilities.
+
+The projects.org file contains PROJECT headings that have a *Project Log*
+sub-heading for keeping a record of important information related to the task,
+as well as a *Tasks* sub-heading that contain the individual TODO and NEXT
+actions I am completing. My org-mode configuration is setup where, if I use the
+*@step* tag for a TODO item with child TODO/NEXT actions, only the NEXT action
+will show in the org-agenda as its understood the parent TODO item has multiple
+steps, and I should only focus on the NEXT action.
+
+*** backlog.org
+I retain a backlog.org file that I put BACKLOG headings in, for items I have
+"pre-captured" and know I need to incorporate in my projects.org file at some
+point - this requires some weekly review to determine what actions I need to
+pull into my weekly work.
+
+*** tickler.org
+This is a file where I can put captured TODO items that will show up in my
+agenda at a later date for me to deal with.
+
+** Additional Subfolders
+*** Areas
+This directory was explaned as part of how I utilize the captured information
+in the journal.org file. The main idea here is I am building org files 1:1
+related to professional responsibilities I may have at my job, and when that
+responsibility is over, I have a completed .org file I can export describing the
+responsibility end-to-end, or move to the archive subdirectory for retention.
+
+*** Resources
+This folder is used for any work-related files (think PPTs, DOCXs, etc) that I
+work on as part of the professional day - these are key items that I can also
+link to in my org files.
+
+*** Archive
+This is where I will put org files from the areas subdirectory when they are no
+longer relevant to my professional responsibilities. 
