@@ -247,9 +247,13 @@
 	'(
           ("d" "Todo Dashboard"
            (
-	    (agenda "" ((org-deadline-warning-days 7)))
-	    (tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
-		  ((org-agenda-overriding-header "TODOs This Week")))
+	    (agenda ""
+		    ((org-deadline-warning-days 7)
+		     (org-agenda-overriding-header "Scheduled Items")))
+	    (tags "+@priority-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@priority+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
+		  ((org-agenda-overriding-header "Priority Project Work")))
+	    (tags "-@priority-@step+TODO=\"TODO\"-SCHEDULED={.+}|-@priority+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
+		  ((org-agenda-overriding-header "Available Open Work")))
 	    (stuck "" ((org-agenda-overriding-header "Stuck Projects")))
 	    (tags "+TODO=\"FOLLOWUP\"-SCHEDULED={.+}"
 		  ((org-agenda-overriding-header "Requires Follow Up")))
