@@ -502,7 +502,7 @@
        ;; i to show subdir in same buffer
        (define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
        (define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
-       (define-key dired-mode-map (kbd "C-q") 'dired-kill-subdir))))
+       (define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir))))
 
 ;; ==================================================
 ;;; SECTION 5 Elisp-Built Functionality
