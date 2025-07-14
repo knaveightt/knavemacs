@@ -111,7 +111,7 @@
   (add-hook mode 'knavemacs/no-line-nums-hook))
 
 ;; Font and Theme Configuration
-(load-theme 'leuven-dark t)
+(load-theme 'modus-vivendi t)
 (set-cursor-color "#b4d273")
 (add-to-list 'default-frame-alist
 	     '(font . "JetBrainsMono NF 12"))
@@ -1022,7 +1022,7 @@
 ;;; SECTION X Modeline Configuration
 ;; ==================================================
 (defface knavemacs/modeline-faces-modal
-  '((t :foreground "#7d0a36"
+  '((t :foreground "#EEEEEE"
   	   ))
   "Default Face"
   :group 'knavemacs/mode-line-faces)
@@ -1179,5 +1179,4 @@
           	  (emacs-init-time)
           	  (number-to-string (length package-activated-list)))))
 (message (emacs-init-time))
-(load-theme 'manoj-dark t)
 (if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
