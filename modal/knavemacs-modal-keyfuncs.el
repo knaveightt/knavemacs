@@ -1,9 +1,9 @@
 (defvar knavemacs/modal--window-manage-repeat-map
   (let ((map (make-sparse-keymap)))
-	(define-key map (kbd "s") 'enlarge-window)
-	(define-key map (kbd "S") 'shrink-window)
-	(define-key map (kbd "v") 'enlarge-window-horizontally)
-	(define-key map (kbd "V") 'shrink-window-horizontally)
+	(define-key map (kbd "j") 'enlarge-window)
+	(define-key map (kbd "k") 'shrink-window)
+	(define-key map (kbd "l") 'enlarge-window-horizontally)
+	(define-key map (kbd "h") 'shrink-window-horizontally)
 	map))
 
 (put 'enlarge-window 'repeat-map 'knavemacs/modal--window-manage-repeat-map)

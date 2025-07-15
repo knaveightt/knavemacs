@@ -686,9 +686,9 @@
 ;; ==================================================
 ;;; SECTION 7 Global Set Keybinds
 ;; ==================================================
-(global-set-key (kbd "M-p") #'knavemacs/quick-window-jump)
-(global-set-key (kbd "M-o") #'knavemacs/window-dired-vc-root-left)
-(global-set-key (kbd "M-i") #'sr-speedbar-toggle)
+(global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)
+(global-set-key (kbd "M-i") #'knavemacs/window-dired-vc-root-left)
+(global-set-key (kbd "M-p") #'sr-speedbar-toggle)
 (global-set-key (kbd "M-n") #'completion-at-point)
 (global-set-key (kbd "M-g r") #'recentf)
 (global-set-key (kbd "M-s g") #'grep)
@@ -821,17 +821,22 @@
 
   ;; custom menus using SPC as a leader
   (ryo-modal-key
-   "SPC" '(("b" switch-to-buffer)
+   "SPC" '(("j" switch-to-buffer) ; jump to buffer
   	   ("k" kill-current-buffer)
   	   ("i" ibuffer)
+	   ("t t" tab-line-mode)
+	   ("t j" knavemacs/tab-line-pinned-switch-to-buffer)
+	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
+	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
+	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
   	   ("o t" knavemacs/org-quick-time-stamp-inactive)
   	   ("o l" org-store-link)))
 
   (ryo-modal-keys
-   ("," knavemacs/modal--scroll-up-half-page)
-   ("." knavemacs/modal--scroll-down-half-page)
+   ("," kill-ring-save)
+   ("." ryo-modal-repeat)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
    ("["
@@ -847,8 +852,8 @@
    ("A" end-of-line :exit t)
    ("b" backward-word)
    ("B" knavemacs/modal--backward-symbol)
-   ("c" kill-ring-save)
-   ("C" append-next-kill)
+   ("c" ) ;; to be added - multi cursor functionality
+   ("C" ) ;; to be added - multi cursor functionality
    ("d" knavemacs/modal--dwim-delete)
    ("D" kill-whole-line)
    ("e" knavemacs/modal--increment-expression)
@@ -879,59 +884,19 @@
    ("N" er/contract-region)
    ("o" knavemacs/modal--open-line-below :exit t)
    ("O" knavemacs/modal--open-line-above :exit t)
-   ("p"
-    (("p"
-      delete-other-windows)
-     ("c"
-      delete-window)
-     ("s"
-      split-window-below)
-     ("v"
-      split-window-right)
-     ("o"
-      knavemacs/quick-window-jump)
-     ("h"
-      windmove-left)
-     ("j"
-      windmove-down)
-     ("k"
-      windmove-up)
-     ("l"
-      windmove-right)))
-   ("P"
-    (("s"
-      enlarge-window
-      :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))
-     ("S"
-      shrink-window
-      :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))
-     ("v"
-      enlarge-window-horizontally
-      :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))
-     ("V"
-      shrink-window-horizontally
-      :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))))
+   ("p" set-mark-command)
+   ("P" knavemacs/modal--set-mark-line)
    ("Q" revert-buffer)
    ("R" delete-region :then '(yank))
    ("r" backward-delete-char-untabify :read t)
    ("s" avy-goto-word-1 :then '(set-mark-command forward-word)) ; select from word start
    ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
-   ("t"
-    (("t"
-      tab-line-mode)
-     ("b"
-      knavemacs/tab-line-pinned-switch-to-buffer)
-     ("r"
-      knavemacs/tab-line-pinned-reset-buffers)
-     ("p"
-      knavemacs/tab-line-pinned-pin-buffer)
-     ("u"
-      knavemacs/tab-line-pinned-unpin-buffer)))
+   ("t" transpose-words)
    ("T" transpose-lines)
    ("u" undo)
    ("U" undo-redo)
-   ("v" set-mark-command)
-   ("V" knavemacs/modal--set-mark-line)
+   ("v" knavemacs/modal--scroll-down-half-page)
+   ("V" knavemacs/modal--scroll-up-half-page)
    ("w" forward-word)
    ("W" forward-symbol)
    ("x" delete-char)
