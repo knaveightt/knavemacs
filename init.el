@@ -608,22 +608,22 @@
 ;; This is built off of emacs-solo by LionyxML
 ;; --------------------------------------------------
 (defface knavemacs/HL-hack
-  '((t :foreground "#221111" :background "#bb4411" :weight bold))
+  '((t :foreground "#221111" :background "#ff4411" :weight bold))
   "Face for HACK tags."
   :group 'knavemacs/highlight-faces)
 
 (defface knavemacs/HL-todo
-  '((t :foreground "#AAA" :background "#223388" :weight bold))
+  '((t :foreground "#AAA" :background "#2233FF" :weight bold))
   "Face for TODO tags."
   :group 'knavemacs/highlight-faces)
 
 (defface knavemacs/HL-fixme
-  '((t :foreground "#221111" :background "#a97900" :weight bold))
+  '((t :foreground "#221111" :background "#F9E900" :weight bold))
   "Face for FIXME tags."
   :group 'knavemacs/highlight-faces)
 
 (defface knavemacs/HL-note
-  '((t :foreground "#221111" :background "#226633" :weight bold))
+  '((t :foreground "#221111" :background "#22CC33" :weight bold))
   "Face for NOTE tags."
   :group 'knavemacs/highlight-faces)
 
@@ -796,6 +796,12 @@
   :ensure t)
 
 ;; --------------------------------------------------
+;;; {core} multiple-cursors
+;; --------------------------------------------------
+(use-package multiple-cursors
+  :ensure t)
+
+;; --------------------------------------------------
 ;;; {core} ryo-modal
 ;; --------------------------------------------------
 (use-package ryo-modal
@@ -848,64 +854,85 @@
       knavemacs/tab-line-pinned-next-tab)))
    ("{" backward-paragraph)
    ("}" forward-paragraph)
-   (";" ryo-modal-repeat)
-   ("a" beginning-of-line :exit t)
-   ("A" end-of-line :exit t)
-   ("b" backward-word)
-   ("B" knavemacs/modal--backward-symbol)
-   ("c" kill-ring-save ) ;; to be added - multi cursor functionality
-   ("C" ) ;; to be added - multi cursor functionality
-   ("d" knavemacs/modal--dwim-delete)
-   ("D" kill-whole-line)
-   ("e" knavemacs/modal--increment-expression)
-   ("E" knavemacs/modal--decrement-expression)
+   ("a" beginning-of-line :exit t) ; append
+   ("A" end-of-line :exit t) ; append to end
+   ("b" backward-word) ; backword word (to beginning)
+   ("B" knavemacs/modal--backward-symbol) ; backword symbol (to beginning)
+   ("c" kill-ring-save) ; copy
+   ("C" copy-to-buffer) ; copy to buffer
+   ("d" knavemacs/modal--dwim-delete) ; delete
+   ("D" kill-whole-line) ; delete line
+   ("e" knavemacs/modal--increment-expression) ; forward select expression
+   ("E" knavemacs/modal--decrement-expression) ; backward select expression
    ("F" avy-goto-char-timer) ; find
-   ("f" avy-goto-char-in-line)
-   ("g"
+   ("f" avy-goto-char-in-line) ; fly
+   ("g" ; _goto_ commands
     (("v"
       knavemacs/modal--jump-back-to-mark)
      ("V"
       exchange-point-and-mark)
      ("u"
       universal-argument)))
-   ("G" keyboard-quit)
-   ("h" backward-char)
-   ("H" beginning-of-line)
-   ("i" ryo-modal-mode)
+   ("G" keyboard-quit) ; cancel (Ctrl-G alternative)
+   ("h" backward-char) ; left
+   ("H" beginning-of-line) ; all the way left
+   ("i" ryo-modal-mode) ; insert
    ;("I" avy-goto-char-timer)
-   ("j" next-line)
-   ("J" knavemacs/modal--shift-point-bottom)
-   ("k" previous-line)
-   ("K" knavemacs/modal--shift-point-top)
-   ("l" forward-char)
-   ("L" end-of-line)
-   ("M" move-to-window-line-top-bottom)
-   ("m" recenter-top-bottom)
-   ("n" er/expand-region)
-   ("N" er/contract-region)
-   ("o" knavemacs/modal--open-line-below :exit t)
-   ("O" knavemacs/modal--open-line-above :exit t)
-   ("p" recenter-top-bottom) ;; placeholder for multicursor
-   ("P" recenter-top-bottom) ;; placeholder for multicursor
-   ("Q" revert-buffer)
-   ("R" delete-region :then '(yank))
-   ("r" backward-delete-char-untabify :read t)
+   ("j" next-line) ; down
+   ("J" knavemacs/modal--shift-point-bottom) ; all the way down
+   ("k" previous-line) ; up
+   ("K" knavemacs/modal--shift-point-top) ; all the way up
+   ("l" forward-char) ; right
+   ("L" end-of-line) ; all the way right
+   ("M" move-to-window-line-top-bottom) ; middle
+   ("m" recenter-top-bottom) ; move line to middle, top, bottom
+   ("n" er/expand-region) ; expaNd regioN
+   ("N" ; smart expand region
+    (("q"
+      er/mark-inside-quotes)
+     ("Q"
+      er/mark-outside-quotes)
+     ("p"
+      er/mark-inside-pairs)
+     ("P"
+      er/mark-outside-pairs)
+     ("d"
+      er/mark-defun)
+     ("u"
+      er/mark-url)
+     ("c"
+      er/mark-comment)))
+   ("o" knavemacs/modal--open-line-below :exit t) ; open line below
+   ("O" knavemacs/modal--open-line-above :exit t) ; open line above
+   ("p" ; multiple points
+    (("p"
+      mc/mark-all-like-this :mc-all t)
+     ("["
+      mc/mark-previous-like-this :mc-all t)
+     ("]"
+      mc/mark-next-like-this :mc-all t)
+     ("o"
+      mc/mark-pop)))
+   ("P" mc/edit-lines :mc-all t) ; multiple points per line
+   ("Q" revert-buffer) ; quit all changes in buffer
+   ("R" delete-region :then '(yank)) ; Replace with top kill-ring item
+   ("r" knavemacs/modal--read-replacement-text) ; replace by asking
    ("s" avy-goto-word-1 :then '(set-mark-command forward-word)) ; select from word start
    ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
-   ("t" transpose-words)
-   ("T" transpose-lines)
-   ("u" undo)
-   ("U" undo-redo)
-   ("v" set-mark-command)
-   ("V" knavemacs/modal--set-mark-line)
-   ("w" forward-word)
-   ("W" forward-symbol)
-   ("x" delete-char)
-   ("X" backward-delete-char-untabify)
-   ("y" yank)
-   ("Y" yank-pop)
-   ("z" zap-up-to-char :exit t)
-   ("Z" zap-to-char :exit t))
+   ("t" transpose-words) ; transpose words
+   ("T" transpose-lines) ; transpose lines
+   ("u" undo) ; undo
+   ("U" undo-redo) ; reverse undo (redo)
+   ("v" knavemacs/modal--set-or-cancel-mark) ; start visual region select, or cancel visual region 
+   ("V" knavemacs/modal--set-mark-line) ; visually select the line or next line
+   ("w" forward-word) ; forward word
+   ("W" forward-symbol) ; forward full word/symbol
+   ("x" delete-char) ; delete character
+   ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
+   ("y" yank) ; yank
+   ("Y" yank-pop) ; yank from kill ring (fuzzy select)
+   ("z" zap-up-to-char :exit t) ; zap up to char
+   ("Z" zap-to-char :exit t)) ; zap including char
 
   (ryo-modal-keys
    ;; First argument to ryo-modal-keys may be a list of keywords.

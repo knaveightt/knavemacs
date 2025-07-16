@@ -108,11 +108,29 @@
   (newline)
   (forward-line -1))
 
+(defun knavemacs/modal--set-or-cancel-mark ()
+  "Marks the current point location, or cancels an active region."
+  (interactive)
+  (if (not (region-active-p))
+      (call-interactively 'set-mark-command)
+    (keyboard-quit)))
+
 (defun knavemacs/modal--set-mark-line ()
   "Selects the current line."
   (interactive)
-  (beginning-of-line)
-  (call-interactively 'set-mark-command)
-  (forward-line))
+  (if (not (region-active-p))
+      (progn 
+	(beginning-of-line)
+	(call-interactively 'set-mark-command)
+	(forward-line))
+    (forward-line)))
+
+(defun knavemacs/modal--read-replacement-text ()
+  "Asks the user for text in the minibuffer to replace the current region."
+  (interactive)
+  (setq replacement-text (read-from-minibuffer "Replace With: "))
+  (call-interactively 'backward-delete-char-untabify)
+  (insert replacement-text)
+  (kill-new replacement-text))
 
 (provide 'knavemacs-modal-keyfuncs)
