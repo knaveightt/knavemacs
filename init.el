@@ -835,8 +835,9 @@
   	   ("o l" org-store-link)))
 
   (ryo-modal-keys
-   ("," kill-ring-save)
-   ("." ryo-modal-repeat)
+   ("," knavemacs/modal--scroll-up-half-page)
+   ("." knavemacs/modal--scroll-down-half-page)
+   (";" ryo-modal-repeat)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
    ("["
@@ -852,7 +853,7 @@
    ("A" end-of-line :exit t)
    ("b" backward-word)
    ("B" knavemacs/modal--backward-symbol)
-   ("c" ) ;; to be added - multi cursor functionality
+   ("c" kill-ring-save ) ;; to be added - multi cursor functionality
    ("C" ) ;; to be added - multi cursor functionality
    ("d" knavemacs/modal--dwim-delete)
    ("D" kill-whole-line)
@@ -884,8 +885,8 @@
    ("N" er/contract-region)
    ("o" knavemacs/modal--open-line-below :exit t)
    ("O" knavemacs/modal--open-line-above :exit t)
-   ("p" set-mark-command)
-   ("P" knavemacs/modal--set-mark-line)
+   ("p" recenter-top-bottom) ;; placeholder for multicursor
+   ("P" recenter-top-bottom) ;; placeholder for multicursor
    ("Q" revert-buffer)
    ("R" delete-region :then '(yank))
    ("r" backward-delete-char-untabify :read t)
@@ -895,8 +896,8 @@
    ("T" transpose-lines)
    ("u" undo)
    ("U" undo-redo)
-   ("v" knavemacs/modal--scroll-down-half-page)
-   ("V" knavemacs/modal--scroll-up-half-page)
+   ("v" set-mark-command)
+   ("V" knavemacs/modal--set-mark-line)
    ("w" forward-word)
    ("W" forward-symbol)
    ("x" delete-char)
