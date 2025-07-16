@@ -319,6 +319,7 @@
   (which-key-add-key-based-replacements
     "SPC o" "Org Commands"
     "SPC p" "Project Commands"
+    "SPC t" "Tab-Line Commands"
     "SPC h" "Help Commands"
     "SPC v" "Version Control"
     "SPC x" "Ctrl-X Commands"
