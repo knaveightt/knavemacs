@@ -408,6 +408,14 @@
     (interactive)
     (switch-to-buffer (nth 0 knavemacs/tab-line-buffers-list)))
 
+  ;; used with hotkeys to jump to a specific tab
+  (defun knavemacs/tab-line-pinned-switch-to-nth (tabnum)
+    "Switch to a specifically numbered tab in tab-line"
+    (interactive)
+    (if (> tabnum (length knavemacs/tab-line-buffers-list))
+	(message "!- That Tab Does Not Exist")
+      (switch-to-buffer (nth (1- tabnum) knavemacs/tab-line-buffers-list))))
+	     
   ;; reset the pinned buffer list
   (defun knavemacs/tab-line-pinned-reset-buffers ()
     "Reduce the buffers pinned to the tab line to just the current buffer"
@@ -873,7 +881,26 @@
      ("V"
       exchange-point-and-mark)
      ("u"
-      universal-argument)))
+      universal-argument)
+     ("1"
+      knavemacs/tab-line-pinned-switch-1)
+     ("2"
+      knavemacs/tab-line-pinned-switch-2)
+     ("3"
+      knavemacs/tab-line-pinned-switch-3)
+     ("4"
+      knavemacs/tab-line-pinned-switch-4)
+     ("5"
+      knavemacs/tab-line-pinned-switch-5)
+     ("6"
+      knavemacs/tab-line-pinned-switch-6)
+     ("7"
+      knavemacs/tab-line-pinned-switch-7)
+     ("8"
+      knavemacs/tab-line-pinned-switch-8)
+     ("9"
+      knavemacs/tab-line-pinned-switch-9)
+     ))
    ("G" keyboard-quit) ; cancel (Ctrl-G alternative)
    ("h" backward-char) ; left
    ("H" beginning-of-line) ; all the way left
