@@ -133,4 +133,40 @@
   (insert replacement-text)
   (kill-new replacement-text))
 
+(defun knavemacs/tab-line-pinned-switch-1 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 1))
+
+(defun knavemacs/tab-line-pinned-switch-2 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 2))
+
+(defun knavemacs/tab-line-pinned-switch-3 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 3))
+
+(defun knavemacs/tab-line-pinned-switch-4 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 4))
+
+(defun knavemacs/tab-line-pinned-switch-5 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 5))
+
+(defun knavemacs/tab-line-pinned-switch-6 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 6))
+
+(defun knavemacs/tab-line-pinned-switch-7 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 7))
+
+(defun knavemacs/tab-line-pinned-switch-8 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 8))
+
+(defun knavemacs/tab-line-pinned-switch-9 ()
+  (interactive)
+  (knavemacs/tab-line-pinned-switch-to-nth 9))
+
 (provide 'knavemacs-modal-keyfuncs)
