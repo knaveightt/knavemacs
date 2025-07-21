@@ -319,6 +319,7 @@
   (which-key-add-key-based-replacements
     "SPC o" "Org Commands"
     "SPC p" "Project Commands"
+    "SPC g" "Git Commands"
     "SPC t" "Tab Commands"
     "SPC h" "Help Commands"
     "SPC v" "Version Control"
@@ -851,15 +852,16 @@
 	   ("3" split-window-right)
 	   ("0" delete-window)
 	   ("t t" tab-line-mode)
-       ("t T" tab-bar-mode)
+	   ("t T" tab-bar-mode)
 	   ("t j" knavemacs/tab-line-pinned-switch-to-buffer)
 	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
 	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
 	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
-       ("t 1" tab-close-other)
-       ("t 2" tab-new)
-       ("t 0" tab-close)
-       ("t o" tab-next)
+	   ("t 1" tab-close-other)
+	   ("t 2" tab-new)
+	   ("t 0" tab-close)
+	   ("t o" tab-next)
+	   ("g s" magit-status)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
   	   ("o t" knavemacs/org-quick-time-stamp-inactive)
@@ -1053,6 +1055,7 @@
 ;;; {programming} treesitter
 ;; - tree-sitter
 ;; - tree-sitter-langs
+;; --------------------------------------------------
 (use-package tree-sitter
   :ensure t
   :config
@@ -1063,6 +1066,13 @@
   :after tree-sitter
   :config
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+;; --------------------------------------------------
+;;; {programming} magit
+;; --------------------------------------------------
+(use-package magit
+  :if (eq system-type 'gnu/linux)
+  :ensure t)
 
 ;; --------------------------------------------------
 ;;; {visual} rainbow-mode
