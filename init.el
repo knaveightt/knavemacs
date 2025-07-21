@@ -905,7 +905,7 @@
    ("h" backward-char) ; left
    ("H" beginning-of-line) ; all the way left
    ("i" ryo-modal-mode) ; insert
-   ;("I" avy-goto-char-timer)
+   ("I" delete-region :exit t)
    ("j" next-line) ; down
    ("J" knavemacs/modal--shift-point-bottom) ; all the way down
    ("k" previous-line) ; up
