@@ -319,7 +319,7 @@
   (which-key-add-key-based-replacements
     "SPC o" "Org Commands"
     "SPC p" "Project Commands"
-    "SPC t" "Tab-Line Commands"
+    "SPC t" "Tab Commands"
     "SPC h" "Help Commands"
     "SPC v" "Version Control"
     "SPC x" "Ctrl-X Commands"
@@ -811,6 +811,12 @@
   :ensure t)
 
 ;; --------------------------------------------------
+;;; {core} surround
+;; --------------------------------------------------
+(use-package surround
+  :ensure t)
+
+;; --------------------------------------------------
 ;;; {core} ryo-modal
 ;; --------------------------------------------------
 (use-package ryo-modal
@@ -829,6 +835,7 @@
   (define-key ryo-modal-mode-map (kbd "SPC x") ctl-x-map)
   (define-key ryo-modal-mode-map (kbd "SPC v") vc-prefix-map)
   (define-key ryo-modal-mode-map (kbd "SPC p") project-prefix-map)
+  (define-key ryo-modal-mode-map (kbd "'") surround-keymap)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if ryo-modal-mode (save-buffer) (save-some-buffers))))
   (define-key ctl-x-map (kbd "f") #'knavemacs/modal--find-file) ;; needs to be called interactively
   (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
@@ -839,11 +846,20 @@
    "SPC" '(("j" switch-to-buffer) ; jump to buffer
   	   ("k" kill-current-buffer)
   	   ("i" ibuffer)
+	   ("1" delete-other-windows)
+	   ("2" split-window-below)
+	   ("3" split-window-right)
+	   ("0" delete-window)
 	   ("t t" tab-line-mode)
+       ("t T" tab-bar-mode)
 	   ("t j" knavemacs/tab-line-pinned-switch-to-buffer)
 	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
 	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
 	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
+       ("t 1" tab-close-other)
+       ("t 2" tab-new)
+       ("t 0" tab-close)
+       ("t o" tab-next)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
   	   ("o t" knavemacs/org-quick-time-stamp-inactive)
