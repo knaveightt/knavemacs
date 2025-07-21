@@ -1000,6 +1000,15 @@
 ;; --------------------------------------------------
 (use-package corfu
   :ensure t
+  :custom
+  (corfu-cycle t)
+  (corfu-preselect 'prompt)
+  :bind
+  (:map corfu-map
+	("TAB" . corfu-next)
+	([tab] . corfu-next)
+	("S-TAB" . corfu-previous)
+	([backtab] . corfu-previous))
   :init
   (global-corfu-mode)
   (corfu-popupinfo-mode 1))
