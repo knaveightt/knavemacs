@@ -881,6 +881,8 @@
    ("," knavemacs/modal--scroll-up-half-page)
    ("." knavemacs/modal--scroll-down-half-page)
    (";" ryo-modal-repeat)
+   ("/" isearch-forward)
+   ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
    ("["
