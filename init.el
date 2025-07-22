@@ -72,6 +72,10 @@
 (setq grep-command "rg -nS --no-heading")
 (setq grep-find-ignored-directories
          '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
+(setq isearch-lazy-count t)
+(setq lazy-count-prefix-format "(%s/%s) ")
+(setq lazy-count-suffix-format nil)
+(setq search-whitespace-regexp ".*?")
 
 ;; Terminal-specific configuration
 ;; On Terminal: changes the vertical separator to a full vertical line
