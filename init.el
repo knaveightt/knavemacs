@@ -842,7 +842,7 @@
   (define-key ryo-modal-mode-map (kbd "SPC x") ctl-x-map)
   (define-key ryo-modal-mode-map (kbd "SPC v") vc-prefix-map)
   (define-key ryo-modal-mode-map (kbd "SPC p") project-prefix-map)
-  (define-key ryo-modal-mode-map (kbd "'") surround-keymap)
+  (define-key ryo-modal-mode-map (kbd "S") surround-keymap)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if ryo-modal-mode (save-buffer) (save-some-buffers))))
   (define-key ctl-x-map (kbd "f") #'knavemacs/modal--find-file) ;; needs to be called interactively
   (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
@@ -879,9 +879,13 @@
   	   ("o l" org-store-link)))
 
   (ryo-modal-keys
-   ("," knavemacs/modal--scroll-up-half-page)
-   ("." knavemacs/modal--scroll-down-half-page)
-   (";" ryo-modal-repeat)
+   ("," backward-sentence)
+   ("." forward-sentence)
+   (":" point-to-register)
+   (";" jump-to-register)
+   ("\\" ryo-modal-repeat)
+   ("'" insert-register)
+   ("\"" copy-to-register)
    ("/" isearch-forward)
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
@@ -894,22 +898,30 @@
       knavemacs/tab-line-pinned-next-tab)))
    ("{" backward-paragraph)
    ("}" forward-paragraph)
-   ("a" beginning-of-line :exit t) ; append
-   ("A" end-of-line :exit t) ; append to end
-   ("b" backward-word) ; backword word (to beginning)
-   ("B" knavemacs/modal--backward-symbol) ; backword symbol (to beginning)
-   ("c" kill-ring-save) ; copy
-   ("C" copy-to-buffer) ; copy to buffer
-   ("d" knavemacs/modal--dwim-delete) ; delete
-   ("D" kill-whole-line) ; delete line
-   ("e" knavemacs/modal--increment-expression) ; forward select expression
-   ("E" knavemacs/modal--decrement-expression) ; backward select expression
-   ("F" avy-goto-char-timer) ; find
-   ("f" avy-goto-char-in-line) ; fly
+   ("A" beginning-of-line) ; append
+   ("a" back-to-indentation :exit t) ; append to front
+   ("b" backward-char) ;
+   ("B" backward-word) ; backword symbol (to beginning)
+   ("c" ; multiple cursors
+    (("c"
+      mc/mark-all-like-this :mc-all t)
+     ("["
+      mc/mark-previous-like-this :mc-all t)
+     ("]"
+      mc/mark-next-like-this :mc-all t)
+     ("C"
+      mc/mark-pop)))
+   ("C" mc/edit-lines)
+   ("d" delete-char)
+   ("D" backward-delete-char-untabify)
+   ("e" ryo-modal-mode)
+   ("E" end-of-line)
+   ("F" forward-word)
+   ("f" forward-char)
    ("g" ; _goto_ commands
-    (("v"
+    (("m"
       knavemacs/modal--jump-back-to-mark)
-     ("V"
+     ("M"
       exchange-point-and-mark)
      ("u"
       universal-argument)
@@ -933,20 +945,38 @@
       knavemacs/tab-line-pinned-switch-9)
      ))
    ("G" keyboard-quit) ; cancel (Ctrl-G alternative)
-   ("h" backward-char) ; left
-   ("H" beginning-of-line) ; all the way left
-   ("i" ryo-modal-mode) ; insert
-   ("I" delete-region :exit t)
-   ("j" next-line) ; down
-   ("J" knavemacs/modal--shift-point-bottom) ; all the way down
-   ("k" previous-line) ; up
-   ("K" knavemacs/modal--shift-point-top) ; all the way up
-   ("l" forward-char) ; right
-   ("L" end-of-line) ; all the way right
-   ("M" move-to-window-line-top-bottom) ; middle
-   ("m" recenter-top-bottom) ; move line to middle, top, bottom
-   ("n" er/expand-region) ; expaNd regioN
-   ("N" ; smart expand region
+   ("h" avy-goto-word-1 :then '(set-mark-command forward-word))
+   ("H" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark))
+   ("i" knavemacs/modal--increment-expression)
+   ("I" knavemacs/modal--decrement-expression)
+   ("j" avy-goto-char-in-line)
+   ("J" avy-goto-char-timer)
+   ("k" knavemacs/modal--dwim-delete)
+   ("K" kill-whole-line)
+   ("l" recenter-top-bottom)
+   ("L" move-to-window-line-top-bottom)
+   ("M" knavemacs/modal--set-mark-line)
+   ("m" knavemacs/modal--set-or-cancel-mark)
+   ("n" next-line)
+   ("N" knavemacs/modal--shift-point-bottom)
+   ("o" knavemacs/modal--open-line-below :exit t) ; open line below
+   ("O" knavemacs/modal--open-line-above :exit t) ; open line above
+   ("p" previous-line)
+   ("P" knavemacs/modal--shift-point-top)
+   ("Q" revert-buffer) ; quit all changes in buffer
+   ("R" delete-region :then '(yank)) ; Replace with top kill-ring item
+   ("r" knavemacs/modal--read-replacement-text) ; replace by asking
+   ("s" surround-insert)
+   ("t" transpose-words) ; transpose words
+   ("T" transpose-lines) ; transpose lines
+   ("u" undo) ; undo
+   ("U" undo-redo) ; reverse undo (redo)
+   ("v" knavemacs/modal--scroll-down-half-page)
+   ("V" knavemacs/modal--scroll-up-half-page)
+   ("w" kill-ring-save)
+   ("W" copy-to-buffer)
+   ("x" er/expand-region)
+   ("X" ; smart expand region
     (("q"
       er/mark-inside-quotes)
      ("Q"
@@ -961,33 +991,6 @@
       er/mark-url)
      ("c"
       er/mark-comment)))
-   ("o" knavemacs/modal--open-line-below :exit t) ; open line below
-   ("O" knavemacs/modal--open-line-above :exit t) ; open line above
-   ("p" ; multiple points
-    (("p"
-      mc/mark-all-like-this :mc-all t)
-     ("["
-      mc/mark-previous-like-this :mc-all t)
-     ("]"
-      mc/mark-next-like-this :mc-all t)
-     ("o"
-      mc/mark-pop)))
-   ("P" mc/edit-lines :mc-all t) ; multiple points per line
-   ("Q" revert-buffer) ; quit all changes in buffer
-   ("R" delete-region :then '(yank)) ; Replace with top kill-ring item
-   ("r" knavemacs/modal--read-replacement-text) ; replace by asking
-   ("s" avy-goto-word-1 :then '(set-mark-command forward-word)) ; select from word start
-   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
-   ("t" transpose-words) ; transpose words
-   ("T" transpose-lines) ; transpose lines
-   ("u" undo) ; undo
-   ("U" undo-redo) ; reverse undo (redo)
-   ("v" knavemacs/modal--set-or-cancel-mark) ; start visual region select, or cancel visual region 
-   ("V" knavemacs/modal--set-mark-line) ; visually select the line or next line
-   ("w" forward-word) ; forward word
-   ("W" forward-symbol) ; forward full word/symbol
-   ("x" delete-char) ; delete character
-   ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
    ("y" yank) ; yank
    ("Y" yank-pop) ; yank from kill ring (fuzzy select)
    ("z" zap-up-to-char :exit t) ; zap up to char
