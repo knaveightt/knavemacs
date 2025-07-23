@@ -898,8 +898,8 @@
       knavemacs/tab-line-pinned-next-tab)))
    ("{" backward-paragraph)
    ("}" forward-paragraph)
-   ("A" beginning-of-line) ; append
-   ("a" back-to-indentation :exit t) ; append to front
+   ("a" beginning-of-line) ; append
+   ("A" back-to-indentation :exit t) ; append to front
    ("b" backward-char) ;
    ("B" backward-word) ; backword symbol (to beginning)
    ("c" ; multiple cursors
@@ -915,7 +915,7 @@
    ("d" delete-char)
    ("D" backward-delete-char-untabify)
    ("e" ryo-modal-mode)
-   ("E" end-of-line)
+   ("E" end-of-line :exit t)
    ("F" forward-word)
    ("f" forward-char)
    ("g" ; _goto_ commands
