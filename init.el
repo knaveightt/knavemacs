@@ -116,7 +116,7 @@
   (add-hook mode 'knavemacs/no-line-nums-hook))
 
 ;; Font and Theme Configuration
-(load-theme 'modus-vivendi t)
+(load-theme 'modus-vivendi-deuteranopia t)
 (set-cursor-color "#b4d273")
 (add-to-list 'default-frame-alist
 	     '(font . "JetBrainsMono NF 12"))
@@ -1203,6 +1203,58 @@
   :after (treemacs)
   :ensure t
   :config (treemacs-set-scope-type 'Tabs))
+
+;; --------------------------------------------------
+;;; {visual} dashboard
+;; --------------------------------------------------
+(use-package dashboard
+  :ensure t
+  :init
+  (add-hook 'window-setup-hook (lambda () (dashboard-refresh-buffer)))
+  :config
+  (dashboard-setup-startup-hook)
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  :custom
+  (dashboard-banner-ascii "
+                  ███       ██       ███       ██                   
+                 ██  █     █  █     ██ ██    ██  █                  
+                 █    █████    █████     █████   ██                 
+                 ██                              █                  
+                  ██   ███       ██       ██   ██                   
+                   ██                          █                    
+                    █████████████████████████ ██                    
+                   ██                         ██                    
+                  ███                         ███                   
+                  █ █  █████████   █████████  █  █                  
+                 █  █          █    █         ██ █                  
+           ████ █  ██         ██    █         ██  █ ████            
+           █ █  █ ███         ██    ██        ███  █ █  █           
+          ████ █  █ █      ██    ██   ██      █  █ █ ████           
+                  ███     █    ██████   █     ████                  
+                  █  ██   █  ██  █   █  █   ██  █                   
+                ██ ███ ██ █  █   █   █  ████  ██ ██                 
+              █    █ ███ ██  █   █   █  ██  ██ █    █               
+           ██  █     █ ███ ███   █   ███  ██ █     █  █             
+           █ ██  █     █ ██  ██  █   █  ██ █     █  ██ █            
+             █ ██  █    ██ ██  ██████ ██ ██    █  ██ █              
+               █ ██  █    █  ██  ██ ██ █     █  ██ ██               
+                ██ ██  █    █  ██  █ ██    █  ██ ██                 
+                  ██ ██  █  █ █  ██  █   █  ██ ██                   
+                     █ ██  █   ██  ██  ██ ██ ██                     
+                      █  ██ ██    █  ██  █  █                      
+  ")
+  (dashboard-startup-banner 'ascii)
+  (dashboard-banner-logo-title "Welcome to Knavemacs!")
+  (dashboard-center-content t)
+  (dashboard-display-icons-p t)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-projects-backend 'project-el)
+  (dashboard-items '(
+		     (recents . 5)
+		     (projects . 5)
+		     (bookmarks . 5))))
 
 ;; ==================================================
 ;;; SECTION X Modeline Configuration
