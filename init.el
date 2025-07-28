@@ -477,7 +477,7 @@
        dir `((side . left)
              (slot . 0)
              (window-width . 30)
-             (window-parameters . ((no-other-window . t)
+             (window-parameters . (;(no-other-window . t)
                                    (no-delete-other-windows . t)
                                    (mode-line-format . (" "
                                                         "%b"))))))
