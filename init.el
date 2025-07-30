@@ -1366,3 +1366,9 @@
           	  (number-to-string (length package-activated-list)))))
 (message (emacs-init-time))
 (if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
+
+;; ==================================================
+;;; SECTION Z Platform-Specific Configration
+;; ==================================================
+(add-to-list 'load-path "~/.config/emacs/platform")
+(require 'knavemacs-platform)
