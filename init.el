@@ -477,7 +477,7 @@
        dir `((side . left)
              (slot . 0)
              (window-width . 30)
-             (window-parameters . (;(no-other-window . t)
+             (window-parameters . ((no-other-window . t)
                                    (no-delete-other-windows . t)
                                    (mode-line-format . (" "
                                                         "%b"))))))
@@ -991,8 +991,8 @@
    ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
    ("y" yank) ; yank
    ("Y" yank-pop) ; yank from kill ring (fuzzy select)
-   ("z" zap-up-to-char :exit t) ; zap up to char
-   ("Z" zap-to-char :exit t)) ; zap including char
+   ("z" knavemacs/modal--delete-region-if-active :then '(zap-up-to-char) :exit t) ; zap up to char
+   ("Z" knavemacs/modal--delete-region-if-active :then '(zap-to-char) :exit t)) ; zap including char
 
   (ryo-modal-keys
    ;; First argument to ryo-modal-keys may be a list of keywords.
@@ -1203,58 +1203,6 @@
   :after (treemacs)
   :ensure t
   :config (treemacs-set-scope-type 'Tabs))
-
-;; --------------------------------------------------
-;;; {visual} dashboard
-;; --------------------------------------------------
-(use-package dashboard
-  :ensure t
-  :init
-  (add-hook 'window-setup-hook (lambda () (dashboard-refresh-buffer)))
-  :config
-  (dashboard-setup-startup-hook)
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  :custom
-  (dashboard-banner-ascii "
-                  ███       ██       ███       ██                   
-                 ██  █     █  █     ██ ██    ██  █                  
-                 █    █████    █████     █████   ██                 
-                 ██                              █                  
-                  ██   ███       ██       ██   ██                   
-                   ██                          █                    
-                    █████████████████████████ ██                    
-                   ██                         ██                    
-                  ███                         ███                   
-                  █ █  █████████   █████████  █  █                  
-                 █  █          █    █         ██ █                  
-           ████ █  ██         ██    █         ██  █ ████            
-           █ █  █ ███         ██    ██        ███  █ █  █           
-          ████ █  █ █      ██    ██   ██      █  █ █ ████           
-                  ███     █    ██████   █     ████                  
-                  █  ██   █  ██  █   █  █   ██  █                   
-                ██ ███ ██ █  █   █   █  ████  ██ ██                 
-              █    █ ███ ██  █   █   █  ██  ██ █    █               
-           ██  █     █ ███ ███   █   ███  ██ █     █  █             
-           █ ██  █     █ ██  ██  █   █  ██ █     █  ██ █            
-             █ ██  █    ██ ██  ██████ ██ ██    █  ██ █              
-               █ ██  █    █  ██  ██ ██ █     █  ██ ██               
-                ██ ██  █    █  ██  █ ██    █  ██ ██                 
-                  ██ ██  █  █ █  ██  █   █  ██ ██                   
-                     █ ██  █   ██  ██  ██ ██ ██                     
-                      █  ██ ██    █  ██  █  █                      
-  ")
-  (dashboard-startup-banner 'ascii)
-  (dashboard-banner-logo-title "Welcome to Knavemacs!")
-  (dashboard-center-content t)
-  (dashboard-display-icons-p t)
-  (dashboard-icon-type 'nerd-icons)
-  (dashboard-set-heading-icons t)
-  (dashboard-set-file-icons t)
-  (dashboard-projects-backend 'project-el)
-  (dashboard-items '(
-		     (recents . 5)
-		     (projects . 5)
-		     (bookmarks . 5))))
 
 ;; ==================================================
 ;;; SECTION X Modeline Configuration

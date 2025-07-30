@@ -133,6 +133,12 @@
   (insert replacement-text)
   (kill-new replacement-text))
 
+(defun knavemacs/modal--delete-region-if-active ()
+  "Checks if a region is active, then kills the region if true."
+  (interactive)
+  (if (region-active-p)
+      (call-interactively 'delete-region)))
+
 (defun knavemacs/tab-line-pinned-switch-1 ()
   (interactive)
   (knavemacs/tab-line-pinned-switch-to-nth 1))
