@@ -10,11 +10,13 @@
         ("t" "Todo" entry (file+olp+datetree "C:\\Users\\josinski\\OneDrive - JNJ\\org\\journal.org" "Journal")
          "* TODO %^{Enter Task} %^G\n%?" :empty-lines-after 1)
 
-        ("s" "Scheduled Todo" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\tickler.org" "Scheduled TODOs")
+        ("f" "Future Todo" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\tickler.org" "Future")
          "* TODO %^{Enter Scheduled Task} %?")
 
         ("m" "Meeting Notes" entry (file+olp+datetree "C:\\Users\\josinski\\OneDrive - JNJ\\org\\journal.org" "Journal")
-         "* %t %^{Meeting Title} %^G\n** Attendees\n- [ ] %?\n** Notes\n** Action Items\n*** TODO " :empty-lines-after 1)
+         "* %t %^{Meeting Title} %^G\n** Attendance\n|Attendee|Present|\n|-|-|\n|%?\n** Notes\n** Action Items\n*** TODO " :empty-lines-after 1)
         ))
+
+(load-theme 'modus-operandi-tinted t)
 
 (provide 'knavemacs-platform)

@@ -254,11 +254,9 @@
            (
 	    (agenda ""
 		    ((org-deadline-warning-days 7)
-		     (org-agenda-overriding-header "Scheduled Items")))
-	    (tags "+@priority-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@priority+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
-		  ((org-agenda-overriding-header "Priority Project Work")))
-	    (tags "-@priority-@step+TODO=\"TODO\"-SCHEDULED={.+}|-@priority+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
-		  ((org-agenda-overriding-header "Available Open Work")))
+		     (org-agenda-overriding-header "Scheduled TODOs")))
+	    (tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
+		  ((org-agenda-overriding-header "Unscheduled Work")))
 	    (stuck "" ((org-agenda-overriding-header "Stuck Projects")))
 	    (tags "+TODO=\"FOLLOWUP\"-SCHEDULED={.+}"
 		  ((org-agenda-overriding-header "Requires Follow Up")))
@@ -273,21 +271,6 @@
       (call-interactively 'org-time-stamp-inactive))
     (insert " "))
 
-  ;; org function and advice for leaving a link behind when refiling to another org file
-  ;; very slightly modified from the below:
-  ;; https://emacs.stackexchange.com/questions/47011/org-refile-and-leave-a-link-behind
-  (defun knavemacs/org-refile--insert-link ( &rest _ )
-    (org-back-to-heading)
-    (let* ((refile-region-marker (point-marker))
-           (source-link (org-store-link nil)))
-      (org-insert-heading-after-current)
-      (insert source-link)
-      (goto-char refile-region-marker)))
-
-  (advice-add 'org-refile
-              :before
-              #'knavemacs/org-refile--insert-link)
-
   ;; capture templates
   (setq org-capture-templates
 	'(
@@ -297,11 +280,11 @@
           ("t" "Todo" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
            "* TODO %^{Enter Task} %^G\n%?" :empty-lines-after 1)
 
-          ("s" "Scheduled Todo" entry (file+olp "~/Documents/org/tickler.org" "Scheduled TODOs")
+          ("f" "Future Todo" entry (file+olp "~/Documents/org/tickler.org" "Future")
            "* TODO %^{Enter Scheduled Task} %?")
 
           ("m" "Meeting Notes" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
-           "* %t %^{Meeting Title} %^G\n** Attendees\n- [ ] %?\n** Notes\n** Action Items\n*** TODO " :empty-lines-after 1)
+           "* %t %^{Meeting Title} %^G\n** Attendance\n|Attendee|Present|\n|-|-|\n|%?\n** Notes\n** Action Items\n*** TODO " :empty-lines-after 1)
           )))
 
 ;; --------------------------------------------------
