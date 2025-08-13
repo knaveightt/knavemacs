@@ -880,8 +880,8 @@
    ("}" forward-paragraph)
    ("a" back-to-indentation :exit t) ; append
    ("A" end-of-line :exit t) ; append to end
-   ("b" backward-word) ; backword word (to beginning)
-   ("B" knavemacs/modal--backward-symbol) ; backword symbol (to beginning)
+   ("b" exchange-point-and-mark) ; backword word (to beginning)
+   ("B" knavemacs/forward-or-backward-sexp) ; backword symbol (to beginning)
    ("c" kill-ring-save) ; copy
    ("C" copy-to-buffer) ; copy to buffer
    ("d" knavemacs/modal--dwim-delete) ; delete
@@ -893,8 +893,6 @@
    ("g" ; _goto_ commands
     (("v"
       knavemacs/modal--jump-back-to-mark)
-     ("V"
-      exchange-point-and-mark)
      ("u"
       universal-argument)
      ("1"
@@ -969,7 +967,7 @@
    ("v" knavemacs/modal--set-or-cancel-mark) ; start visual region select, or cancel visual region 
    ("V" knavemacs/modal--set-mark-line) ; visually select the line or next line
    ("w" forward-word) ; forward word
-   ("W" forward-symbol) ; forward full word/symbol
+   ("W" backward-word) ; backward word
    ("x" delete-char) ; delete character
    ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
    ("y" yank) ; yank
