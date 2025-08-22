@@ -972,8 +972,8 @@
    ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
    ("y" yank) ; yank
    ("Y" yank-pop) ; yank from kill ring (fuzzy select)
-   ("z" zap-up-to-char :exit t) ; zap up to char
-   ("Z" zap-to-char :exit t)) ; zap including char
+   ("z" zap-up-to-char) ; zap up to char
+   ("Z" zap-up-to-char :exit t)) ; zap up to char and go into insert mode
 
   (ryo-modal-keys
    ;; First argument to ryo-modal-keys may be a list of keywords.
