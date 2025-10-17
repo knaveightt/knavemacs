@@ -1,35 +1,43 @@
-;; -*- lexical-binding: t; eval: (local-set-key (kbd "C-c i") #'imenu); eval: (setq imenu-generic-expression '(("Sections" "^;;; \\(.*\\)$" 1))); -*-
+;; -*- lexical-binding: t; eval: (local-set-key (kbd "C-c C-c") #'imenu); eval: (setq imenu-generic-expression '(("Sections" "^;;; \\(.*\\)$" 1))); -*-
 
 ;; ===================================================
-;;; SECTION 1 Initial Setup Configuration
+;;; SECTION 1 Initial Emacs Setup Configuration
 ;; ===================================================
-;; HACK: increase startup speed
+;; we use utf-8 here
+(modify-coding-system-alist 'file "" 'utf-8)
+
+;; initial startup speed hack and frame handling
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6
       vc-handled-backends '(Git))
-
-;; Better Window Management Handling
-(setq frame-inhibit-implied-resize t
-      frame-title-format '("Emacs"))
 (setq inhibit-compacting-font-caches t)
 
-;; Disable unused UI elements
+;; disable UI elements, inhibit other capabilities
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
 (setq inhibit-startup-message t)
-(setq initial-scratch-message ";; Welcome back to Emacs!")
+(setq use-dialog-box nil)
+(setq use-file-dialog nil)
+(setq ring-bell-function 'ignore)
 
-;; Avoid raising the *Messages* buffer if anything is still without
-;; lexical bindings
-(setq warning-minimum-level :error)
-(setq warning-suppress-types '((lexical-binding)))
+;; how to handle backup files
+(setq create-lockfiles nil)  ; No backup files
+(setq make-backup-files nil) ; No backup files
+(setq backup-inhibited t)    ; No backup files
 
-;; utf-8 settings
-(modify-coding-system-alist 'file "" 'utf-8)
+;; how to handle custom set vars
+(setq custom-file "~/.config/emacs/emacs-custom.el")
+(load custom-file t)
 
-;; History Configuration
+;; how to handle recents file
+(setq recentf-max-saved-items 300) ; default was 20
+(setq recentf-max-menu-items 15)
+(setq recentf-auto-cleanup (if (daemonp) 300 'never))
+(setq recentf-exclude (list "^/\\(?:ssh\\|su\\|sudo\\)?:"))
+
+;; how to handle history, kill-ring, undo logic
 (setq history-length 300)
 (setq savehist-save-minibuffer-history t)
 (setq savehist-additional-variables
@@ -39,35 +47,12 @@
 	search-ring regexp-search-ring))
 (setq save-place-file (expand-file-name "saveplace" user-emacs-directory))
 (setq save-place-limit 600)
-
-;; Help Configuration
-(setq help-window-select t)
-
-;; Kill Ring Configuration
 (setq kill-do-not-save-duplicates t)
+(setq undo-limit (* 13 160000))
+(setq undo-strong-limit (* 13 240000))
+(setq undo-outer-limit (* 13 24000000))
 
-;; Backup File Configuration
-(setq create-lockfiles nil)  ; No backup files
-(setq make-backup-files nil) ; No backup files
-(setq backup-inhibited t)    ; No backup files
-
-;; Custom File Management
-(setq custom-file "~/.config/emacs/emacs-custom.el")
-(load custom-file t)
-
-;; Recent File Configuration
-(setq recentf-max-saved-items 300) ; default was 20
-(setq recentf-max-menu-items 15)
-(setq recentf-auto-cleanup (if (daemonp) 300 'never))
-(setq recentf-exclude (list "^/\\(?:ssh\\|su\\|sudo\\)?:"))
-
-;; Prompt and Minibuffer Configuration
-(setq read-answer-short t)
-(setq use-short-answers t)
-(setq enable-recursive-minibuffers t)
-(setq resize-mini-windows 'grow-ontly)
-
-;; Search Configuration
+;; how to handle searches
 (setq xref-search-program 'ripgrep)
 (setq grep-command "rg -nS --no-heading")
 (setq grep-find-ignored-directories
@@ -77,11 +62,10 @@
 (setq lazy-count-suffix-format nil)
 (setq search-whitespace-regexp ".*?")
 
-;; Terminal-specific configuration
-;; On Terminal: changes the vertical separator to a full vertical line
-;;              and truncation symbol to a right arrow
-(set-display-table-slot standard-display-table 'vertical-border ?\u2502)
-(set-display-table-slot standard-display-table 'truncation ?\u2192)
+;; how to handle warnings and errors
+;; (Avoid raising the *Messages* buffer if anything is still without lexical bindings)
+(setq warning-minimum-level :error)
+(setq warning-suppress-types '((lexical-binding)))
 
 ;; Use-Package and Package Setup
 (require 'package)
@@ -97,14 +81,16 @@
 (require 'use-package)
 (setq use-package-hook-name-suffix nil)
 
-;; ==================================================
-;;; SECTION 2 General Visual Setup
-;; ==================================================
-;; Line Numbers
+;; ===================================================
+;;; SECTION 2 Visual Configuration and Logic
+;; ===================================================
+;; line numbers activation
 (setq display-line-numbers-width 3)
 (setq display-line-numbers-widen t)
 (setq display-line-numbers-type t)
 (global-display-line-numbers-mode t)
+
+;; when to show line numbers
 (defun knavemacs/no-line-nums-hook ()
   "Supress showing line numbers for select modes."
   (display-line-numbers-mode 0))
@@ -115,14 +101,140 @@
 		dired-mode-hook))
   (add-hook mode 'knavemacs/no-line-nums-hook))
 
-;; Font and Theme Configuration
-(load-theme 'modus-vivendi-deuteranopia t)
-(set-cursor-color "#b4d273")
-(add-to-list 'default-frame-alist
-	     '(font . "JetBrainsMono NF 12"))
-
-;; Visual Line Handling
+;; Visual Line Handling and Tabs
 (set-default 'truncate-lines t)
+(setq tab-always-indent 'complete)
+(setq tab-width 4)
+(setq c-basic-offset 4)
+
+;; Font Configuration
+(add-to-list 'default-frame-alist
+	     '(font . "JetBrainsMono NF 10"))
+
+;; Theme Configuration
+;; modus-vivendi dressed as catppuccin
+;; https://www.rahuljuliato.com/posts/modus-catppuccin?utm_source=reddit&utm_medium=social&utm_campaign=modus-catppuccin
+(use-package modus-themes
+  :ensure nil
+  :defer t
+  :custom
+  (modus-themes-italic-constructs t)
+  (modus-themes-bold-constructs t)
+  (modus-themes-mixed-fonts nil)
+  (modus-themes-prompts '(bold intense))
+  (modus-themes-common-palette-overrides
+   `((accent-0 "#89b4fa")
+     (accent-1 "#89dceb")
+     (bg-active bg-main)
+     (bg-added "#364144")
+     (bg-added-refine "#4A5457")
+     (bg-changed "#3e4b6c")
+     (bg-changed-refine "#515D7B")
+     (bg-completion "#45475a")
+     (bg-completion-match-0 "#1e1e2e")
+     (bg-completion-match-1 "#1e1e2e")
+     (bg-completion-match-2 "#1e1e2e")
+     (bg-completion-match-3 "#1e1e2e")
+     (bg-hl-line "#2a2b3d")
+     (bg-hover-secondary "#585b70")
+     (bg-line-number-active unspecified)
+     (bg-line-number-inactive "#1e1e2e")
+     (bg-main "#1e1e2e")
+     (bg-mark-delete "#443245")
+     (bg-mark-select "#3e4b6c")
+     (bg-mode-line-active "#181825")
+     (bg-mode-line-inactive "#181825")
+     (bg-prominent-err "#443245")
+     (bg-prompt unspecified)
+     (bg-prose-block-contents "#313244")
+     (bg-prose-block-delimiter bg-prose-block-contents)
+     (bg-region "#585b70")
+     (bg-removed "#443245")
+     (bg-removed-refine "#574658")
+     (bg-tab-bar      "#1e1e2e")
+     (bg-tab-current  bg-main)
+     (bg-tab-other    "#1e1e2e")
+     (border-mode-line-active nil)
+     (border-mode-line-inactive nil)
+     (builtin "#89b4fa")
+     (comment "#9399b2")
+     (constant  "#f38ba8")
+     (cursor  "#f5e0dc")
+     (date-weekday "#89b4fa")
+     (date-weekend "#fab387")
+     (docstring "#a6adc8")
+     (err     "#f38ba8")
+     (fg-active fg-main)
+     (fg-completion "#cdd6f4")
+     (fg-completion-match-0 "#89b4fa")
+     (fg-completion-match-1 "#f38ba8")
+     (fg-completion-match-2 "#a6e3a1")
+     (fg-completion-match-3 "#fab387")
+     (fg-heading-0 "#f38ba8")
+     (fg-heading-1 "#fab387")
+     (fg-heading-2 "#f9e2af")
+     (fg-heading-3 "#a6e3a1")
+     (fg-heading-4 "#74c7ec")
+     (fg-line-number-active "#b4befe")
+     (fg-line-number-inactive "#7f849c")
+     (fg-link  "#89b4fa")
+     (fg-main "#cdd6f4")
+     (fg-mark-delete "#f38ba8")
+     (fg-mark-select "#89b4fa")
+     (fg-mode-line-active "#bac2de")
+     (fg-mode-line-inactive "#585b70")
+     (fg-prominent-err "#f38ba8")
+     (fg-prompt "#cba6f7")
+     (fg-prose-block-delimiter "#9399b2")
+     (fg-prose-verbatim "#a6e3a1")
+     (fg-region "#cdd6f4")
+     (fnname    "#89b4fa")
+     (fringe "#1e1e2e")
+     (identifier "#cba6f7")
+     (info    "#94e2d5")
+     (keyword   "#cba6f7")
+     (keyword "#cba6f7")
+     (name "#89b4fa")
+     (number "#fab387")
+     (property "#89b4fa")
+     (string "#a6e3a1")
+     (type      "#f9e2af")
+     (variable  "#fab387")
+     (warning "#f9e2af")))
+  :config
+  (modus-themes-with-colors
+    (custom-set-faces
+     `(change-log-acknowledgment ((,c :foreground "#b4befe")))
+     `(change-log-date ((,c :foreground "#a6e3a1")))
+     `(change-log-name ((,c :foreground "#fab387")))
+     `(diff-context ((,c :foreground "#89b4fa")))
+     `(diff-file-header ((,c :foreground "#f5c2e7")))
+     `(diff-header ((,c :foreground "#89b4fa")))
+     `(diff-hunk-header ((,c :foreground "#fab387")))
+     `(gnus-button ((,c :foreground "#8aadf4")))
+     `(gnus-group-mail-3 ((,c :foreground "#8aadf4")))
+     `(gnus-group-mail-3-empty ((,c :foreground "#8aadf4")))
+     `(gnus-header-content ((,c :foreground "#7dc4e4")))
+     `(gnus-header-from ((,c :foreground "#cba6f7")))
+     `(gnus-header-name ((,c :foreground "#a6e3a1")))
+     `(gnus-header-subject ((,c :foreground "#8aadf4")))
+     `(log-view-message ((,c :foreground "#b4befe")))
+     `(match ((,c :background "#3e5768" :foreground "#cdd6f5")))
+     `(modus-themes-search-current ((,c :background "#f38ba8" :foreground "#11111b" ))) ;; :foreground "#cdd6f4" -- Catppuccin default, not that visible...
+     `(modus-themes-search-lazy ((,c :background "#3e5768" :foreground "#cdd6f5")))     ;; :foreground "#cdd6f4" :background "#94e2d5" -- Catppuccin default, not that visible...
+     `(newsticker-extra-face ((,c :foreground "#9399b2" :height 0.8 :slant italic)))
+     `(newsticker-feed-face ((,c :foreground "#f38ba8" :height 1.2 :weight bold)))
+     `(newsticker-treeview-face ((,c :foreground "#cdd6f4")))
+     `(newsticker-treeview-selection-face ((,c :background "#3e5768" :foreground "#cdd6f5")))
+     `(tab-bar ((,c :background "#1e1e2e" :foreground "#bac2de")))
+     `(tab-bar-tab ((,c :background "#1e1e2e" :underline t)))
+     `(tab-bar-tab-group-current ((,c :background "#1e1e2e" :foreground "#bac2de" :underline t)))
+     `(tab-bar-tab-group-inactive ((,c :background "#1e1e2e" :foreground "#9399b2"))))
+     `(tab-bar-tab-inactive ((,c :background "#1e1e2e" :foreground "#a6adc8")))
+     `(vc-dir-file ((,c :foreground "#89b4fa")))
+     `(vc-dir-header-value ((,c :foreground "#b4befe"))))
+  :init
+  (load-theme 'modus-vivendi t))
 
 ;; Frame and Window Logic & Scrolling
 (setq frame-resize-pixelwise t)
@@ -135,13 +247,29 @@
 (setq switch-to-buffer-obey-display-actions t) ; so buffer/window rules are respected
 (setq window-combination-resize t)
 (setq window-resize-pixelwise nil)
+(setq frame-inhibit-implied-resize t
+      frame-title-format '("Emacs"))
 
-;; Dialogs and Menus
-(setq use-dialog-box nil)
-(setq use-file-dialog nil)
+;; Help things, Mini-Buffer things
+(setq help-window-select t)
+(setq read-answer-short t)
+(setq use-short-answers t)
+(setq enable-recursive-minibuffers t)
+(setq resize-mini-windows 'grow-ontly)
 
-;; Visual Bell
-(setq ring-bell-function 'ignore)
+;; A Protesilaos life savier HACK
+;; Add option "d" to whenever using C-x s or C-x C-c, allowing a quick preview
+;; of the diff (if you choose `d') of what you're asked to save.
+(add-to-list 'save-some-buffers-action-alist
+             (list "d"
+          	   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
+          	   "show diff between the buffer and its file"))
+
+;; Terminal-specific configuration
+;; On Terminal: changes the vertical separator to a full vertical line
+;;              and truncation symbol to a right arrow
+(set-display-table-slot standard-display-table 'vertical-border ?\u2502)
+(set-display-table-slot standard-display-table 'truncation ?\u2192)
 
 ;; display-buffer-alist settings
 (add-to-list 'display-buffer-alist
@@ -164,31 +292,7 @@
 	       (slot . 1)))
 
 ;; ==================================================
-;;; SECTION 3 General Editing Setup
-;; ==================================================
-;; Selection Logic
-(setq delete-selection-mode 1)
-
-;; Tab logic
-(setq tab-always-indent 'complete)
-(setq tab-width 4)
-(setq c-basic-offset 4)
-
-;; Undo Logic
-(setq undo-limit (* 13 160000))
-(setq undo-strong-limit (* 13 240000))
-(setq undo-outer-limit (* 13 24000000))
-
-;; A Protesilaos life savier HACK
-;; Add option "d" to whenever using C-x s or C-x C-c, allowing a quick preview
-;; of the diff (if you choose `d') of what you're asked to save.
-(add-to-list 'save-some-buffers-action-alist
-             (list "d"
-          	   (lambda (buffer) (diff-buffer-with-file (buffer-file-name buffer)))
-          	   "show diff between the buffer and its file"))
-
-;; ==================================================
-;;; SECTION 4 Mode-Specific Configurations
+;;; SECTION 3 Mode-Specific Configurations
 ;; ==================================================
 ;;; ibuffer-mode
 ;; --------------------------------------------------
@@ -309,12 +413,8 @@
     "SPC p" "Project Commands"
     "SPC g" "Git Commands"
     "SPC t" "Tab Commands"
-    "SPC h" "Help Commands"
     "SPC v" "Version Control"
-    "SPC x" "Ctrl-X Commands"
-    "SPC b" "Switch Buffer"
-    "SPC k" "Kill Buffer"
-    "SPC i" "IBuffer"))
+    "SPC x" "Ctrl-X Commands"))
 
 ;; --------------------------------------------------
 ;;; tab-bar-mode
@@ -404,6 +504,12 @@
     (if (> tabnum (length knavemacs/tab-line-buffers-list))
 	(message "!- That Tab Does Not Exist")
       (switch-to-buffer (nth (1- tabnum) knavemacs/tab-line-buffers-list))))
+
+  ;; get user input for which tab to jump to
+  (defun knavemacs/tab-line-pinned-prompt-to-jump (numeric-prefix-arg)
+    "Jumps to a specific tab depending on the universal argument value"
+    (interactive "p")
+    (knavemacs/tab-line-pinned-switch-to-nth numeric-prefix-arg))
 	     
   ;; reset the pinned buffer list
   (defun knavemacs/tab-line-pinned-reset-buffers ()
@@ -468,7 +574,7 @@
         (let ((window (get-buffer-window dir)))
           (when window
             (select-window window)
-            (rename-buffer "*Dired-Side*")
+            (rename-buffer "*Dired-Pane*")
             )))))
 
   (defun knavemacs/window-dired-open-directory ()
@@ -491,19 +597,10 @@
                    (t (split-window (selected-window) nil 'right)))))
         (window--display-buffer buffer window 'window nil)
         window))
-    (knavemacs/quick-window-jump))
-
-  (eval-after-load 'dired
-    '(progn
-       (define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory) 
-       ;; q to go back to parent
-       ;; i to show subdir in same buffer
-       (define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
-       (define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
-       (define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir))))
+    (knavemacs/quick-window-jump)))
 
 ;; ==================================================
-;;; SECTION 5 Elisp-Built Functionality
+;;; SECTION 4 Elisp-Built Functionality
 ;; ==================================================
 ;;; rainbow delimiters
 ;;
@@ -672,21 +769,14 @@
 (add-hook 'prog-mode-hook #'knavemacs/highlight-keywords-hook)
 
 ;; ==================================================
-;;; SECTION 6 Manually Installed Elisp Files
+;;; SECTION 5 Mode-Specific and Global Keybinds
 ;; ==================================================
-;;; sr-speedbar.el
-;; --------------------------------------------------
-(add-to-list 'load-path "~/.config/emacs/speedbar")
-(require 'sr-speedbar)
-(setq speedbar-use-images nil)
-(setq speedbar-show-unknown-files t)
-
-;; ==================================================
-;;; SECTION 7 Global Set Keybinds
-;; ==================================================
+(define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory)
+(define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
+(define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
+(define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir)
 (global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)
-(global-set-key (kbd "M-i") #'knavemacs/window-dired-vc-root-left)
-(global-set-key (kbd "M-p") #'sr-speedbar-toggle)
+(global-set-key (kbd "M-p") #'knavemacs/window-dired-vc-root-left)
 (global-set-key (kbd "S-TAB") #'completion-at-point)
 (global-set-key (kbd "S-<iso-lefttab>") #'completion-at-point)
 (global-set-key (kbd "M-g r") #'recentf)
@@ -694,10 +784,10 @@
 (global-set-key (kbd "C-x ;") #'comment-line)
 (global-set-key (kbd "RET") #'newline-and-indent)
 
-;; ==================================================
-;;; SECTION 8 {External Packages}
-;; ==================================================
-;;; {core} vertico packages
+;; ===================================================
+;;; SECTION 6 {External Packages}
+;; ===================================================
+;;; {core} vertico completions
 ;; - vertico
 ;; - savehist
 ;; - marginalia
@@ -705,11 +795,7 @@
 ;; --------------------------------------------------
 (use-package vertico
   :ensure t
-  :bind (:map vertico-map
-              ("C-j" . vertico-next)
-              ("C-k" . vertico-previous)
-              ("C-f" . vertico-exit)
-              :map minibuffer-local-map
+  :bind (:map minibuffer-local-map
               ("C-h" . backward-kill-word))
   :custom
   (vertico-cycle t)
@@ -718,6 +804,7 @@
 
 (use-package savehist
   :ensure t
+  :after vertico
   :init
   (savehist-mode))
 
@@ -731,6 +818,7 @@
 
 (use-package orderless
   :ensure t
+  :after vertico
   :custom
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
@@ -768,8 +856,23 @@
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 ;; --------------------------------------------------
-;;; {core} avy
+;;; {core} modal editing system
 ;; --------------------------------------------------
+;; - expand-region
+;; - multiple-cursors
+;; - surround
+;; - avy
+;; - ryo-modal
+;; --------------------------------------------------
+(use-package expand-region
+  :ensure t)
+
+(use-package multiple-cursors
+  :ensure t)
+
+(use-package surround
+  :ensure t)
+
 (use-package avy
   :ensure t
   :config
@@ -788,88 +891,68 @@
   (setf (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
   	))
 
-;; --------------------------------------------------
-;;; {core} expand-region
-;; --------------------------------------------------
-(use-package expand-region
-  :ensure t)
-
-;; --------------------------------------------------
-;;; {core} multiple-cursors
-;; --------------------------------------------------
-(use-package multiple-cursors
-  :ensure t)
-
-;; --------------------------------------------------
-;;; {core} surround
-;; --------------------------------------------------
-(use-package surround
-  :ensure t)
-
-;; --------------------------------------------------
-;;; {core} ryo-modal
-;; --------------------------------------------------
 (use-package ryo-modal
   :ensure t
   :load-path "~/.config/emacs/modal"
   :commands ryo-modal-mode
   :bind
-  ("C-z" . ryo-modal-mode) ; backup key
-  ("`" . ryo-modal-mode) ; intended key
-  ("C-`" . knavemacs/modal--print-backtick) ; allow printing of backtick
+  ("C-z" . ryo-modal-mode)
   :config
   (require 'knavemacs-modal-keyfuncs) ; load modal key functions
 
-  ;; hook into existing maps using SPC as a leader
-  (define-key ryo-modal-mode-map (kbd "SPC h") 'help-command)
+  ;; special convenience keys for quick actions when entering modal mode
+  (ryo-modal-key "C-k" 'kill-current-buffer)
+  (ryo-modal-key "C-M-j" 'ibuffer)
+  (ryo-modal-key "C-j" 'switch-to-buffer)
+  
+  ;; mapping of existing keymaps to SPC menu,
+  ;; along with changes to those maps to support this
   (define-key ryo-modal-mode-map (kbd "SPC x") ctl-x-map)
   (define-key ryo-modal-mode-map (kbd "SPC v") vc-prefix-map)
   (define-key ryo-modal-mode-map (kbd "SPC p") project-prefix-map)
-  (define-key ryo-modal-mode-map (kbd "\"") surround-keymap)
+  (define-key ryo-modal-mode-map (kbd "'") surround-keymap)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if ryo-modal-mode (save-buffer) (save-some-buffers))))
   (define-key ctl-x-map (kbd "f") #'knavemacs/modal--find-file) ;; needs to be called interactively
   (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
   (define-key ctl-x-map (kbd "j") #'dired-jump)
 
-  ;; custom menus using SPC as a leader
+  ;; custom menus using SPC+<key> as leaders
   (ryo-modal-key
-   "SPC" '(("j" switch-to-buffer) ; jump to buffer
-  	   ("k" kill-current-buffer)
-  	   ("i" ibuffer)
-	   ("1" delete-other-windows)
-	   ("2" split-window-below)
-	   ("3" split-window-right)
-	   ("0" delete-window)
-	   ("t t" tab-line-mode)
+   "SPC" '(("t t" tab-line-mode)
 	   ("t T" tab-bar-mode)
 	   ("t j" knavemacs/tab-line-pinned-switch-to-buffer)
 	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
 	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
 	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
-	   ("t 1" tab-close-other)
-	   ("t 2" tab-new)
-	   ("t 0" tab-close)
-	   ("t o" tab-next)
-	   ("T p" treemacs-add-and-display-current-project)
-	   ("T P" treemacs-add-and-display-current-project-exclusively)
-	   ("T T" treemacs-select-window)
-	   ("T d" treemacs-select-directory)
-	   ("T f" treemacs-find-file)
 	   ("g s" magit-status)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
   	   ("o t" knavemacs/org-quick-time-stamp-inactive)
-  	   ("o l" org-store-link)))
+					("o l" org-store-link)))
 
+  ;; keyboard modal key mappings
   (ryo-modal-keys
    ("," knavemacs/modal--scroll-up-half-page)
    ("." knavemacs/modal--scroll-down-half-page)
-   ("'" surround-insert)
+   ("\"" surround-insert)
    ("\\" ryo-modal-repeat)
    ("/" isearch-forward)
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
+   ("+"
+	(("j"
+	  enlarge-window
+	  :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))
+	 ("k"
+	  shrink-window
+	  :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))
+	 ("l"
+	  enlarge-window-horizontally
+	  :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))
+	 ("h"
+	  shrink-window-horizontally
+	  :properties ((repeat-map . knavemacs/modal--window-manage-repeat-map)))))
    ("["
     (("t"
       knavemacs/tab-line-pinned-prev-tab)))
@@ -878,56 +961,38 @@
       knavemacs/tab-line-pinned-next-tab)))
    ("{" backward-paragraph)
    ("}" forward-paragraph)
-   ("a" back-to-indentation :exit t) ; append
-   ("A" end-of-line :exit t) ; append to end
-   ("b" exchange-point-and-mark) ; backword word (to beginning)
-   ("B" knavemacs/forward-or-backward-sexp) ; backword symbol (to beginning)
-   ("c" kill-ring-save) ; copy
-   ("C" copy-to-buffer) ; copy to buffer
-   ("d" knavemacs/modal--dwim-delete) ; delete
-   ("D" kill-whole-line) ; delete line
-   ("e" knavemacs/modal--increment-expression) ; forward select expression
-   ("E" knavemacs/modal--decrement-expression) ; backward select expression
-   ("F" avy-goto-char-timer) ; find
-   ("f" avy-goto-char-in-line) ; fly
+   ("a" back-to-indentation :exit t)
+   ("A" end-of-line :exit t)
+   ("b" exchange-point-and-mark)
+   ("B" knavemacs/forward-or-backward-sexp)
+   ("c" kill-ring-save) 
+   ("C" copy-to-buffer) 
+   ("d" knavemacs/modal--dwim-delete)
+   ("D" kill-whole-line)
+   ("e" knavemacs/modal--increment-expression)
+   ("E" knavemacs/modal--decrement-expression)
+   ("F" avy-goto-char-timer) 
+   ("f" avy-goto-char-in-line)
    ("g" ; _goto_ commands
     (("v"
       knavemacs/modal--jump-back-to-mark)
      ("u"
       universal-argument)
-     ("1"
-      knavemacs/tab-line-pinned-switch-1)
-     ("2"
-      knavemacs/tab-line-pinned-switch-2)
-     ("3"
-      knavemacs/tab-line-pinned-switch-3)
-     ("4"
-      knavemacs/tab-line-pinned-switch-4)
-     ("5"
-      knavemacs/tab-line-pinned-switch-5)
-     ("6"
-      knavemacs/tab-line-pinned-switch-6)
-     ("7"
-      knavemacs/tab-line-pinned-switch-7)
-     ("8"
-      knavemacs/tab-line-pinned-switch-8)
-     ("9"
-      knavemacs/tab-line-pinned-switch-9)
      ))
-   ("G" keyboard-quit) ; cancel (Ctrl-G alternative)
-   ("h" backward-char) ; left
-   ("H" beginning-of-line) ; all the way left
-   ("i" ryo-modal-mode) ; insert
+   ("G" knavemacs/tab-line-pinned-prompt-to-jump)
+   ("h" backward-char)
+   ("H" beginning-of-line)
+   ("i" ryo-modal-mode)
    ("I" delete-region :exit t)
-   ("j" next-line) ; down
-   ("J" knavemacs/modal--shift-point-bottom) ; all the way down
-   ("k" previous-line) ; up
-   ("K" knavemacs/modal--shift-point-top) ; all the way up
-   ("l" forward-char) ; right
-   ("L" end-of-line) ; all the way right
-   ("M" move-to-window-line-top-bottom) ; middle
-   ("m" recenter-top-bottom) ; move line to middle, top, bottom
-   ("n" er/expand-region) ; expaNd regioN
+   ("j" next-line)
+   ("J" knavemacs/modal--shift-point-bottom)
+   ("k" previous-line)
+   ("K" knavemacs/modal--shift-point-top)
+   ("l" forward-char)
+   ("L" end-of-line)
+   ("M" move-to-window-line-top-bottom)
+   ("m" recenter-top-bottom)
+   ("n" er/expand-region)
    ("N" ; smart expand region
     (("q"
       er/mark-inside-quotes)
@@ -943,8 +1008,8 @@
       er/mark-url)
      ("c"
       er/mark-comment)))
-   ("o" knavemacs/modal--open-line-below :exit t) ; open line below
-   ("O" knavemacs/modal--open-line-above :exit t) ; open line above
+   ("o" knavemacs/modal--open-line-below :exit t)
+   ("O" knavemacs/modal--open-line-above :exit t)
    ("p" ; multiple points
     (("p"
       mc/mark-all-like-this :mc-all t)
@@ -954,18 +1019,18 @@
       mc/mark-next-like-this :mc-all t)
      ("o"
       mc/mark-pop)))
-   ("P" mc/edit-lines :mc-all t) ; multiple points per line
-   ("Q" revert-buffer) ; quit all changes in buffer
-   ("R" delete-region :then '(yank)) ; Replace with top kill-ring item
-   ("r" knavemacs/modal--read-replacement-text) ; replace by asking
-   ("s" avy-goto-word-1 :then '(set-mark-command forward-word)) ; select from word start
-   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark)) ; select from line (or line num)
-   ("t" transpose-words) ; transpose words
-   ("T" transpose-lines) ; transpose lines
-   ("u" undo) ; undo
-   ("U" undo-redo) ; reverse undo (redo)
-   ("v" knavemacs/modal--set-or-cancel-mark) ; start visual region select, or cancel visual region 
-   ("V" knavemacs/modal--set-mark-line) ; visually select the line or next line
+   ("P" mc/edit-lines :mc-all t)
+   ("Q" revert-buffer)
+   ("R" delete-region :then '(yank))
+   ("r" knavemacs/modal--read-replacement-text)
+   ("s" avy-goto-word-1 :then '(set-mark-command forward-word))
+   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark))
+   ("t" transpose-words)
+   ("T" transpose-lines)
+   ("u" undo)
+   ("U" undo-redo)
+   ("v" knavemacs/modal--set-or-cancel-mark)
+   ("V" knavemacs/modal--set-mark-line)
    ("w" forward-word) ; forward word
    ("W" backward-word) ; backward word
    ("x" delete-char) ; delete character
@@ -1056,22 +1121,6 @@
   (global-diff-hl-mode))
 
 ;; --------------------------------------------------
-;;; {programming} treesitter
-;; - tree-sitter
-;; - tree-sitter-langs
-;; --------------------------------------------------
-(use-package tree-sitter
-  :ensure t
-  :config
-  (global-tree-sitter-mode))
-
-(use-package tree-sitter-langs
-  :ensure t
-  :after tree-sitter
-  :config
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
-
-;; --------------------------------------------------
 ;;; {programming} magit
 ;; --------------------------------------------------
 (use-package magit
@@ -1096,112 +1145,11 @@
   (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
   (org-ellipsis " ⤵"))
 
-;; --------------------------------------------------
-;;; {visual} treemacs
-;; - treemacs
-;; - treemacs-icons-dired
-;; - treemacs-magit
-;; - treemacs-tab-bar
-;; --------------------------------------------------
-(use-package treemacs
-  :ensure t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay        0.5
-          treemacs-directory-name-transformer      #'identity
-          treemacs-display-in-side-window          t
-          treemacs-eldoc-display                   'simple
-          treemacs-file-event-delay                2000
-          treemacs-file-extension-regex            treemacs-last-period-regex-value
-          treemacs-file-follow-delay               0.2
-          treemacs-file-name-transformer           #'identity
-          treemacs-follow-after-init               t
-          treemacs-expand-after-init               t
-          treemacs-find-workspace-method           'find-for-file-or-pick-first
-          treemacs-git-command-pipe                ""
-          treemacs-goto-tag-strategy               'refetch-index
-          treemacs-header-scroll-indicators        '(nil . "^^^^^^")
-          treemacs-hide-dot-git-directory          t
-          treemacs-indentation                     2
-          treemacs-indentation-string              " "
-          treemacs-is-never-other-window           nil
-          treemacs-max-git-entries                 5000
-          treemacs-missing-project-action          'ask
-          treemacs-move-files-by-mouse-dragging    t
-          treemacs-move-forward-on-expand          nil
-          treemacs-no-png-images                   nil
-          treemacs-no-delete-other-windows         t
-          treemacs-project-follow-cleanup          nil
-          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-position                        'left
-          treemacs-read-string-input               'from-child-frame
-          treemacs-recenter-distance               0.1
-          treemacs-recenter-after-file-follow      nil
-          treemacs-recenter-after-tag-follow       nil
-          treemacs-recenter-after-project-jump     'always
-          treemacs-recenter-after-project-expand   'on-distance
-          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-          treemacs-project-follow-into-home        nil
-          treemacs-show-cursor                     nil
-          treemacs-show-hidden-files               t
-          treemacs-silent-filewatch                nil
-          treemacs-silent-refresh                  nil
-          treemacs-sorting                         'alphabetic-asc
-          treemacs-select-when-already-in-treemacs 'move-back
-          treemacs-space-between-root-nodes        t
-          treemacs-tag-follow-cleanup              t
-          treemacs-tag-follow-delay                1.5
-          treemacs-text-scale                      nil
-          treemacs-user-mode-line-format           nil
-          treemacs-user-header-line-format         nil
-          treemacs-wide-toggle-width               70
-          treemacs-width                           35
-          treemacs-width-increment                 1
-          treemacs-width-is-initially-locked       t
-          treemacs-workspace-switch-cleanup        nil)
-
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
-
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-    (treemacs-project-follow-mode t)
-    (when treemacs-python-executable
-      (treemacs-git-commit-diff-mode t))
-
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple)))
-
-    (treemacs-hide-gitignored-files-mode nil)))
-
-(use-package treemacs-icons-dired
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :ensure t)
-
-(use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
-
-(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
-  :after (treemacs)
-  :ensure t
-  :config (treemacs-set-scope-type 'Tabs))
-
 ;; ==================================================
 ;;; SECTION X Modeline Configuration
 ;; ==================================================
 (defface knavemacs/modeline-faces-modal
-  '((t :foreground "#EEEEEE"
+  '((t :foreground "#A720CC"
   	   ))
   "Default Face"
   :group 'knavemacs/mode-line-faces)
@@ -1214,13 +1162,19 @@
 
 
 (defface knavemacs/modeline-faces-modified
-  '((t :foreground "#7d0a36"
+  '((t :foreground "#FDB91F"
+  	   ))
+  "Default Face"
+  :group 'knavemacs/mode-line-faces)
+
+(defface knavemacs/modeline-faces-unmodified
+  '((t :foreground "#4BDD10"
   	   ))
   "Default Face"
   :group 'knavemacs/mode-line-faces)
 
 (defface knavemacs/modeline-faces-kmacrorec
-  '((t :foreground "#7d0a36"
+  '((t :foreground "#D20103"
   	   ))
   "Default Face"
   :group 'knavemacs/mode-line-faces)
@@ -1244,9 +1198,9 @@
 ;; modeline module: modified indicator
 (defvar-local knavemacs/modeline-modified-indicator
     '(:eval
-  	  (when (buffer-modified-p)
-        (propertize "" 'face 'knavemacs/modeline-faces-modified)))
-  "Modeline module to provide a modified indicator for appropriate buffers")
+      (if (buffer-modified-p)
+          (propertize "" 'face 'knavemacs/modeline-faces-modified)
+        (propertize "" 'face 'knavemacs/modeline-faces-unmodified))))
 
 ;; modeline module: buffer name
 (defvar-local knavemacs/modeline-bufname
@@ -1304,17 +1258,15 @@
   "Returns the current viper state, or a default string if void."
   (interactive)
   (if ryo-modal-mode
-	  (setq modal-mode-string "󰮢 GRAVE")
-	(setq modal-mode-string " EMACS"))
+	  (setq modal-mode-string "󰷈 MEdit")
+	(setq modal-mode-string " Emacs"))
   (format-mode-line 'modal-mode-string))
-
 
 ;; ------------MODELINE CONSTRUCTION
 (setq-default mode-line-format
   			  '("%e"
-  				" "
-  				knavemacs/modeline-modal-indicator
   				mode-line-front-space
+  				knavemacs/modeline-modal-indicator
   				knavemacs/modeline-readonly-indicator
   				" "
   				knavemacs/modeline-modified-indicator
@@ -1331,7 +1283,7 @@
 ;; ==================================================
 ;;; SECTION Y Final Startup Sequence
 ;; ==================================================
-(select-frame-set-input-focus (selected-frame))
+;; Setup these minor modes:
 (global-auto-revert-mode 1)
 (indent-tabs-mode -1)
 (electric-pair-mode 1)
@@ -1341,23 +1293,10 @@
 (save-place-mode 1)
 (winner-mode)
 (xterm-mouse-mode 1)
+(delete-selection-mode 1)
 (file-name-shadow-mode 1) ; allows us to type a new path without having to delete the current one
 
-(with-current-buffer (get-buffer-create "*scratch*")
-  (insert (format ";;
-;; ██╗  ██╗███╗   ██╗ █████╗ ██╗   ██╗███████╗███╗   ███╗ █████╗  ██████╗███████╗
-;; ██║ ██╔╝████╗  ██║██╔══██╗██║   ██║██╔════╝████╗ ████║██╔══██╗██╔════╝██╔════╝
-;; █████╔╝ ██╔██╗ ██║███████║██║   ██║█████╗  ██╔████╔██║███████║██║     ███████╗
-;; ██╔═██╗ ██║╚██╗██║██╔══██║╚██╗ ██╔╝██╔══╝  ██║╚██╔╝██║██╔══██║██║     ╚════██║
-;; ██║  ██╗██║ ╚████║██║  ██║ ╚████╔╝ ███████╗██║ ╚═╝ ██║██║  ██║╚██████╗███████║
-;; ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
-;;   Loading time : %s
-;;   Packages     : %s
-;;
-"
-          	  (emacs-init-time)
-          	  (number-to-string (length package-activated-list)))))
-(message (emacs-init-time))
+;; clean up and notify
 (if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
 
 ;; ==================================================

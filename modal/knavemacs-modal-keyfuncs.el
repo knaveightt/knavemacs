@@ -11,18 +11,6 @@
 (put 'enlarge-window-horizontally 'repeat-map 'knavemacs/modal--window-manage-repeat-map)
 (put 'shrink-window-horizontally 'repeat-map 'knavemacs/modal--window-manage-repeat-map)
 
-(defun knavemacs/modal--print-backtick ()
-  "A function to print the backtick character, since the key has special meaning."
-  (interactive)
-  (insert "`"))
-
-(defun knavemacs/modal--find-file ()
-  "Runs find file or set-fill-column depending on ryo-modal-mode"
-  (interactive)
-  (if ryo-modal-mode
-      (call-interactively 'find-file)
-    (call-interactively 'set-fill-column)))
-
 ;; https://www.reddit.com/r/emacs/comments/r7l3ar/how_do_you_scroll_half_a_page/
 (defun knavemacs/modal--scroll-down-half-page ()
   "scroll down half a page while keeping the cursor centered" 
@@ -46,10 +34,21 @@
                (move-to-window-line 0)
                (recenter))))))
 
-(defun knavemacs/modal--backward-symbol ()
-  "Moves backward a symbol."
+(defun knavemacs/modal--find-file ()
+  "Runs find file or set-fill-column depending on ryo-modal-mode"
   (interactive)
-  (forward-symbol -1))
+  (if ryo-modal-mode
+      (call-interactively 'find-file)
+    (call-interactively 'set-fill-column)))
+
+(defun knavemacs/forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 
 (defun knavemacs/modal--dwim-delete ()
   "Kills a region if a region is active, otherwise executes kill-line"
@@ -132,56 +131,5 @@
   (call-interactively 'backward-delete-char-untabify)
   (insert replacement-text)
   (kill-new replacement-text))
-
-(defun knavemacs/modal--delete-region-if-active ()
-  "Checks if a region is active, then kills the region if true."
-  (interactive)
-  (if (region-active-p)
-      (call-interactively 'delete-region)))
-
-(defun knavemacs/forward-or-backward-sexp (&optional arg)
-  "Go to the matching parenthesis character if one is adjacent to point."
-  (interactive "^p")
-  (cond ((looking-at "\\s(") (forward-sexp arg))
-        ((looking-back "\\s)" 1) (backward-sexp arg))
-        ;; Now, try to succeed from inside of a bracket
-        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
-        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
-
-(defun knavemacs/tab-line-pinned-switch-1 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 1))
-
-(defun knavemacs/tab-line-pinned-switch-2 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 2))
-
-(defun knavemacs/tab-line-pinned-switch-3 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 3))
-
-(defun knavemacs/tab-line-pinned-switch-4 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 4))
-
-(defun knavemacs/tab-line-pinned-switch-5 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 5))
-
-(defun knavemacs/tab-line-pinned-switch-6 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 6))
-
-(defun knavemacs/tab-line-pinned-switch-7 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 7))
-
-(defun knavemacs/tab-line-pinned-switch-8 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 8))
-
-(defun knavemacs/tab-line-pinned-switch-9 ()
-  (interactive)
-  (knavemacs/tab-line-pinned-switch-to-nth 9))
 
 (provide 'knavemacs-modal-keyfuncs)
