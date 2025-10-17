@@ -1,6 +1,6 @@
 * Knavemacs - Emacs Configuration
 ** What is it?
-This is my emacs configuration, tested for **Emacs 30.1**.
+This is my emacs configuration, tested for **Emacs 30.2**.
 
 It has been put together with heavy inspiration (sometimes overt copy and paste)
 from a variety of sources, most notebly [[https://www.youtube.com/playlist?list=PLEoMzSkcN8oPH1au7H6B7bBJ4ZO7BXjSZ][System Crafter's Emacs from Scratch]] and
@@ -26,3 +26,4 @@ The following dependencies must be met for this configuration to run properly:
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
 - on linux, have a notification system installed (e.g. dunst)
   
+
