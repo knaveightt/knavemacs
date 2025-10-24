@@ -896,14 +896,18 @@
   :load-path "~/.config/emacs/modal"
   :commands ryo-modal-mode
   :bind
-  ("C-z" . ryo-modal-mode)
+  (";" . ryo-modal-mode)
   :config
   (require 'knavemacs-modal-keyfuncs) ; load modal key functions
 
+  (defun knavemacs/print-semi-colon ()
+    (interactive)
+    (insert ";"))
+
   ;; special convenience keys for quick actions when entering modal mode
-  (ryo-modal-key "C-k" 'kill-current-buffer)
-  (ryo-modal-key "C-M-j" 'ibuffer)
-  (ryo-modal-key "C-j" 'switch-to-buffer)
+  (ryo-modal-key "SPC k" 'kill-current-buffer)
+  (ryo-modal-key "SPC i" 'ibuffer)
+  (ryo-modal-key "SPC j" 'switch-to-buffer)
   
   ;; mapping of existing keymaps to SPC menu,
   ;; along with changes to those maps to support this
@@ -937,6 +941,7 @@
    ("\"" surround-insert)
    ("\\" ryo-modal-repeat)
    ("/" isearch-forward)
+   (";" ";")
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
