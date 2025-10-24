@@ -900,10 +900,6 @@
   :config
   (require 'knavemacs-modal-keyfuncs) ; load modal key functions
 
-  (defun knavemacs/print-semi-colon ()
-    (interactive)
-    (insert ";"))
-
   ;; special convenience keys for quick actions when entering modal mode
   (ryo-modal-key "SPC k" 'kill-current-buffer)
   (ryo-modal-key "SPC i" 'ibuffer)
@@ -1309,3 +1305,4 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
