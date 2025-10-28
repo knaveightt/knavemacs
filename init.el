@@ -109,7 +109,7 @@
 
 ;; Font Configuration
 (add-to-list 'default-frame-alist
-	     '(font . "JetBrainsMono NF 10"))
+	     '(font . "JetBrainsMono NF 12"))
 
 ;; Theme Configuration
 ;; modus-vivendi dressed as catppuccin
@@ -896,14 +896,15 @@
   :load-path "~/.config/emacs/modal"
   :commands ryo-modal-mode
   :bind
-  (";" . ryo-modal-mode)
+  (("C-z" . ryo-modal-mode)
+   ("<escape>" . ryo-modal-mode))
   :config
   (require 'knavemacs-modal-keyfuncs) ; load modal key functions
 
   ;; special convenience keys for quick actions when entering modal mode
-  (ryo-modal-key "SPC k" 'kill-current-buffer)
-  (ryo-modal-key "SPC i" 'ibuffer)
-  (ryo-modal-key "SPC j" 'switch-to-buffer)
+  (ryo-modal-key "C-k" 'kill-current-buffer) ; kill buffers
+  (ryo-modal-key "C-M-j" 'ibuffer) ; list all buffers
+  (ryo-modal-key "C-j" 'switch-to-buffer) ; list buffers
   
   ;; mapping of existing keymaps to SPC menu,
   ;; along with changes to those maps to support this
@@ -937,7 +938,6 @@
    ("\"" surround-insert)
    ("\\" ryo-modal-repeat)
    ("/" isearch-forward)
-   (";" ";")
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
@@ -1054,7 +1054,10 @@
    ("6" "M-6")
    ("7" "M-7")
    ("8" "M-8")
-   ("9" "M-9")))
+   ("9" "M-9"))
+
+  ;; try to enter modal editing when a new file is visited in a buffer
+  (add-hook 'find-file-hook 'ryo-modal-mode))
 
 ;; --------------------------------------------------
 ;;; {programming} corfu/cape completions
@@ -1081,7 +1084,7 @@
   ;; Alternatively bind Cape commands individually.
   ;; :bind (("C-c p d" . cape-dabbrev)
   ;;        ("C-c p h" . cape-history)
-  ;;        ("C-c p f" . cape-file)
+  ;;        ("C-c p f" . cape-file))
   ;;        ...)
   :init
   ;; Add to the global default value of `completion-at-point-functions' which is
@@ -1305,4 +1308,3 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
-
