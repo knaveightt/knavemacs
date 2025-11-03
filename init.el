@@ -291,6 +291,7 @@
 
   (which-key-add-key-based-replacements
     "SPC o" "Org Commands"
+    "SPC e" "File Explore Commands"
     "SPC p" "Project Commands"
     "SPC g" "Git Commands"
     "SPC t" "Tab Commands"
@@ -806,6 +807,7 @@
 	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
 	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
 	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
+       ("e e" treemacs-add-and-display-current-project-exclusively)
 	   ("g s" magit-status)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
@@ -1011,6 +1013,25 @@
 (use-package magit
   :if (eq system-type 'gnu/linux)
   :ensure t)
+
+;; --------------------------------------------------
+;;; {programming} filetree navigation
+;; - treemacs
+;; - treemacs-magit
+;; - treemacs-nerd-icons
+;; --------------------------------------------------
+(use-package treemacs
+  :ensure t
+  :config
+  (setq treemacs-project-follow-mode t))
+
+(use-package treemacs-magit
+  :ensure t)
+
+(use-package treemacs-nerd-icons
+  :ensure t
+  :config
+  (treemacs-nerd-icons-config))
 
 ;; --------------------------------------------------
 ;;; {visual} rainbow-mode
