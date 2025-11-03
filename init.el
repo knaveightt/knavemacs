@@ -1063,7 +1063,19 @@
   	   ))
   "Default Face"
   :group 'knavemacs/mode-line-faces)
-  
+
+(defface knavemacs/modeline-faces-git-additions
+  '((t :foreground "#CC0"
+  	   ))
+  "Default Face"
+  :group 'knavemacs/mode-line-faces)
+
+(defface knavemacs/modeline-faces-git-deletions
+  '((t :foreground "#CC0000"
+  	   ))
+  "Default Face"
+  :group 'knavemacs/mode-line-faces)
+
 ;; ------------MODELINE MODULES
 
 ;; modeline module: modal indicator
@@ -1121,6 +1133,20 @@
         (propertize " (󰑋 MACRO)" 'face 'knavemacs/modeline-faces-kmacrorec)))
   "Modeline module to provide an indicator for when recording kmacros")
 
+;; modeline module: version control details
+(defvar-local knavemacs/modeline-vc-details-additions
+    '(:eval
+	  (when (mode-line-window-selected-p)
+        (propertize (knavemacs/return-git-diff-additions) 'face 'knavemacs/modeline-faces-git-additions)))
+  "Modeline module to provide version control details.")
+
+;; modeline module: version control details
+(defvar-local knavemacs/modeline-vc-details-deletions
+    '(:eval
+	  (when (mode-line-window-selected-p)
+        (propertize (knavemacs/return-git-diff-deletions) 'face 'knavemacs/modeline-faces-git-deletions)))
+  "Modeline module to provide version control details.")
+
 ;; ------------MODELINE PREPARE VARIABLES
 (dolist (construct '(knavemacs/modeline-modal-indicator
 					 knavemacs/modeline-readonly-indicator
@@ -1128,6 +1154,8 @@
   					 knavemacs/modeline-bufname
 					 knavemacs/modeline-major-mode-icon
 					 knavemacs/modeline-major-mode-name
+					 knavemacs/modeline-vc-details-additions
+					 knavemacs/modeline-vc-details-deletions
   					 knavemacs/modeline-right-display
   					 knavemacs/modeline-kmacro-indicator))
   (put construct 'risky-local-variable t)) ;; required for modeline local vars
@@ -1147,6 +1175,32 @@
 	(setq modal-mode-string " Emacs"))
   (format-mode-line 'modal-mode-string))
 
+;; to time the return-git-diff-status functions to only update after at least 15 seconds
+(defvar git-modeline-last-update (float-time) "Last time we updated")
+(defvar git-modeline-update-interval 15 "Minimum time between update in seconds")
+
+(defun knavemacs/return-git-diff-additions ()
+  "Return a string showing the number of added for the current file."
+  (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
+  (when (buffer-file-name)
+    (let ((file (buffer-file-name)))
+      (when (vc-backend file)
+        (when (eq (vc-backend file) 'Git)
+          (let ((diff-output (vc-git--run-command-string file "diff" "--numstat" "--" file)))
+            (when (and diff-output (string-match "^\\([0-9]+\\)\t\\([0-9]+\\)\t" diff-output))
+              (format "  %s" (match-string 1 diff-output))))))))))
+
+(defun knavemacs/return-git-diff-deletions ()
+  "Return a string showing the number of added for the current file."
+  (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
+  (when (buffer-file-name)
+    (let ((file (buffer-file-name)))
+      (when (vc-backend file)
+        (when (eq (vc-backend file) 'Git)
+          (let ((diff-output (vc-git--run-command-string file "diff" "--numstat" "--" file)))
+            (when (and diff-output (string-match "^\\([0-9]+\\)\t\\([0-9]+\\)\t" diff-output))
+              (format "  %s" (match-string 2 diff-output))))))))))
+
 ;; ------------MODELINE CONSTRUCTION
 (setq-default mode-line-format
   			  '("%e"
@@ -1161,6 +1215,9 @@
   				knavemacs/modeline-major-mode-icon
   				" "
   				knavemacs/modeline-major-mode-name
+				" "
+				knavemacs/modeline-vc-details-additions
+				knavemacs/modeline-vc-details-deletions
   				(:eval (knavemacs/modeline-fill-for-alignment))
   				knavemacs/modeline-right-display
   				knavemacs/modeline-kmacro-indicator))
