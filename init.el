@@ -1045,7 +1045,6 @@
   "Default Face"
   :group 'knavemacs/mode-line-faces)
 
-
 (defface knavemacs/modeline-faces-modified
   '((t :foreground "#FDB91F"
   	   ))
@@ -1175,31 +1174,41 @@
 	(setq modal-mode-string " Emacs"))
   (format-mode-line 'modal-mode-string))
 
-;; to time the return-git-diff-status functions to only update after at least 15 seconds
+;; clocks to throttle the additions/deletions functions to run after some time
 (defvar git-modeline-last-update (float-time) "Last time we updated")
 (defvar git-modeline-update-interval 15 "Minimum time between update in seconds")
+(defvar git-modeline-additions "")
+(defvar git-modeline-deletions "")
 
 (defun knavemacs/return-git-diff-additions ()
   "Return a string showing the number of added for the current file."
   (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
-  (when (buffer-file-name)
-    (let ((file (buffer-file-name)))
-      (when (vc-backend file)
-        (when (eq (vc-backend file) 'Git)
-          (let ((diff-output (vc-git--run-command-string file "diff" "--numstat" "--" file)))
-            (when (and diff-output (string-match "^\\([0-9]+\\)\t\\([0-9]+\\)\t" diff-output))
-              (format "  %s" (match-string 1 diff-output))))))))))
+      (progn
+        (when (buffer-file-name)
+          (let ((file (buffer-file-name)))
+            (when (vc-backend file)
+              (when (eq (vc-backend file) 'Git)
+                (let ((diff-output (vc-git--run-command-string file "diff" "--numstat" "--" file)))
+                  (when (and diff-output (string-match "^\\([0-9]+\\)\t\\([0-9]+\\)\t" diff-output))
+                    (setq git-modeline-additions (format "  %s" (match-string 1 diff-output)))))))))
+        ; we comment this out and expect the deletions function to reset the clock
+        ; (setq git-modeline-last-update (float-time))
+        ))
+  (format-mode-line 'git-modeline-additions))
 
 (defun knavemacs/return-git-diff-deletions ()
   "Return a string showing the number of added for the current file."
   (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
-  (when (buffer-file-name)
-    (let ((file (buffer-file-name)))
-      (when (vc-backend file)
-        (when (eq (vc-backend file) 'Git)
-          (let ((diff-output (vc-git--run-command-string file "diff" "--numstat" "--" file)))
-            (when (and diff-output (string-match "^\\([0-9]+\\)\t\\([0-9]+\\)\t" diff-output))
-              (format "  %s" (match-string 2 diff-output))))))))))
+      (progn
+        (when (buffer-file-name)
+          (let ((file (buffer-file-name)))
+            (when (vc-backend file)
+              (when (eq (vc-backend file) 'Git)
+                (let ((diff-output (vc-git--run-command-string file "diff" "--numstat" "--" file)))
+                  (when (and diff-output (string-match "^\\([0-9]+\\)\t\\([0-9]+\\)\t" diff-output))
+                    (setq git-modeline-deletions (format "  %s" (match-string 2 diff-output)))))))))
+	    (setq git-modeline-last-update (float-time))))
+  (format-mode-line 'git-modeline-deletions))
 
 ;; ------------MODELINE CONSTRUCTION
 (setq-default mode-line-format
