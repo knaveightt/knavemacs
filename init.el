@@ -807,7 +807,7 @@
 	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
 	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
 	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
-       ("e e" treemacs-add-and-display-current-project-exclusively)
+	   ("e e" treemacs-add-and-display-current-project-exclusively)
 	   ("g s" magit-status)
   	   ("o c" org-capture)
   	   ("o a" org-agenda)
@@ -1128,6 +1128,13 @@
   "Default Face"
   :group 'knavemacs/mode-line-faces) 
 
+(defface knavemacs/modeline-faces-git-branch
+  '((t :background "#000000"
+       :foreground "#888888"
+  	   ))
+  "Default Face"
+  :group 'knavemacs/mode-line-faces)
+
 (set-face-attribute 'mode-line nil :background "#111111")
 (set-face-attribute 'mode-line-inactive nil :background "#030303")
 
@@ -1227,6 +1234,13 @@
 	(propertize (knavemacs/modeline-return-sep2) 'face 'knavemacs/modeline-faces-header-sep3)))
   "Modeline module to simply provide a char for seperation")
 
+;; modeline module: return git branch name
+(defvar-local knavemacs/modeline-gitbranch
+    '(:eval
+      (when (mode-line-window-selected-p)
+	(propertize (knavemacs/modeline-return-git-branch) 'face 'knavemacs/modeline-faces-git-branch)))
+  "Modeline module to simply provide a char for seperation")
+
 ;; ------------MODELINE PREPARE VARIABLES
 (dolist (construct '(knavemacs/modeline-modal-indicator
 					 knavemacs/modeline-major-mode-icon
@@ -1240,6 +1254,7 @@
 					 knavemacs/modeline-header-sep2
 					 knavemacs/modeline-header-sep3
 					 knavemacs/modeline-header-sep4
+					 knavemacs/modeline-gitbranch
   					 knavemacs/modeline-right-display
   					 knavemacs/modeline-kmacro-indicator))
   (put construct 'risky-local-variable t)) ;; required for modeline local vars
@@ -1312,7 +1327,15 @@
   "Return a seperator to be used in the modeline."
   "")
 
-;; ------------MODELINE CONSTRUCTION
+(defun knavemacs/modeline-return-git-branch ()
+  "Return the Git branch when in a versioned controlled file."
+  (interactive)
+  (when vc-mode
+    (let* ((gbranch (elt (split-string vc-mode ":") 1))
+	   (mdln (concat "  " gbranch)))
+      mdln)))
+
+;; ------------modeline CONSTRUCTION
 (setq-default mode-line-format
   			  '("%e"
   				;mode-line-front-space
@@ -1328,6 +1351,7 @@
   				knavemacs/modeline-modified-indicator
   				" "
 				knavemacs/modeline-header-sep3
+				knavemacs/modeline-gitbranch
 				knavemacs/modeline-vc-details-additions
 				knavemacs/modeline-vc-details-deletions
   				(:eval (knavemacs/modeline-fill-for-alignment))
