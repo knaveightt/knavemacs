@@ -1282,12 +1282,13 @@
 ;; clocks to throttle the additions/deletions functions to run after some time
 (defvar git-modeline-last-update (float-time) "Last time we updated")
 (defvar git-modeline-update-interval 15 "Minimum time between update in seconds")
+(defvar git-modeline-toggle t "True if additions/deletions should be added to modeline")
 (defvar git-modeline-additions "")
 (defvar git-modeline-deletions "")
 
 (defun knavemacs/return-git-diff-additions ()
   "Return a string showing the number of added for the current file."
-  (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
+  (if (and (> (- (float-time) git-modeline-last-update) git-modeline-update-interval) git-modeline-toggle)
       (progn
         (when (buffer-file-name)
           (let ((file (buffer-file-name)))
@@ -1300,12 +1301,13 @@
         ; (setq git-modeline-last-update (float-time))
         (when (not (buffer-file-name))
           (setq git-modeline-additions ""))
-        ))
+        )
+    (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval) (setq git-modeline-additions "")))
   (format-mode-line 'git-modeline-additions))
 
 (defun knavemacs/return-git-diff-deletions ()
   "Return a string showing the number of added for the current file."
-  (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
+  (if (and (> (- (float-time) git-modeline-last-update) git-modeline-update-interval) git-modeline-toggle)
       (progn
         (when (buffer-file-name)
           (let ((file (buffer-file-name)))
@@ -1316,7 +1318,11 @@
                     (setq git-modeline-deletions (format "  %s" (match-string 2 diff-output)))))))))
         (when (not (buffer-file-name))
           (setq git-modeline-deletions ""))
-	    (setq git-modeline-last-update (float-time))))
+	(setq git-modeline-last-update (float-time)))
+    (if (> (- (float-time) git-modeline-last-update) git-modeline-update-interval)
+	(progn
+	  (setq git-modeline-deletions "")
+	  (setq git-modeline-last-update (float-time)))))
   (format-mode-line 'git-modeline-deletions))
 
 (defun knavemacs/modeline-return-sep ()
