@@ -4,11 +4,11 @@
 ;; capture templates
 (setq org-capture-templates
       '(
-        ("n" "Work Note" entry (file+olp+datetree "C:\\Users\\josinski\\OneDrive - JNJ\\org\\journal.org" "Journal")
-         "* %^{Note Title} %^G\n%U\n%?" :empty-lines-after 1)
+        ("t" "Todo" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\todos.org" "TODOs")
+         "* %^{Enter Context}\n** %^{Task Type|TODO|PROJECT} %?\n" :empty-lines-after 1)
 
-        ("t" "Todo" entry (file+olp+datetree "C:\\Users\\josinski\\OneDrive - JNJ\\org\\journal.org" "Journal")
-         "* TODO %^{Enter Task} %^G\n%?" :empty-lines-after 1)
+        ("q" "Quick Task" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\todos.org" "TODOs" "Quick Tasks")
+           "* TODO %?\n" :empty-lines-after 1)
 
         ("f" "Future Todo" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\tickler.org" "Future")
          "* TODO %^{Enter Scheduled Task} %?")
@@ -17,6 +17,5 @@
          "* %t %^{Meeting Title} %^G\n** Attendance\n|Attendee|Present|\n|-|-|\n|%?\n** Notes\n** Action Items\n*** TODO " :empty-lines-after 1)
         ))
 
-(load-theme 'modus-operandi-tinted t)
-
 (provide 'knavemacs-platform)
+
