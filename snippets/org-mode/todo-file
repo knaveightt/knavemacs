@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: todo-file
+# key: >newtodof
+# --
+#+TITLE:
+#+AUTHOR:
+#+DATE: 
+#+FILETAGS: :Test:
+* TODOs
+** Quick Tasks
+
+** Future Tasks
+
+* Meeting Notes
+$0

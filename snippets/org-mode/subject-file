@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: subject-file
+# key: >newsubjectf
+# --
+#+TITLE:
+#+AUTHOR:
+#+DATE: 
+#+FILETAGS: :Test:
+* Knowledge
+* Task Library
+* Meeting Notes
+$0
