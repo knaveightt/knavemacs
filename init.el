@@ -217,7 +217,7 @@
   :config
   (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/areas"))
   (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
-  (setq org-stuck-projects '("+TODO=\"PROJECT\"" ("TODO" "NEXT")))
+  (setq org-stuck-projects '("+TODO=\"PROJECT\"" ("TODO")))
   (setq org-refile-targets '((org-agenda-files :level . 1)))
   (setq org-id-link-to-org-use-id t)
   (setq org-todo-keywords
@@ -235,16 +235,16 @@
   ;; custom agenda views
   (setq org-agenda-custom-commands
 	'(
-          ("d" "Todo Dashboard"
-           (
+	  ("d" "Todo Planning"
+	   (
 	    (agenda ""
 		    ((org-deadline-warning-days 7)
 		     (org-agenda-overriding-header "Scheduled TODOs")))
-	    (tags "-@step+TODO=\"TODO\"-SCHEDULED={.+}|+@step+TODO=\"NEXT\"-SCHEDULED={.+}"
-		  ((org-agenda-overriding-header "Unscheduled Work")))
+	    (tags "+TODO=\"TODO\"-SCHEDULED={.+}|+SCHEDULED=\"<today>\""
+		  ((org-agenda-overriding-header "Today's Work")))
 	    (stuck "" ((org-agenda-overriding-header "Stuck Projects")))
 	    (tags "+TODO=\"FOLLOWUP\"-SCHEDULED={.+}"
-		  ((org-agenda-overriding-header "Requires Follow Up")))
+		  ((org-agenda-overriding-header "Floating Follow-Ups")))
 	    ))
           ))
 
@@ -259,11 +259,11 @@
   ;; capture templates
   (setq org-capture-templates
 	'(
-          ("n" "Work Note" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
-           "* %^{Note Title} %^G\n%U\n%?" :empty-lines-after 1)
+          ("t" "Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs")
+           "* %^{Enter Context}\n** %^{Task Type|TODO|PROJECT} %?\n" :empty-lines-after 1)
 
-          ("t" "Todo" entry (file+olp+datetree "~/Documents/org/journal.org" "Journal")
-           "* TODO %^{Enter Task} %^G\n%?" :empty-lines-after 1)
+          ("q" "Quick Task" entry (file+olp "~/Documents/org/todos.org" "TODOs" "Quick Tasks")
+           "* TODO %?\n" :empty-lines-after 1)
 
           ("f" "Future Todo" entry (file+olp "~/Documents/org/tickler.org" "Future")
            "* TODO %^{Enter Scheduled Task} %?")
@@ -1390,3 +1390,4 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
