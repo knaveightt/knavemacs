@@ -15,8 +15,12 @@
 
         ("m" "Meeting Notes" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\todos.org" "Meeting Notes")
          "* %t %^{Meeting Title} %^G\n** Attendance\n|Attendee|Present|\n|-|-|\n|%?\n** Notes\n** Action Items\n*** (Begin Todos) " :empty-lines-after 1)
+
+		("w" "Work Notes" entry (file+olp "C:\\Users\\josinski\\OneDrive - JNJ\\org\\todos.org" "Work Notes")
+         "* %? %^G\n" :empty-lines-after 1)
         ))
 
 (provide 'knavemacs-platform)
+
 
 
