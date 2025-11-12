@@ -117,6 +117,9 @@
   :config
   (color-theme-sanityinc-tomorrow-bright))
 
+;; cursor configuration
+(setq-default cursor-type 'bar)
+
 ;; Frame and Window Logic & Scrolling
 (setq frame-resize-pixelwise t)
 (setq pixel-scroll-precision-mode t)
@@ -1390,5 +1393,6 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
 
 
