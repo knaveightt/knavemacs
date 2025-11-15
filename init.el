@@ -749,6 +749,7 @@
 ;; - expand-region
 ;; - multiple-cursors
 ;; - surround
+;; - fzf
 ;; - avy
 ;; - ryo-modal
 ;; --------------------------------------------------
@@ -760,6 +761,11 @@
 
 (use-package surround
   :ensure t)
+
+(use-package fzf
+  :ensure t
+  :config
+  (setq fzf/args "-x --print-query --margin=1,0 --no-hscroll"))
 
 (use-package avy
   :ensure t
@@ -826,8 +832,8 @@
    ("." knavemacs/modal--scroll-down-half-page)
    ("\"" surround-insert)
    ("\\" ryo-modal-repeat)
-   ("/" isearch-forward)
-   ("?" isearch-backward)
+   ("/" fzf-grep-with-narrowing)
+   ("?" fzf-grep-in-dir-with-narrowing)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
    ("+"
