@@ -245,6 +245,8 @@
 		     (org-agenda-overriding-header "Scheduled TODOs")))
 	    (tags "+TODO=\"TODO\"-SCHEDULED={.+}|+SCHEDULED=\"<today>\""
 		  ((org-agenda-overriding-header "Today's Work")))
+		(tags "+SCHEDULED<\"<today>\"-TODO=\"DONE\""
+		  ((org-agenda-overriding-header "Late Work")))
 	    (stuck "" ((org-agenda-overriding-header "Stuck Projects")))
 	    (tags "+TODO=\"FOLLOWUP\"-SCHEDULED={.+}"
 		  ((org-agenda-overriding-header "Floating Follow-Ups")))
@@ -1402,6 +1404,7 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
 
 
 
