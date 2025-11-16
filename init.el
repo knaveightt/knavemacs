@@ -220,7 +220,7 @@
   :config
   (setq org-agenda-files (list "~/Documents/org" "~/Documents/org/areas"))
   (setq org-agenda-todo-list-sublevels nil) ;; only want to see top level TODOs in global list
-  (setq org-stuck-projects '("+TODO=\"PROJECT\"" ("TODO")))
+  (setq org-stuck-projects '("+TODO=\"PROJECT\"" ("TODO" "FOLLOWUP")))
   (setq org-refile-targets '((org-agenda-files :level . 1)))
   (setq org-id-link-to-org-use-id t)
   (setq org-todo-keywords
@@ -1404,6 +1404,7 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
 
 
 
