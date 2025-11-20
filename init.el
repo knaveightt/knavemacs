@@ -301,6 +301,7 @@
     "SPC o" "Org Commands"
     "SPC e" "File Explore Commands"
     "SPC p" "Project Commands"
+    "SPC r" "Register Commands"
     "SPC g" "Git Commands"
     "SPC t" "Tab Commands"
     "SPC v" "Version Control"
@@ -799,6 +800,7 @@
 
   ;; special convenience keys for quick actions when entering modal mode
   (ryo-modal-key "C-k" 'kill-current-buffer) ; kill buffers
+  (ryo-modal-key "C-M-K" 'kill-buffer-and-window)
   (ryo-modal-key "C-M-j" 'ibuffer) ; list all buffers
   (ryo-modal-key "C-j" 'switch-to-buffer) ; list buffers
   
@@ -821,6 +823,8 @@
 	   ("t r" knavemacs/tab-line-pinned-reset-buffers)
 	   ("t p" knavemacs/tab-line-pinned-pin-buffer)
 	   ("t u" knavemacs/tab-line-pinned-unpin-buffer)
+	   ("r l" list-registers)
+	   ("r v" view-register)
 	   ("e e" treemacs-add-and-display-current-project-exclusively)
 	   ("g s" magit-status)
   	   ("o c" org-capture)
@@ -864,7 +868,7 @@
    ("b" exchange-point-and-mark)
    ("B" knavemacs/forward-or-backward-sexp)
    ("c" kill-ring-save) 
-   ("C" copy-to-buffer) 
+   ("C" copy-to-register) 
    ("d" knavemacs/modal--dwim-delete)
    ("D" kill-whole-line)
    ("e" knavemacs/modal--increment-expression)
@@ -938,7 +942,7 @@
    ("x" delete-char) ; delete character
    ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
    ("y" yank) ; yank
-   ("Y" yank-pop) ; yank from kill ring (fuzzy select)
+   ("Y" insert-register) ; yank from kill ring (fuzzy select)
    ("z" zap-up-to-char) ; zap up to char
    ("Z" zap-to-char)) ; zap to char
 
@@ -1408,6 +1412,7 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
 
 
 
