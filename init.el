@@ -800,7 +800,7 @@
 
   ;; special convenience keys for quick actions when entering modal mode
   (ryo-modal-key "C-k" 'kill-current-buffer) ; kill buffers
-  (ryo-modal-key "C-M-K" 'kill-buffer-and-window)
+  (ryo-modal-key "C-M-k" 'kill-buffer-and-window)
   (ryo-modal-key "C-M-j" 'ibuffer) ; list all buffers
   (ryo-modal-key "C-j" 'switch-to-buffer) ; list buffers
   
@@ -1412,6 +1412,7 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
 
 
 
