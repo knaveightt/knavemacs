@@ -14,16 +14,15 @@ the dependencies below are all met, then you should be good to go.
 The following dependencies must be met for this configuration to run properly:
 
 - ~ripgrep~ must be installed
-- ~JetBrainsMono~ Nerd Font must be installed
+- ~fzf~ must be installed
+- ~JetBrainsMono~ Nerd Font must be installed with this configuration
 - included ~snippets~ folder moved to ~/Documents/data/snippets
 - ensure included ~modal~ folder is in ~/.config/emacs
 - Ensure the following items are created under ~/Documents/org/
-  - notice.org
-  - ticker.org
-  - inbox.org
-  - backlog.org
-  - workstreams/ (note: this is a directory)
+  - todos.org
+  - areas/ (note: this is a directory)
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
 - on linux, have a notification system installed (e.g. dunst)
   
+
 
