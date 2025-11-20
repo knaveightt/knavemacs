@@ -923,7 +923,11 @@
    ("r" knavemacs/modal--read-replacement-text)
    ("s" avy-goto-word-1 :then '(set-mark-command forward-word))
    ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark))
-   ("t" transpose-words)
+   ("t" ; transform options
+    (("u"
+      upcase-dwim)
+     ("d"
+      downcase-dwim)))
    ("T" transpose-lines)
    ("u" undo)
    ("U" undo-redo)
@@ -1404,6 +1408,7 @@
 ;; ==================================================
 (add-to-list 'load-path "~/.config/emacs/platform")
 (require 'knavemacs-platform)
+
 
 
 
