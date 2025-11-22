@@ -838,8 +838,8 @@
    ("." knavemacs/modal--scroll-down-half-page)
    ("\"" surround-insert)
    ("\\" ryo-modal-repeat)
-   ("/" fzf-grep-with-narrowing)
-   ("?" fzf-grep-in-dir-with-narrowing)
+   ("/" isearch-forward)
+   ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
    ("+"
@@ -880,6 +880,10 @@
       knavemacs/modal--jump-back-to-mark)
      ("u"
       universal-argument)
+     ("f"
+      fzf-grep-with-narrowing)
+     ("F"
+      fzf-grep-in-dir-with-narrowing)
      ))
    ("G" knavemacs/tab-line-pinned-prompt-to-jump)
    ("h" backward-char)
