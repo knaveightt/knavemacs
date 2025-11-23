@@ -770,6 +770,9 @@
   :config
   (setq fzf/args "-x --print-query --margin=1,0 --no-hscroll"))
 
+(use-package visual-regexp
+  :ensure t)
+
 (use-package avy
   :ensure t
   :config
@@ -842,6 +845,11 @@
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
+   (":"
+    (("s"
+      vr/query-replace)
+     ("S"
+      vr/replace)))
    ("+"
 	(("j"
 	  enlarge-window
@@ -919,6 +927,8 @@
    ("p" ; multiple points
     (("p"
       mc/mark-all-like-this :mc-all t)
+     ("s"
+      vr/mc-mark :mc-all t)
      ("["
       mc/mark-previous-like-this :mc-all t)
      ("]"
