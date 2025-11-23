@@ -1372,10 +1372,16 @@
 (defun knavemacs/modeline-return-git-branch ()
   "Return the Git branch when in a versioned controlled file."
   (interactive)
-  (when vc-mode
-    (let* ((gbranch (elt (split-string vc-mode ":") 1))
-	   (mdln (concat "  " gbranch)))
-      mdln)))
+  (let ((final-mdln ""))
+    (when (buffer-file-name)
+      (let ((file (buffer-file-name)))
+	(when (vc-backend file)
+	  (when (eq (vc-backend file) 'Git)
+	    (when vc-mode
+	      (let* ((gbranch (elt (split-string vc-mode ":") 1))
+		     (mdln (concat "  " gbranch)))
+		(setq final-mdln mdln)))))))
+    final-mdln))
 
 ;; ------------modeline CONSTRUCTION
 (setq-default mode-line-format
