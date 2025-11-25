@@ -754,6 +754,7 @@
 ;; - surround
 ;; - fzf
 ;; - avy
+;; - vundo
 ;; - ryo-modal
 ;; --------------------------------------------------
 (use-package expand-region
@@ -772,6 +773,11 @@
 
 (use-package visual-regexp
   :ensure t)
+
+(use-package vundo
+  :ensure t
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package avy
   :ensure t
@@ -948,7 +954,7 @@
       downcase-dwim)))
    ("T" transpose-lines)
    ("u" undo)
-   ("U" undo-redo)
+   ("U" vundo)
    ("v" knavemacs/modal--set-or-cancel-mark)
    ("V" knavemacs/modal--set-mark-line)
    ("w" forward-word) ; forward word
