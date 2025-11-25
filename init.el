@@ -851,11 +851,6 @@
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
-   (":"
-    (("s"
-      vr/query-replace)
-     ("S"
-      vr/replace)))
    ("+"
 	(("j"
 	  enlarge-window
@@ -943,7 +938,11 @@
       mc/mark-pop)))
    ("P" mc/edit-lines :mc-all t)
    ("Q" revert-buffer)
-   ("R" delete-region :then '(yank))
+   ("R"
+    (("s"
+      vr/query-replace)
+     ("S"
+      vr/replace)))
    ("r" knavemacs/modal--read-replacement-text)
    ("s" avy-goto-word-1 :then '(set-mark-command forward-word))
    ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line backward-char))
