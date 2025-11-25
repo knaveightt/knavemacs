@@ -940,7 +940,7 @@
    ("R" delete-region :then '(yank))
    ("r" knavemacs/modal--read-replacement-text)
    ("s" avy-goto-word-1 :then '(set-mark-command forward-word))
-   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line exchange-point-and-mark))
+   ("S" avy-goto-line :then '(knavemacs/modal--set-mark-line backward-char))
    ("t" ; transform options
     (("u"
       upcase-dwim)
