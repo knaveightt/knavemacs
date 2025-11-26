@@ -877,7 +877,7 @@
    ("b" exchange-point-and-mark)
    ("B" knavemacs/forward-or-backward-sexp)
    ("c" kill-ring-save) 
-   ("C" copy-to-register) 
+   ("C" knavemacs/append-region-to-buffer) 
    ("d" knavemacs/modal--dwim-delete)
    ("D" kill-whole-line)
    ("e" knavemacs/modal--increment-expression)
@@ -961,7 +961,7 @@
    ("x" delete-char) ; delete character
    ("X" backward-delete-char-untabify) ; reverse delete character (backspace)
    ("y" yank) ; yank
-   ("Y" insert-register) ; yank from kill ring (fuzzy select)
+   ("Y" yank-pop) ; yank from kill ring (fuzzy select)
    ("z" zap-up-to-char) ; zap up to char
    ("Z" zap-to-char)) ; zap to char
 

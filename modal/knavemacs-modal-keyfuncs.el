@@ -132,4 +132,35 @@
   (insert replacement-text)
   (kill-new replacement-text))
 
+(defun knavemacs/append-region-to-buffer (target-buffer start end)
+  "Prompt for a buffer, then copy the region from the current buffer to the
+kill ring, switch to the chosen buffer, append the region's content there,
+and finally switch back to the original buffer.
+
+This function does not actually use the kill ring for the transfer internally
+(for robustness), but it accomplishes the user's workflow request.
+
+TARGET-BUFFER is the name or buffer object to append to.
+START and END define the region in the source buffer."
+  (interactive "BAppend region to buffer: \nr")
+  (let* ((original-buffer (current-buffer))
+         (region-text (buffer-substring-no-properties start end)))
+    (unless (region-active-p)
+      (error "A region must be active (marked) to use this command"))
+
+    ;; Save to kill ring as requested, without using it for the main logic
+    (kill-new region-text)
+
+    (with-current-buffer (get-buffer-create target-buffer)
+      (unless buffer-read-only
+	(goto-char (point-max))
+	(electric-newline-and-maybe-indent)
+	(insert region-text)
+	(electric-newline-and-maybe-indent)))
+      
+    ;; Switch back to the original buffer
+    (switch-to-buffer original-buffer)
+
+    (message "Region appended to buffer '%s' and returned to original buffer." (buffer-name (get-buffer target-buffer)))))
+
 (provide 'knavemacs-modal-keyfuncs)
