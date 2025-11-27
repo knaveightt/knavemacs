@@ -851,6 +851,16 @@
    ("?" isearch-backward)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
+   (";" kmacro-call-macro)
+   (":"
+    (("c"
+      copy-to-register)
+     ("y"
+      insert-register)
+     ("r"
+      kmacro-start-macro)
+     ("e"
+      kmacro-end-macro)))
    ("+"
 	(("j"
 	  enlarge-window
