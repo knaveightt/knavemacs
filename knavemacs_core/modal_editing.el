@@ -172,9 +172,7 @@
     (let* ((target-char (read-char-from-minibuffer "Jump to char: "))
            (char-as-string (char-to-string target-char)))
       (if (search-forward char-as-string nil t)
-          (progn
-            (backward-char)
-            (message "Jumped to '%c'" target-char))
+          (message "Jumped to '%c'" target-char)
         (message "Character '%c' not found after point" target-char))))
   
   (defun knavemacs/modal--shift-point-bottom ()
