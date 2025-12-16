@@ -112,8 +112,6 @@
 
 ;; theme configuration
 (load-theme 'deeper-blue t)
-(set-face-attribute 'org-indent nil :background "#181a26" :foreground "#181a26")
-(set-face-attribute 'org-hide nil :background "#181a26" :foreground "#181a26")
 (set-face-attribute 'fringe nil :background "#181a26")
 (set-fringe-mode '(0 . 8)) ; Hides the left fringe (0 width), sets right to 8
 
@@ -757,4 +755,5 @@
 (setq platform-files (expand-file-name "platform" user-emacs-directory))
 (add-to-list 'load-path platform-files)
 (require 'knavemacs-platform)
+
 
