@@ -300,6 +300,7 @@ START and END define the region in the source buffer."
    ("?" vr/query-replace)
    ("<" beginning-of-buffer)
    (">" end-of-buffer)
+   ("%" knavemacs/forward-or-backward-sexp)
    (";" kmacro-call-macro)
    (":"
     (("c"
@@ -437,4 +438,5 @@ START and END define the region in the source buffer."
 
   ;; try to enter modal editing when a new file is visited in a buffer
   (add-hook 'find-file-hook 'ryo-modal-mode))
+
 
