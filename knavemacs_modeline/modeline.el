@@ -308,7 +308,7 @@
 (setq-default mode-line-format
   			  '("%e"
   				;mode-line-front-space
-  				knavemacs/modeline-modal-indicator
+  				;knavemacs/modeline-modal-indicator
 				knavemacs/modeline-header-sep
 				knavemacs/modeline-header-sep2
                 " "
