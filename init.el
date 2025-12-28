@@ -117,7 +117,7 @@
 
 ;; font configuration
 (add-to-list 'default-frame-alist
-	     '(font . "JetBrainsMono NF 12"))
+	     '(font . "GeistMono NF 12"))
 
 ;; ------------------------------
 ;;; 2.2 Line Visual Configuration
