@@ -309,6 +309,7 @@
   			  '("%e"
   				;mode-line-front-space
   				;knavemacs/modeline-modal-indicator
+                            mode-line-modes
 				knavemacs/modeline-header-sep
 				knavemacs/modeline-header-sep2
                 " "
