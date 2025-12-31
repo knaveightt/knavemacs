@@ -31,10 +31,12 @@
   (:map multistate-emacs-state-map
         ("C-z" . multistate-normal-state))
   (:map multistate-motion-state-map
+        ("C-z" . multistate-emacs-state)
         ("SPC" . multistate-normal-state)
         ("j" . next-line)
         ("k" . previous-line))
   (:map multistate-insert-state-map
+        ("C-z" . multistate-emacs-state)
         ("ESC" . multistate-normal-state))
   (:map multistate-normal-state-map
         ("C-z" . multistate-emacs-state)
