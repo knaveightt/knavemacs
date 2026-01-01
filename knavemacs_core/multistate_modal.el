@@ -36,6 +36,23 @@
     "Move point to the top of the window"
     (interactive)
     (move-to-window-line-top-bottom -1))
+  (defun knavemacs/multistate-find-file ()
+    "Runs find file or set-fill-column depending on if multistate-normal is active"
+    (interactive)
+    (if (multistate-normal-state-p)
+        (call-interactively 'find-file)
+      (call-interactively 'set-fill-column)))
+
+  ;; mapping of existing keymaps to SPC menu
+  ;; along with changes to make this efficient
+  (define-key multistate-normal-state-map (kbd "SPC x") ctl-x-map)
+  (define-key multistate-normal-state-map (kbd "SPC v") vc-prefix-map)
+  (define-key multistate-normal-state-map (kbd "SPC p") project-prefix-map)
+  (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if (multistate-normal-state-p) (save-buffer) (save-some-buffers))))
+  (define-key ctl-x-map (kbd "f") #'knavemacs/multistate-find-file) ;; needs to be called interactively
+  (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
+  (define-key ctl-x-map (kbd "j") #'dired-jump)
+  
   :bind
   (:map multistate-emacs-state-map
         ("C-z" . multistate-normal-state))
