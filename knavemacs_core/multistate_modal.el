@@ -27,13 +27,25 @@
    :parent 'multistate-suppress-map)
   ;; Enable multistate-mode globally
   (multistate-global-mode 1)
+  :config
+  (defun knavemacs/multistate-move-top-window ()
+    "Move point to the top of the window"
+    (interactive)
+    (move-to-window-line-top-bottom 0))
+  (defun knavemacs/multistate-move-bottom-window ()
+    "Move point to the top of the window"
+    (interactive)
+    (move-to-window-line-top-bottom -1))
   :bind
   (:map multistate-emacs-state-map
         ("C-z" . multistate-normal-state))
   (:map multistate-motion-state-map
         ("C-z" . multistate-emacs-state)
         ("SPC" . multistate-normal-state)
+        ("q" . kill-this-buffer)
+        ("J" . knavemacs/multistate-move-bottom-window)
         ("j" . next-line)
+        ("K" . knavemacs/multistate-move-top-window)
         ("k" . previous-line))
   (:map multistate-insert-state-map
         ("C-z" . multistate-emacs-state)
