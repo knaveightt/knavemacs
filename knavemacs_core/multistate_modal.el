@@ -69,7 +69,7 @@
   (:map multistate-motion-state-map
         ("C-z" . multistate-emacs-state)
         ("SPC" . multistate-normal-state)
-        ("q" . kill-this-buffer)
+        ("q" . kill-current-buffer)
         ("J" . knavemacs/multistate-move-bottom-window)
         ("j" . next-line)
         ("K" . knavemacs/multistate-move-top-window)
