@@ -19,6 +19,11 @@
   (setf (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
   	))
 
+(use-package fzf
+  :ensure t
+  :config
+  (setq fzf/args "-x --print-query --margin=1,0 --no-hscroll"))
+
 (use-package multistate
   :ensure t
   :init
@@ -132,6 +137,11 @@ START and END define the region in the source buffer."
       (if (search-forward char-as-string nil t)
           (message "Jumped to '%c'" target-char)
         (message "Character '%c' not found after point" target-char))))
+  (defun knavemacs/modal--jump-back-to-mark ()
+    "Interactive function that attempts to move the cursor to the previously set mark."
+    (interactive)
+    (setq current-prefix-arg '(4)) ; C-u
+    (call-interactively 'set-mark-command))
 
 
   ;; mapping of existing keymaps to SPC menu
@@ -149,7 +159,13 @@ START and END define the region in the source buffer."
   (define-key multistate-normal-state-map (kbd "SPC o a") #'org-agenda)
   (define-key multistate-normal-state-map (kbd "SPC o t") #'knavemacs/org-quick-time-stamp-inactive)
   (define-key multistate-normal-state-map (kbd "SPC o l") #'org-store-link)
-
+  
+  ;; custom g keymap
+  (define-key multistate-normal-state-map (kbd "g v") #'knavemacs/modal--jump-back-to-mark)
+  (define-key multistate-normal-state-map (kbd "g u") #'universal-argument)
+  (define-key multistate-normal-state-map (kbd "g f") #'fzf-grep-with-narrowing)
+  (define-key multistate-normal-state-map (kbd "g F") #'fzf-grep-in-dir-with-narrowing)
+  
   ;; while motion state is default, however if an editable file is visited
   ;; then enter normal state instead
   (add-hook 'find-file-hook 'multistate-normal-state)
@@ -183,6 +199,7 @@ START and END define the region in the source buffer."
         ("E" . knavemacs/modal--end-expansion-backward)
         ("f" . knavemacs/modal--jump-to-char)
         ("F" . avy-goto-char-timer)
+        ; g is a prefix key
         ("h" . backward-char)
         ("H" . beginning-of-line)
         ("i" . multistate-insert-state)
