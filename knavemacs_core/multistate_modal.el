@@ -42,6 +42,71 @@
     (if (multistate-normal-state-p)
         (call-interactively 'find-file)
       (call-interactively 'set-fill-column)))
+  (defun knavemacs/multistate-insert-at-indent ()
+    "Moves point to beginning of indentation and enters insert state"
+    (interactive)
+    (back-to-indentation)
+    (multistate-insert-state))
+  (defun knavemacs/multistate-insert-at-end-of-line ()
+    "Moves point to end of line and enters insert state"
+    (interactive)
+    (end-of-line)
+    (multistate-insert-state))
+  (defun knavemacs/append-region-to-buffer (target-buffer start end)
+    "Prompt for a buffer, then copy the region from the current buffer to the
+kill ring, switch to the chosen buffer, append the region's content there,
+and finally switch back to the original buffer.
+
+This function does not actually use the kill ring for the transfer internally
+(for robustness), but it accomplishes the user's workflow request.
+
+TARGET-BUFFER is the name or buffer object to append to.
+START and END define the region in the source buffer."
+    (interactive "BAppend region to buffer: \nr")
+    (let* ((original-buffer (current-buffer))
+           (region-text (buffer-substring-no-properties start end)))
+      (unless (region-active-p)
+        (error "A region must be active (marked) to use this command"))
+
+      ;; Save to kill ring as requested, without using it for the main logic
+      (kill-new region-text)
+
+      (with-current-buffer (get-buffer-create target-buffer)
+        (unless buffer-read-only
+	  (goto-char (point-max))
+	  (electric-newline-and-maybe-indent)
+	  (insert region-text)
+	  (electric-newline-and-maybe-indent)))
+      
+      ;; Switch back to the original buffer
+      (switch-to-buffer original-buffer)
+
+      (message "Region appended to buffer '%s' and returned to original buffer." (buffer-name (get-buffer target-buffer)))))
+  (defun knavemacs/modal--dwim-delete ()
+    "Kills a region if a region is active, otherwise executes kill-line"
+    (interactive)
+    (if (region-active-p)
+	(call-interactively 'kill-region)
+      (kill-line)))
+  (defun knavemacs/modal--end-expansion-forward ()
+    "Move a region's selection forward a word, or switch to the lower end of a selected region."
+    (interactive)
+    (if (region-active-p)
+        (if (eql (point) (region-end))
+            (forward-word)
+          (exchange-point-and-mark))
+      (call-interactively 'set-mark-command)
+      (forward-word)))
+  (defun knavemacs/modal--end-expansion-backward ()
+    "Move a region's selection forward a word, or switch to the lower end of a selected region."
+    (interactive)
+    (if (region-active-p)
+        (if (eql (point) (region-end))
+            (exchange-point-and-mark)
+          (backward-word))
+      (call-interactively 'set-mark-command)
+      (backward-word)))
+
 
   ;; mapping of existing keymaps to SPC menu
   ;; along with changes to make this efficient
@@ -80,6 +145,16 @@
   (:map multistate-normal-state-map
         ("C-z" . multistate-emacs-state)
         ("ESC" . multistate-motion-state)
+        ("a" . knavemacs/multistate-insert-at-indent)
+        ("A" . knavemacs/multistate-insert-at-end-of-line)
+        ("b" . backward-word)
+        ("B" . backward-sexp)
+        ("c" . kill-ring-save)
+        ("C" . knavemacs/append-region-to-buffer)
+        ("d" . knavemacs/modal--dwim-delete)
+        ("D" . kill-whole-line)
+        ("e" . knavemacs/modal--end-expansion-forward)
+        ("E" . knavemacs/modal--end-expansion-backward)
         ("h" . backward-char)
         ("H" . beginning-of-line)
         ("i" . multistate-insert-state)
