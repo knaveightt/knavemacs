@@ -58,6 +58,10 @@
   (define-key multistate-normal-state-map (kbd "SPC o a") #'org-agenda)
   (define-key multistate-normal-state-map (kbd "SPC o t") #'knavemacs/org-quick-time-stamp-inactive)
   (define-key multistate-normal-state-map (kbd "SPC o l") #'org-store-link)
+
+  ;; while motion state is default, however if an editable file is visited
+  ;; then enter normal state instead
+  (add-hook 'find-file-hook 'multistate-normal-state)
   
   :bind
   (:map multistate-emacs-state-map
