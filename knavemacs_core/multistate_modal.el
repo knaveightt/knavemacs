@@ -1,6 +1,24 @@
 ;; multistate_modal.el - Knavemacs Modal Editing System
 ;; Part of Knavemacs
 
+(use-package avy
+  :ensure t
+  :config
+  ;; define an avy action to kill a while line based on a selection
+  ;; (see https://karthinks.com/software/avy-can-do-anything/)
+  (defun avy-action-kill-whole-line (pt)
+    (save-excursion
+      (goto-char pt)
+      (kill-whole-line))
+    (select-window
+     (cdr
+      (ring-ref avy-ring 0)))
+    t)
+
+  ;; add custom avy actions to the action dispatcher
+  (setf (alist-get ?K avy-dispatch-alist) 'avy-action-kill-whole-line
+  	))
+
 (use-package multistate
   :ensure t
   :init
@@ -106,6 +124,14 @@ START and END define the region in the source buffer."
           (backward-word))
       (call-interactively 'set-mark-command)
       (backward-word)))
+  (defun knavemacs/modal--jump-to-char ()
+    "Read a character from the user and move point to the next occurrence of that character in the buffer."
+    (interactive)
+    (let* ((target-char (read-char-from-minibuffer "Jump to char: "))
+           (char-as-string (char-to-string target-char)))
+      (if (search-forward char-as-string nil t)
+          (message "Jumped to '%c'" target-char)
+        (message "Character '%c' not found after point" target-char))))
 
 
   ;; mapping of existing keymaps to SPC menu
@@ -155,6 +181,8 @@ START and END define the region in the source buffer."
         ("D" . kill-whole-line)
         ("e" . knavemacs/modal--end-expansion-forward)
         ("E" . knavemacs/modal--end-expansion-backward)
+        ("f" . knavemacs/modal--jump-to-char)
+        ("F" . avy-goto-char-timer)
         ("h" . backward-char)
         ("H" . beginning-of-line)
         ("i" . multistate-insert-state)
