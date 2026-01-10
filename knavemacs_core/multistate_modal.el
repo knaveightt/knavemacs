@@ -155,10 +155,18 @@ START and END define the region in the source buffer."
   (define-key ctl-x-map (kbd "j") #'dired-jump)
 
   ;; custom keymaps using SPC as a leader (normal state)
+  (define-key multistate-normal-state-map (kbd "SPC k") #'kill-current-buffer)
+  (define-key multistate-normal-state-map (kbd "SPC j") #'switch-to-buffer)
   (define-key multistate-normal-state-map (kbd "SPC o c") #'org-capture)
   (define-key multistate-normal-state-map (kbd "SPC o a") #'org-agenda)
   (define-key multistate-normal-state-map (kbd "SPC o t") #'knavemacs/org-quick-time-stamp-inactive)
   (define-key multistate-normal-state-map (kbd "SPC o l") #'org-store-link)
+  (define-key multistate-normal-state-map (kbd "SPC t t") #'tab-line-mode)
+  (define-key multistate-normal-state-map (kbd "SPC t T") #'tab-bar-mode)
+  (define-key multistate-normal-state-map (kbd "SPC t j") #'knavemacs/tab-line-pinned-switch-to-buffer)
+  (define-key multistate-normal-state-map (kbd "SPC t r") #'knavemacs/tab-line-pinned-reset-buffers)
+  (define-key multistate-normal-state-map (kbd "SPC t p") #'knavemacs/tab-line-pinned-pin-buffer)
+  (define-key multistate-normal-state-map (kbd "SPC t u") #'knavemacs/tab-line-pinned-unpin-buffer)
   
   ;; custom g keymap
   (define-key multistate-normal-state-map (kbd "g v") #'knavemacs/modal--jump-back-to-mark)
@@ -166,6 +174,12 @@ START and END define the region in the source buffer."
   (define-key multistate-normal-state-map (kbd "g f") #'fzf-grep-with-narrowing)
   (define-key multistate-normal-state-map (kbd "g F") #'fzf-grep-in-dir-with-narrowing)
   
+  ;; custom bracket keymaps
+  (define-key multistate-normal-state-map (kbd "[ t") #'knavemacs/tab-line-pinned-prev-tab)
+  (define-key multistate-normal-state-map (kbd "[ b") #'switch-to-prev-buffer)
+  (define-key multistate-normal-state-map (kbd "] t") #'knavemacs/tab-line-pinned-next-tab)
+  (define-key multistate-normal-state-map (kbd "] b") #'switch-to-next-buffer)
+ 
   ;; while motion state is default, however if an editable file is visited
   ;; then enter normal state instead
   (add-hook 'find-file-hook 'multistate-normal-state)
@@ -200,6 +214,7 @@ START and END define the region in the source buffer."
         ("f" . knavemacs/modal--jump-to-char)
         ("F" . avy-goto-char-timer)
         ; g is a prefix key
+        ("G" . knavemacs/tab-line-pinned-prompt-to-jump)
         ("h" . backward-char)
         ("H" . beginning-of-line)
         ("i" . multistate-insert-state)
