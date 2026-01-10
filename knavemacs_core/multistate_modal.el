@@ -319,7 +319,7 @@ START and END define the region in the source buffer."
   (:map multistate-motion-state-map
         ("C-z" . multistate-emacs-state)
         ("SPC" . multistate-normal-state)
-        ("q" . kill-current-buffer)
+        ("q" . kill-buffer-and-window)
         ("J" . knavemacs/multistate-move-bottom-window)
         ("j" . next-line)
         ("K" . knavemacs/multistate-move-top-window)
@@ -374,7 +374,7 @@ START and END define the region in the source buffer."
         ("O" . knavemacs/modal--open-line-above)
         ; p is a prefix key
         ("P" . mc/edit-lines)
-        ("q" . kill-current-buffer)
+        ("q" . kill-buffer-and-window)
         ("Q" . revert-buffer)
         ("r" . knavemacs/modal--read-replacement-text)
         ("R" . knavemacs/multistate-replace-region)
