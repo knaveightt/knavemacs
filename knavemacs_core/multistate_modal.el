@@ -24,6 +24,23 @@
   :config
   (setq fzf/args "-x --print-query --margin=1,0 --no-hscroll"))
 
+(use-package expand-region
+  :ensure t)
+
+(use-package multiple-cursors
+  :ensure t)
+
+(use-package visual-regexp
+  :ensure t)
+
+(use-package vundo
+  :ensure t
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols))
+
+(use-package surround
+  :ensure t)
+
 (use-package multistate
   :ensure t
   :init
@@ -142,13 +159,99 @@ START and END define the region in the source buffer."
     (interactive)
     (setq current-prefix-arg '(4)) ; C-u
     (call-interactively 'set-mark-command))
+  (defun knavemacs/multistate-dwim-insert-state ()
+    "Go to insert state after executing a delete dwim action."
+    (interactive)
+    (knavemacs/modal--dwim-delete)
+    (multistate-insert-state))
+  (defun knavemacs/modal--open-line-below ()
+    "Creates a new line below the current line."
+    (interactive)
+    (end-of-line)
+    (electric-newline-and-maybe-indent)
+    (multistate-insert-state))
+  (defun knavemacs/modal--open-line-above ()
+    "Creates a new line above the current line."
+    (interactive)
+    (beginning-of-line)
+    (newline)
+    (forward-line -1)
+    (multistate-insert-state))
+  (defun knavemacs/multistate-replace-region ()
+    "Replaces selected region with first item in kill-ring"
+    (interactive)
+    (delete-region)
+    (yank))
+  (defun knavemacs/modal--read-replacement-text ()
+    "Asks the user for text in the minibuffer to replace the current region."
+    (interactive)
+    (setq replacement-text (read-from-minibuffer "Replace With: "))
+    (call-interactively 'backward-delete-char-untabify)
+    (insert replacement-text)
+    (kill-new replacement-text))
+  (defun knavemacs/modal--set-or-cancel-mark ()
+    "Marks the current point location, or cancels an active region."
+    (interactive)
+    (if (not (region-active-p))
+        (call-interactively 'set-mark-command)
+      (keyboard-quit)))
+  (defun knavemacs/modal--set-mark-line ()
+    "Selects the current line."
+    (interactive)
+    (if (not (region-active-p))
+        (progn 
+	  (beginning-of-line)
+	  (call-interactively 'set-mark-command)
+	  (forward-line))
+      (forward-line)))
+  (defun knavemacs/multistate-select-word ()
+    "Selects a word on the current screen based on the first letter."
+    (interactive)
+    (call-interactively 'avy-goto-word-1)
+    (call-interactively 'set-mark-command)
+    (forward-word))
+  (defun knavemacs/multistate-select-line ()
+    "Selects a word on the current screen based on the first letter."
+    (interactive)
+    (avy-goto-line)
+    (knavemacs/modal--set-mark-line)
+    (backward-char))
+  (defun knavemacs/modal--scroll-down-half-page ()
+    "scroll down half a page while keeping the cursor centered" 
+    ;; https://www.reddit.com/r/emacs/comments/r7l3ar/how_do_you_scroll_half_a_page/
+    (interactive)
+    (let ((ln (line-number-at-pos (point)))
+          (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) (move-to-window-line nil))
+            ((= ln lmax) (recenter (window-end)))
+            (t (progn
+                 (move-to-window-line -1)
+                 (recenter))))))
+  (defun knavemacs/modal--scroll-up-half-page ()
+    "scroll up half a page while keeping the cursor centered"
+    (interactive)
+    (let ((ln (line-number-at-pos (point)))
+          (lmax (line-number-at-pos (point-max))))
+      (cond ((= ln 1) nil)
+            ((= ln lmax) (move-to-window-line nil))
+            (t (progn
+                 (move-to-window-line 0)
+                 (recenter))))))
+  (defun knavemacs/forward-or-backward-sexp (&optional arg)
+    "Go to the matching parenthesis character if one is adjacent to point."
+    (interactive "^p")
+    (cond ((looking-at "\\s(") (forward-sexp arg))
+          ((looking-back "\\s)" 1) (backward-sexp arg))
+          ;; Now, try to succeed from inside of a bracket
+          ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+          ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
 
-
-  ;; mapping of existing keymaps to SPC menu
+  ;; mapping of existing keymaps (mostly to SPC menu)
   ;; along with changes to make this efficient
   (define-key multistate-normal-state-map (kbd "SPC x") ctl-x-map)
   (define-key multistate-normal-state-map (kbd "SPC v") vc-prefix-map)
   (define-key multistate-normal-state-map (kbd "SPC p") project-prefix-map)
+  (define-key multistate-normal-state-map (kbd "'") surround-keymap)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if (multistate-normal-state-p) (save-buffer) (save-some-buffers))))
   (define-key ctl-x-map (kbd "f") #'knavemacs/multistate-find-file) ;; needs to be called interactively
   (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
@@ -173,12 +276,38 @@ START and END define the region in the source buffer."
   (define-key multistate-normal-state-map (kbd "g u") #'universal-argument)
   (define-key multistate-normal-state-map (kbd "g f") #'fzf-grep-with-narrowing)
   (define-key multistate-normal-state-map (kbd "g F") #'fzf-grep-in-dir-with-narrowing)
+
+  ;; custom N keymap
+  (define-key multistate-normal-state-map (kbd "N q") #'er/mark-inside-quotes)
+  (define-key multistate-normal-state-map (kbd "N Q") #'er/mark-outside-quotes)
+  (define-key multistate-normal-state-map (kbd "N p") #'er/mark-inside-pairs)
+  (define-key multistate-normal-state-map (kbd "N P") #'er/mark-outside-pairs)
+  (define-key multistate-normal-state-map (kbd "N d") #'er/mark-defun)
+  (define-key multistate-normal-state-map (kbd "N u") #'er/mark-url)
+  (define-key multistate-normal-state-map (kbd "N c") #'er/mark-comment)
+
+  ;; custom p keymap
+  (define-key multistate-normal-state-map (kbd "p p") #'mc/mark-all-like-this)
+  (define-key multistate-normal-state-map (kbd "p s") #'vr/mc-mark)
+  (define-key multistate-normal-state-map (kbd "p o") #'mc/mark-pop)
+
+  ;; custom t keymap
+  (define-key multistate-normal-state-map (kbd "t u") #'upcase-dwim)
+  (define-key multistate-normal-state-map (kbd "t d") #'downcase-dwim)
+
+  ;; custom | keymap
+  (define-key multistate-normal-state-map (kbd "| c") #'copy-to-register)
+  (define-key multistate-normal-state-map (kbd "| y") #'insert-register)
+  (define-key multistate-normal-state-map (kbd "| r") #'kmacro-start-macro)
+  (define-key multistate-normal-state-map (kbd "| e") #'kmacro-end-macro)
   
   ;; custom bracket keymaps
   (define-key multistate-normal-state-map (kbd "[ t") #'knavemacs/tab-line-pinned-prev-tab)
   (define-key multistate-normal-state-map (kbd "[ b") #'switch-to-prev-buffer)
+  (define-key multistate-normal-state-map (kbd "[ p") #'mc/mark-previous-like-this)
   (define-key multistate-normal-state-map (kbd "] t") #'knavemacs/tab-line-pinned-next-tab)
   (define-key multistate-normal-state-map (kbd "] b") #'switch-to-next-buffer)
+  (define-key multistate-normal-state-map (kbd "] p") #'mc/mark-next-like-this)
  
   ;; while motion state is default, however if an editable file is visited
   ;; then enter normal state instead
@@ -201,6 +330,18 @@ START and END define the region in the source buffer."
   (:map multistate-normal-state-map
         ("C-z" . multistate-emacs-state)
         ("ESC" . multistate-motion-state)
+        (":" . execute-extended-command)
+        ("," . knavemacs/modal--scroll-up-half-page)
+        ("." . knavemacs/modal--scroll-down-half-page)
+        ("\"" .  surround-insert)
+        ("/" . vr/replace)
+        ("?" . vr/query-replace)
+        ("<" . beginning-of-buffer)
+        (">" . end-of-buffer)
+        ("%" . knavemacs/forward-or-backward-sexp)
+        ("{" . backward-paragraph)
+        ("}" . forward-paragraph)
+        ("\\" . kmacro-call-macro)
         ("a" . knavemacs/multistate-insert-at-indent)
         ("A" . knavemacs/multistate-insert-at-end-of-line)
         ("b" . backward-word)
@@ -218,11 +359,38 @@ START and END define the region in the source buffer."
         ("h" . backward-char)
         ("H" . beginning-of-line)
         ("i" . multistate-insert-state)
+        ("I" . knavemacs/multistate-dwim-insert-state)
         ("j" . next-line)
         ("J" . knavemacs/multistate-move-bottom-window)
         ("k" . previous-line)
         ("K" . knavemacs/multistate-move-top-window)
         ("l" . forward-char)
         ("L" . end-of-line)
+        ("m" . recenter-top-bottom)
+        ("M" . move-to-window-line-top-bottom)
+        ("n" . er/expand-region)
+        ; N is a prefix key
+        ("o" . knavemacs/modal--open-line-below)
+        ("O" . knavemacs/modal--open-line-above)
+        ; p is a prefix key
+        ("P" . mc/edit-lines)
+        ("q" . kill-current-buffer)
+        ("Q" . revert-buffer)
+        ("r" . knavemacs/modal--read-replacement-text)
+        ("R" . knavemacs/multistate-replace-region)
+        ("s" . knavemacs/multistate-select-word)
+        ("S" . knavemacs/multistate-select-line)
+        ; t is a prefix key
+        ("T" . transpose-lines)
+        ("u" . undo)
+        ("U" . vundo)
+        ("v" . knavemacs/modal--set-or-cancel-mark)
+        ("V" . knavemacs/modal--set-mark-line)
+        ("w" . forward-word)
+        ("W" . forward-sexp)
         ("x" . delete-char)
-        ("X" . backward-delete-char)))
+        ("X" . backward-delete-char)
+        ("y" . yank)
+        ("Y" . yank-pop)
+        ("z" . zap-up-to-char)
+        ("Z" . zap-to-char)))
