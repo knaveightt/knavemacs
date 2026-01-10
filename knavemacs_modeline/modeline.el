@@ -231,9 +231,10 @@
 (defun knavemacs/return-modal-state ()
   "Returns the current viper state, or a default string if void."
   (interactive)
-  (if ryo-modal-mode
-	  (setq modal-mode-string " 󰷈 MEdit ")
-	(setq modal-mode-string "  Emacs "))
+  (if (multistate-emacs-state-p) (setq modal-mode-string "  Emacs "))
+  (if (multistate-motion-state-p) (setq modal-mode-string "  Motion "))
+  (if (multistate-insert-state-p) (setq modal-mode-string "  Insert "))
+  (if (multistate-normal-state-p) (setq modal-mode-string " 󰈙 Normal "))
   (format-mode-line 'modal-mode-string))
 
 ;; clocks to throttle the additions/deletions functions to run after some time
@@ -308,8 +309,8 @@
 (setq-default mode-line-format
   			  '("%e"
   				;mode-line-front-space
-  				;knavemacs/modeline-modal-indicator
-                            mode-line-modes
+  				knavemacs/modeline-modal-indicator
+                                ;mode-line-modes
 				knavemacs/modeline-header-sep
 				knavemacs/modeline-header-sep2
                 " "
