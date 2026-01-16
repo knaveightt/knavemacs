@@ -250,6 +250,7 @@ START and END define the region in the source buffer."
   ;; along with changes to make this efficient
   (define-key multistate-normal-state-map (kbd "SPC x") ctl-x-map)
   (define-key multistate-normal-state-map (kbd "SPC v") vc-prefix-map)
+  (define-key multistate-normal-state-map (kbd "SPC h") help-map)
   (define-key multistate-normal-state-map (kbd "SPC p") project-prefix-map)
   (define-key multistate-normal-state-map (kbd "'") surround-keymap)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if (multistate-normal-state-p) (save-buffer) (save-some-buffers))))
@@ -330,6 +331,10 @@ START and END define the region in the source buffer."
   (:map multistate-normal-state-map
         ("C-z" . multistate-emacs-state)
         ("ESC" . multistate-motion-state)
+        ("C-j" . windmove-down)
+        ("C-k" . windmove-up)
+        ("C-h" . windmove-left)
+        ("C-l" . windmove-right)
         (":" . execute-extended-command)
         ("," . knavemacs/modal--scroll-up-half-page)
         ("." . knavemacs/modal--scroll-down-half-page)
