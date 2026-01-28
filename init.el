@@ -348,6 +348,7 @@
     "SPC r" "Register Commands"
     "SPC g" "Git Commands"
     "SPC t" "Tab Commands"
+    "SPC h" "Help Commands"
     "SPC v" "Version Control"
     "SPC x" "Ctrl-X Commands"))
 

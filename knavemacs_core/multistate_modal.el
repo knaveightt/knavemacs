@@ -259,8 +259,6 @@ START and END define the region in the source buffer."
   (define-key ctl-x-map (kbd "j") #'dired-jump)
 
   ;; custom keymaps using SPC as a leader (normal state)
-  (define-key multistate-normal-state-map (kbd "SPC k") #'kill-current-buffer)
-  (define-key multistate-normal-state-map (kbd "SPC j") #'switch-to-buffer)
   (define-key multistate-normal-state-map (kbd "SPC o c") #'org-capture)
   (define-key multistate-normal-state-map (kbd "SPC o a") #'org-agenda)
   (define-key multistate-normal-state-map (kbd "SPC o t") #'knavemacs/org-quick-time-stamp-inactive)
@@ -329,12 +327,13 @@ START and END define the region in the source buffer."
         ("C-z" . multistate-emacs-state)
         ("ESC" . multistate-normal-state))
   (:map multistate-normal-state-map
-        ("C-z" . multistate-emacs-state)
-        ("ESC" . multistate-motion-state)
+        ("C-z" . multistate-motion-state)
         ("C-j" . windmove-down)
         ("C-k" . windmove-up)
         ("C-h" . windmove-left)
         ("C-l" . windmove-right)
+        ("C-b" . switch-to-buffer)
+        ("M-o" . knavemacs/quick-window-jump)
         (":" . execute-extended-command)
         ("," . knavemacs/modal--scroll-up-half-page)
         ("." . knavemacs/modal--scroll-down-half-page)
@@ -379,7 +378,7 @@ START and END define the region in the source buffer."
         ("O" . knavemacs/modal--open-line-above)
         ; p is a prefix key
         ("P" . mc/edit-lines)
-        ("q" . kill-buffer-and-window)
+        ("q" . kill-current-buffer)
         ("Q" . revert-buffer)
         ("r" . knavemacs/modal--read-replacement-text)
         ("R" . knavemacs/multistate-replace-region)

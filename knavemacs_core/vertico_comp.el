@@ -9,7 +9,10 @@
 (use-package vertico
   :ensure t
   :bind (:map minibuffer-local-map
-              ("C-h" . backward-kill-word))
+              ("C-h" . backward-kill-word)
+              ("C-j" . vertico-next)
+              ("C-k" . vertico-previous)
+              ("C-b" . vertico-exit))
   :custom
   (vertico-cycle t)
   :init
