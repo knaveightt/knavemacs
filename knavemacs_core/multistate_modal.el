@@ -257,6 +257,7 @@ START and END define the region in the source buffer."
   (define-key ctl-x-map (kbd "f") #'knavemacs/multistate-find-file) ;; needs to be called interactively
   (define-key ctl-x-map (kbd "c") #'save-buffers-kill-terminal)
   (define-key ctl-x-map (kbd "j") #'dired-jump)
+  (define-key ctl-x-map (kbd "b") #'ibuffer)
 
   ;; custom keymaps using SPC as a leader (normal state)
   (define-key multistate-normal-state-map (kbd "SPC o c") #'org-capture)
