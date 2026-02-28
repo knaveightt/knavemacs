@@ -8,7 +8,8 @@
 (use-package treemacs
   :ensure t
   :config
-  (setq treemacs-project-follow-mode t))
+  (setq treemacs-project-follow-mode t)
+  (define-key multistate-normal-state-map (kbd "SPC e") #'treemacs))
 
 (use-package treemacs-magit
   :ensure t)
