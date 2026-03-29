@@ -4,3 +4,4 @@ emacs-custom.el
 recentf
 savehist
 saveplace
+transient/
