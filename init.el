@@ -1,10 +1,5 @@
 ;; -*- lexical-binding: t; eval: (local-set-key (kbd "C-c C-c") #'imenu); eval: (setq imenu-generic-expression '(("Sections" "^;;; \\(.*\\)$" 1))); -*-
 
-;; document dependencies
-;; - patched font (jet brains mono nerd font)
-;; - ripgrep
-;; 
-
 ;; ==================================================
 ;;; SECTION 1 Core Emacs Configuration
 ;; ==================================================
@@ -20,7 +15,7 @@
 (setq inhibit-compacting-font-caches t)
 
 ;; disable UI and startup elements
-(menu-bar-mode -1)
+(menu-bar-mode 1) ; I'm weird, I like seeing this in terminal mode
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
@@ -104,7 +99,7 @@
 
 
 ;; ==================================================
-;;; SECTION 3 Use-Package Configuration and Setup
+;;; SECTION 2 Use-Package Configuration and Setup
 ;; ==================================================
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -121,7 +116,7 @@
 
 
 ;; ==================================================
-;;; SECTION 6 Mode-Specific and Global Keybinds
+;;; SECTION 3 Global Keybind Modifications
 ;; ==================================================
 ;(define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory)
 ;(define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
@@ -129,12 +124,12 @@
 ;(define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir)
 ;(global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)
 ;(global-set-key (kbd "M-p") #'knavemacs/window-dired-vc-root-left)
-;(global-set-key (kbd "S-TAB") #'completion-at-point)
-;(global-set-key (kbd "S-<iso-lefttab>") #'completion-at-point)
-;(global-set-key (kbd "M-g r") #'recentf)
-;(global-set-key (kbd "M-s g") #'grep)
-;(global-set-key (kbd "C-x ;") #'comment-line)
-;(global-set-key (kbd "RET") #'newline-and-indent)
+(global-set-key (kbd "S-TAB") #'completion-at-point)
+(global-set-key (kbd "S-<iso-lefttab>") #'completion-at-point)
+(global-set-key (kbd "M-g r") #'recentf)
+(global-set-key (kbd "M-s g") #'grep)
+(global-set-key (kbd "C-x ;") #'comment-line)
+(global-set-key (kbd "RET") #'newline-and-indent)
 
 ;; ==================================================
 ;;; SECTION 7 Auto-Load External Configuration Files
