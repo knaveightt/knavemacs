@@ -95,8 +95,13 @@
 ;; ------------------------
 ;;; 1.7 Pairs Configuration
 ;; ------------------------
-(electric-pair-mode 1)
+;(electric-pair-mode 1)
+(global-eldoc-mode -1)
 
+;; scroll handling
+(setq scroll-margin 0)
+(setq scroll-preserve-screen-position t)
+(setq scroll-conservatively 101)
 
 ;; ==================================================
 ;;; SECTION 2 Use-Package Configuration and Setup
@@ -162,8 +167,8 @@
 (if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
 
 ;; platform specific load files
-(setq platform-files (expand-file-name "platform" user-emacs-directory))
-(add-to-list 'load-path platform-files)
-(require 'knavemacs-platform)
+;(setq platform-files (expand-file-name "platform" user-emacs-directory))
+;(add-to-list 'load-path platform-files)
+;(require 'knavemacs-platform)
 
 
