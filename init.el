@@ -102,7 +102,8 @@
 (global-set-key (kbd "M-g r") #'recentf)
 (global-set-key (kbd "M-s g") #'grep)
 (global-set-key (kbd "C-x ;") #'comment-line)
-(global-set-key (kbd "C-c C-d") #'global-eldoc-mode)
+(global-set-key (kbd "C-c d") #'global-eldoc-mode)
+(global-set-key (kbd "C-c m") #'menu-bar-open)
 (global-set-key (kbd "RET") #'newline-and-indent)
 
 ;; ==================================================
