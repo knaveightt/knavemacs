@@ -309,7 +309,7 @@ START and END define the region in the source buffer."
   (define-key multistate-normal-state-map (kbd "] b") #'switch-to-next-buffer)
   (define-key multistate-normal-state-map (kbd "] p") #'mc/mark-next-like-this)
 
-  ;; function to change cursor in terminal
+  ;; functions and hooks to change cursor in terminal
   (defun knavemacs/terminal-change-cursor-color (color)
     "Sets the terminal cursor colour by sending the appropriate escape sequence."
     (interactive (list (read-color "Color (white): " nil :allow-empty)))
@@ -317,7 +317,7 @@ START and END define the region in the source buffer."
       (setq color "white"))
     (send-string-to-terminal (concat "\033]12;" color "\007")))
 
-  (defun knavemacs/terminal-change-curosr-type (esc_code)
+  (defun knavemacs/terminal-change-cursor-type (esc_code)
     "Sets the terminal cursor type based on the escape code provided."
     (interactive)
     (send-string-to-terminal (concat "\x1b[" esc_code " q"))) 
@@ -326,19 +326,19 @@ START and END define the region in the source buffer."
     (if (not (display-graphic-p))
         (progn
           (knavemacs/terminal-change-cursor-color "grey")
-          (knavemacs/terminal-change-curosr-type "2"))))
+          (knavemacs/terminal-change-cursor-type "2"))))
 
   (defun knavemacs/term-cursor-color-red ()
     (if (not (display-graphic-p))
         (progn
           (knavemacs/terminal-change-cursor-color "red")
-          (knavemacs/terminal-change-curosr-type "2"))))
+          (knavemacs/terminal-change-cursor-type "2"))))
 
   (defun knavemacs/term-cursor-color-green ()
     (if (not (display-graphic-p))
         (progn
           (knavemacs/terminal-change-cursor-color "green")
-          (knavemacs/terminal-change-curosr-type "6"))))
+          (knavemacs/terminal-change-cursor-type "6"))))
 
   ;; hooks to change cursor color on different modes
   (add-hook 'multistate-motion-state-enter-hook 'knavemacs/term-cursor-color-grey)
