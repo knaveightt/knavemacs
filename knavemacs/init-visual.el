@@ -7,13 +7,18 @@
 ;; --------------------------
 
 ;; theme configuration
-(load-theme 'deeper-blue t)
-(set-face-attribute 'fringe nil :background "#181a26")
-(set-fringe-mode '(0 . 8)) ; Hides the left fringe (0 width), sets right to 8
+;(load-theme 'deeper-blue t)
+;(set-face-attribute 'fringe nil :background "#181a26")
+;(set-fringe-mode '(0 . 8)) ; Hides the left fringe (0 width), sets right to 8
 
 ;; font configuration
 (add-to-list 'default-frame-alist
 	     '(font . "GeistMono NF 12"))
+
+;; how scrolling works
+(setq scroll-margin 0)
+(setq scroll-preserve-screen-position t)
+(setq scroll-conservatively 101)
 
 ;; ------------------------------
 ;;; 2.2 Line Visual Configuration

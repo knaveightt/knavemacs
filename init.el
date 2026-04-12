@@ -84,11 +84,6 @@
 (setq-default indent-tabs-mode nil) ; spaces only
 (setq tab-width 4)
 
-;; how scrolling works
-(setq scroll-margin 0)
-(setq scroll-preserve-screen-position t)
-(setq scroll-conservatively 101)
-
 ;; additional mode switches
 (electric-pair-mode 1)
 (global-eldoc-mode -1)
@@ -136,6 +131,9 @@
   (dolist (file (directory-files directory))
     (when (string-match "[A-Za-z0-9_-]+\\.el$" file)
       (load (expand-file-name file directory)))))
+
+;; load "base" configurations
+(load-directory (expand-file-name "knavemacs/" user-emacs-directory))
 
 ;; load external "core" packages
 (load-directory (expand-file-name "external/core/" user-emacs-directory))
