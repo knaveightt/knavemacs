@@ -1,12 +1,8 @@
 ;; -*- lexical-binding: t; eval: (local-set-key (kbd "C-c C-c") #'imenu); eval: (setq imenu-generic-expression '(("Sections" "^;;; \\(.*\\)$" 1))); -*-
 
 ;; ==================================================
-;;; SECTION 1 Core Emacs Configuration
+;;; SECTION 1 Startup Configuration
 ;; ==================================================
-
-;; --------------------------
-;;; 1.1 Startup Configuration
-;; --------------------------
 
 ;; initial startup speed hack and frame handling
 (setq gc-cons-threshold most-positive-fixnum
@@ -24,9 +20,13 @@
       use-file-dialog nil
       ring-bell-function 'ignore)
 
-;; ---------------------------------
-;;; 1.2 Auxiliary File Configuration
-;; ---------------------------------
+;; error reporting levels
+(setq warning-minimum-level :error
+      warning-suppress-types '((lexical-binding)))
+
+;; ==================================================
+;;; SECTION 2 Auxiliary File Configuration
+;; ==================================================
 
 ;; backup file handling
 (setq create-lockfiles nil
@@ -59,9 +59,11 @@
       history-length 300)
 (savehist-mode 1)
 
-;; --------------------------
-;;; 1.3 Search Configurations
-;; --------------------------
+;; ==================================================
+;;; SECTION 3 General Emacs Configuration
+;; ==================================================
+
+;; how search works
 (setq isearch-lazy-count t
       lazy-count-prefix-format "(%s/%s) "
       lazy-count-suffix-format nil
@@ -71,40 +73,45 @@
       grep-find-ignored-directories
                '("SCCS" "RCS" "CVS" "MCVS" ".src" ".svn" ".git" ".hg" ".bzr" "_MTN" "_darcs" "{arch}" "node_modules" "build" "dist"))
 
-;; -------------------------------------
-;;; 1.4 Undo and Kill Ring Configuration
-;; -------------------------------------
+;; how undo works
 (setq undo-limit (* 13 160000)
       undo-strong-limit (* 13 240000)
       undo-outer-limit (* 13 24000000))
 (setq kill-do-not-save-duplicates t)
 
-;; --------------------------------------
-;;; 1.5 Warnings and Errors Configuration
-;; --------------------------------------
-(setq warning-minimum-level :error
-      warning-suppress-types '((lexical-binding)))
-
-;; --------------------------------------
-;;; 1.6 Tab and Indentation Configuration
-;; --------------------------------------
+;; how tabs work
 (setq tab-always-indent 'complete)
 (setq-default indent-tabs-mode nil) ; spaces only
 (setq tab-width 4)
 
-;; ------------------------
-;;; 1.7 Pairs Configuration
-;; ------------------------
-;(electric-pair-mode 1)
-(global-eldoc-mode -1)
-
-;; scroll handling
+;; how scrolling works
 (setq scroll-margin 0)
 (setq scroll-preserve-screen-position t)
 (setq scroll-conservatively 101)
 
+;; additional mode switches
+(electric-pair-mode 1)
+(global-eldoc-mode -1)
+
 ;; ==================================================
-;;; SECTION 2 Use-Package Configuration and Setup
+;;; SECTION 4 Global Keybind Modifications
+;; ==================================================
+;(define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory)
+;(define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
+;(define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
+;(define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir)
+;(global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)
+;(global-set-key (kbd "M-p") #'knavemacs/window-dired-vc-root-left)
+(global-set-key (kbd "S-TAB") #'completion-at-point)
+(global-set-key (kbd "S-<iso-lefttab>") #'completion-at-point)
+(global-set-key (kbd "M-g r") #'recentf)
+(global-set-key (kbd "M-s g") #'grep)
+(global-set-key (kbd "C-x ;") #'comment-line)
+(global-set-key (kbd "C-c C-d") #'global-eldoc-mode)
+(global-set-key (kbd "RET") #'newline-and-indent)
+
+;; ==================================================
+;;; SECTION 5 Use-Package Configuration and Setup
 ;; ==================================================
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -119,25 +126,8 @@
 (require 'use-package)
 (setq use-package-hook-name-suffix nil)
 
-
 ;; ==================================================
-;;; SECTION 3 Global Keybind Modifications
-;; ==================================================
-;(define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory)
-;(define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
-;(define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
-;(define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir)
-;(global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)
-;(global-set-key (kbd "M-p") #'knavemacs/window-dired-vc-root-left)
-(global-set-key (kbd "S-TAB") #'completion-at-point)
-(global-set-key (kbd "S-<iso-lefttab>") #'completion-at-point)
-(global-set-key (kbd "M-g r") #'recentf)
-(global-set-key (kbd "M-s g") #'grep)
-(global-set-key (kbd "C-x ;") #'comment-line)
-(global-set-key (kbd "RET") #'newline-and-indent)
-
-;; ==================================================
-;;; SECTION 7 Auto-Load External Configuration Files
+;;; SECTION 6 Auto-Load External Configuration Files
 ;; ==================================================
 
 ;; function to load .el files in a specific directory
@@ -160,7 +150,7 @@
 ;(load-directory (expand-file-name "knavemacs_modeline/" user-emacs-directory))
 
 ;; ==================================================
-;;; SECTION 8 Platform-Specific Configuration
+;;; SECTION 7 Platform-Specific Configuration
 ;; ==================================================
 
 ;; clean up and notify
