@@ -153,7 +153,7 @@
 ;; ==================================================
 
 ;; clean up and notify
-(if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
+;(if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
 
 ;; platform specific load files
 ;(setq platform-files (expand-file-name "platform" user-emacs-directory))
