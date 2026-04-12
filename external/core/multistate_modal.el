@@ -323,16 +323,22 @@ START and END define the region in the source buffer."
     (send-string-to-terminal (concat "\x1b[" esc_code " q"))) 
 
   (defun knavemacs/term-cursor-color-grey ()
-    (knavemacs/terminal-change-cursor-color "grey")
-    (knavemacs/terminal-change-curosr-type "2"))
+    (if (not (display-graphic-p))
+        (progn
+          (knavemacs/terminal-change-cursor-color "grey")
+          (knavemacs/terminal-change-curosr-type "2"))))
 
   (defun knavemacs/term-cursor-color-red ()
-    (knavemacs/terminal-change-cursor-color "red")
-    (knavemacs/terminal-change-curosr-type "2"))
+    (if (not (display-graphic-p))
+        (progn
+          (knavemacs/terminal-change-cursor-color "red")
+          (knavemacs/terminal-change-curosr-type "2"))))
 
   (defun knavemacs/term-cursor-color-green ()
-    (knavemacs/terminal-change-cursor-color "green")
-    (knavemacs/terminal-change-curosr-type "6"))
+    (if (not (display-graphic-p))
+        (progn
+          (knavemacs/terminal-change-cursor-color "green")
+          (knavemacs/terminal-change-curosr-type "6"))))
 
   ;; hooks to change cursor color on different modes
   (add-hook 'multistate-motion-state-enter-hook 'knavemacs/term-cursor-color-grey)
