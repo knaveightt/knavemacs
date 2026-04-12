@@ -140,6 +140,9 @@
 (load-directory (expand-file-name "external/core/" user-emacs-directory))
 
 ;; load external "programming" packages
+(load-directory (expand-file-name "external/programming/" user-emacs-directory))
+
+;; load external "programming" packages
 ;(load-directory (expand-file-name "knavemacs_programming/" user-emacs-directory))
 
 ;; load external "visual" packages
