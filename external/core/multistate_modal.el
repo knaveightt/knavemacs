@@ -180,7 +180,7 @@ START and END define the region in the source buffer."
   (defun knavemacs/multistate-replace-region ()
     "Replaces selected region with first item in kill-ring"
     (interactive)
-    (delete-region)
+    (call-interactively 'delete-region)
     (yank))
   (defun knavemacs/modal--read-replacement-text ()
     "Asks the user for text in the minibuffer to replace the current region."
