@@ -4,17 +4,17 @@
 ;; Part of Knavemacs
 
 ;;
-;;; N1 faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; N1 faces
 ;;
 (defface knavemacs/modeline-faces--bufname
-  '((t :foreground "#DDDDDD"
+  '((t :foreground "#3311DD"
   	   ))
   "Bufname Face"
   :group 'knavemacs/modeline-faces)
 
 
 ;;
-;;; N2 modules ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; N2 modules
 ;;
 
 ;; modeline module: buffer name
@@ -24,7 +24,7 @@
   "Modeline module to provide the buffer name.")
 
 ;;
-;;; N3 define modules ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; N3 define modules
 ;;
 (dolist (construct '(
   					 knavemacs/modeline--bufname))
