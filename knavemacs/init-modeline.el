@@ -53,7 +53,6 @@
 ;;
 ;;; N2 define modules
 ;;
-
 ;; modeline module: modal indicator
 (defvar-local knavemacs/modeline--modal-indicator
   	'(:eval
@@ -79,16 +78,7 @@
   "Modeline module ot provide minimal modeline info aligned right.")
 
 ;;
-;;; N3 initialize modules
-;;
-(dolist (construct '(
-  					 knavemacs/modeline--modal-indicator
-  					 knavemacs/modeline--bufname
-                                         knavemacs/modeline--right-display))
-  (put construct 'risky-local-variable t)) ;; required for modeline local vars
-
-;;
-;;; N4 modeline functions
+;;; N3 modeline functions
 ;;
 (defun knavemacs/modeline-fill-for-alignment ()
   "Modeline module to provide filler space until right-aligned items are added to modeline."
@@ -108,6 +98,15 @@
   (if (multistate-insert-state-p) (setq modal-mode-string "  Insert "))
   (if (multistate-normal-state-p) (setq modal-mode-string " 󰈙 Normal "))
   (format-mode-line 'modal-mode-string))
+
+;;
+;;; N4 initialize modules
+;;
+(dolist (construct '(
+  					 knavemacs/modeline--modal-indicator
+  					 knavemacs/modeline--bufname
+                                         knavemacs/modeline--right-display))
+  (put construct 'risky-local-variable t)) ;; required for modeline local vars
 
 ;;
 ;;; n5 modeline construction
