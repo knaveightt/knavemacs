@@ -10,7 +10,7 @@
 (defvar knavemacs/modeline-colors--indicator-bg "#444444")
 (defvar knavemacs/modeline-colors--indicator-fg "#3311DD")
 (defvar knavemacs/modeline-colors--indicator-insert-bg "#11DD33")
-(defvar knavemacs/modeline-colors--indicator-insert-fg "#000000")
+(defvar knavemacs/modeline-colors--indicator-insert-fg "#111111")
 
 ;;
 ;;; N1 faces
@@ -38,6 +38,7 @@
 
 (defface knavemacs/modeline-faces--right-display
   `((t :foreground ,knavemacs/modeline-colors--text
+       :background ,knavemacs/modeline-colors--indicator-bg
   	   ))
   "Right Display (Default)"
   :group 'knavemacs/modeline-faces)
@@ -72,7 +73,9 @@
 (defvar-local knavemacs/modeline--right-display
   	'(:eval
           (when (mode-line-window-selected-p)
-  	    " L%l:C%c [%p]"))
+            (if (multistate-insert-state-p)
+  	        (propertize " L%l:C%c [%p] " 'face 'knavemacs/modeline-faces--right-display-insert-mode)
+              (propertize " L%l:C%c [%p] " 'face 'knavemacs/modeline-faces--right-display))))
   "Modeline module ot provide minimal modeline info aligned right.")
 
 ;;
@@ -90,12 +93,12 @@
 (defun knavemacs/modeline-fill-for-alignment ()
   "Modeline module to provide filler space until right-aligned items are added to modeline."
   (let ((r-length (length (concat
-                           "   "
                            (format-mode-line knavemacs/modeline--right-display)
                            ))))
     (propertize " "
                 'display `(space :align-to (- right ,r-length))
-                'face 'knavemacs/modeline-faces--right-display)))
+                ;'face 'knavemacs/modeline-faces--right-display
+                )))
 
 (defun knavemacs/return-modal-state ()
   "Returns the current viper state, or a default string if void."
