@@ -4,6 +4,10 @@
 ;;; SECTION 1 Startup Configuration
 ;; ==================================================
 
+;; Behavior Flags - variables that change significant
+;; behavior in this configuration
+(setq knavemacs/BFlags--nerd-icons t)
+
 ;; initial startup speed hack and frame handling
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.6

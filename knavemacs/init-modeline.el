@@ -93,10 +93,16 @@
 (defun knavemacs/return-modal-state ()
   "Returns the current viper state, or a default string if void."
   (interactive)
-  (if (multistate-emacs-state-p) (setq modal-mode-string "  Emacs "))
-  (if (multistate-motion-state-p) (setq modal-mode-string "  Motion "))
-  (if (multistate-insert-state-p) (setq modal-mode-string "  Insert "))
-  (if (multistate-normal-state-p) (setq modal-mode-string " 󰈙 Normal "))
+  (if knavemacs/BFlags--nerd-icons
+    (progn
+      (if (multistate-emacs-state-p) (setq modal-mode-string "  Emacs "))
+      (if (multistate-motion-state-p) (setq modal-mode-string "  Motion "))
+      (if (multistate-insert-state-p) (setq modal-mode-string "  Insert "))
+      (if (multistate-normal-state-p) (setq modal-mode-string " 󰈙 Normal ")))
+    (if (multistate-emacs-state-p) (setq modal-mode-string " [E]macs "))
+    (if (multistate-motion-state-p) (setq modal-mode-string " [M]otion "))
+    (if (multistate-insert-state-p) (setq modal-mode-string " [I]nsert "))
+    (if (multistate-normal-state-p) (setq modal-mode-string " [N]ormal ")))
   (format-mode-line 'modal-mode-string))
 
 ;;

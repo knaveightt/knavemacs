@@ -8,9 +8,11 @@
 ;; - nerd-icons-ibuffer
 ;; - nerd-icons-corfu
 (use-package nerd-icons
+  :if knavemacs/BFlags--nerd-icons
   :ensure t)
 
 (use-package nerd-icons-completion
+  :if knavemacs/BFlags--nerd-icons
   :ensure t
   :after vertico marginalia nerd-icons
   :config
@@ -18,10 +20,12 @@
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-dired
+  :if knavemacs/BFlags--nerd-icons
   :ensure t
   :init (add-hook 'dired-mode-hook #'nerd-icons-dired-mode))
 
 (use-package nerd-icons-ibuffer
+  :if knavemacs/BFlags--nerd-icons
   :ensure t
   :init (add-hook 'ibuffer-mode-hook #'nerd-icons-ibuffer-mode))
 
