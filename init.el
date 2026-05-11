@@ -4,9 +4,8 @@
 ;;; SECTION 1 Startup Configuration
 ;; ==================================================
 
-;; Behavior Flags - variables that change significant
-;; behavior in this configuration
-(setq knavemacs/BFlags--nerd-icons t)
+;; Load Behavior Flags
+(load (expand-file-name "platform/flags/bflags.el" user-emacs-directory))
 
 ;; initial startup speed hack and frame handling
 (setq gc-cons-threshold most-positive-fixnum
@@ -169,5 +168,4 @@
 ;(setq platform-files (expand-file-name "platform" user-emacs-directory))
 ;(add-to-list 'load-path platform-files)
 ;(require 'knavemacs-platform)
-
 
