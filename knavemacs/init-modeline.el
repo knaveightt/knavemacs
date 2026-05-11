@@ -11,6 +11,8 @@
 (defvar knavemacs/modeline-colors--indicator-fg "#3311DD")
 (defvar knavemacs/modeline-colors--indicator-insert-bg "#11DD33")
 (defvar knavemacs/modeline-colors--indicator-insert-fg "#111111")
+(defvar knavemacs/modeline-colors--indicator-motion-bg "#999999")
+(defvar knavemacs/modeline-colors--indicator-motion-fg "#3311DD")
 
 ;;
 ;;; N1 faces
@@ -28,6 +30,12 @@
        :weight bold
   	   ))
   "Modal Indicator (Insert)"
+  :group 'knavemacs/modeline-faces)
+(defface knavemacs/modeline-faces--modal-indicator-motion
+  `((t :foreground ,knavemacs/modeline-colors--indicator-motion-fg
+       :background ,knavemacs/modeline-colors--indicator-motion-bg
+  	   ))
+  "Modal Indicator (Motion)"
   :group 'knavemacs/modeline-faces)
 
 (defface knavemacs/modeline-faces--bufname
@@ -48,6 +56,11 @@
   	   ))
   "Right Display (Insert)"
   :group 'knavemacs/modeline-faces)
+(defface knavemacs/modeline-faces--right-display-motion-mode
+  `((t :foreground ,knavemacs/modeline-colors--text
+  	   ))
+  "Right Display (Insert)"
+  :group 'knavemacs/modeline-faces)
 
 
 ;;
@@ -59,7 +72,9 @@
   	  (when (mode-line-window-selected-p)
             (if (multistate-insert-state-p)
                 (propertize (knavemacs/return-modal-state) 'face 'knavemacs/modeline-faces--modal-indicator-insert)
-  	      (propertize (knavemacs/return-modal-state) 'face 'knavemacs/modeline-faces--modal-indicator))))
+              (if (multistate-motion-state-p)
+                  (propertize (knavemacs/return-modal-state) 'face 'knavemacs/modeline-faces--modal-indicator-motion)
+  	        (propertize (knavemacs/return-modal-state) 'face 'knavemacs/modeline-faces--modal-indicator)))))
   "Modeline module to show modal / Emacs state indicator.")
 
 ;; modeline module: buffer name
@@ -74,7 +89,9 @@
           (when (mode-line-window-selected-p)
             (if (multistate-insert-state-p)
   	        (propertize " L%l:C%c [%p] " 'face 'knavemacs/modeline-faces--right-display-insert-mode)
-              (propertize " L%l:C%c [%p] " 'face 'knavemacs/modeline-faces--right-display))))
+              (if (multistate-motion-state-p)
+                  (propertize " L%l:C%c [%p] " 'face 'knavemacs/modeline-faces--right-display-motion-mode)
+                (propertize " L%l:C%c [%p] " 'face 'knavemacs/modeline-faces--right-display)))))
   "Modeline module ot provide minimal modeline info aligned right.")
 
 ;;
