@@ -17,6 +17,7 @@
 ;;
 ;;; N1 faces
 ;;
+;; modal indicator
 (defface knavemacs/modeline-faces--modal-indicator
   `((t :foreground ,knavemacs/modeline-colors--indicator-fg
        :background ,knavemacs/modeline-colors--indicator-bg
@@ -38,12 +39,14 @@
   "Modal Indicator (Motion)"
   :group 'knavemacs/modeline-faces)
 
+;; Bufname
 (defface knavemacs/modeline-faces--bufname
   `((t :foreground ,knavemacs/modeline-colors--text
   	   ))
   "Bufname Face"
   :group 'knavemacs/modeline-faces)
 
+;; Right Display
 (defface knavemacs/modeline-faces--right-display
   `((t :foreground ,knavemacs/modeline-colors--text
        :background ,knavemacs/modeline-colors--indicator-bg
@@ -59,7 +62,24 @@
 (defface knavemacs/modeline-faces--right-display-motion-mode
   `((t :foreground ,knavemacs/modeline-colors--text
   	   ))
-  "Right Display (Insert)"
+  "Right Display (Motion)"
+  :group 'knavemacs/modeline-faces)
+
+;; Left Separator
+(defface knavemacs/modeline-faces--left-separator
+  `((t :foreground ,knavemacs/modeline-colors--indicator-bg
+  	   ))
+  "Left Separator (Default)"
+  :group 'knavemacs/modeline-faces)
+(defface knavemacs/modeline-faces--left-separator-insert-mode
+  `((t :foreground ,knavemacs/modeline-colors--indicator-insert-bg
+  	   ))
+  "Left Separator (Insert)"
+  :group 'knavemacs/modeline-faces)
+(defface knavemacs/modeline-faces--left-separator-motion-mode
+  `((t :foreground ,knavemacs/modeline-colors--indicator-motion-bg
+  	   ))
+  "Left Separator (Motion)"
   :group 'knavemacs/modeline-faces)
 
 
@@ -76,6 +96,17 @@
                   (propertize (knavemacs/return-modal-state) 'face 'knavemacs/modeline-faces--modal-indicator-motion)
   	        (propertize (knavemacs/return-modal-state) 'face 'knavemacs/modeline-faces--modal-indicator)))))
   "Modeline module to show modal / Emacs state indicator.")
+
+;; modeline module: left separator
+(defvar-local knavemacs/modeline--left-separator
+  	'(:eval
+  	  (when (mode-line-window-selected-p)
+            (if (multistate-insert-state-p)
+                (propertize "" 'face 'knavemacs/modeline-faces--left-separator-insert-mode)
+              (if (multistate-motion-state-p)
+                  (propertize "" 'face 'knavemacs/modeline-faces--left-separator-motion-mode)
+  	        (propertize "" 'face 'knavemacs/modeline-faces--left-separator)))))
+  "Modeline module to show a simple separator.")
 
 ;; modeline module: buffer name
 (defvar-local knavemacs/modeline--bufname
@@ -127,6 +158,7 @@
 ;;
 (dolist (construct '(
   					 knavemacs/modeline--modal-indicator
+                                         knavemacs/modeline--left-separator
   					 knavemacs/modeline--bufname
                                          knavemacs/modeline--right-display))
   (put construct 'risky-local-variable t)) ;; required for modeline local vars
@@ -139,6 +171,7 @@
   				;mode-line-front-space
                                 ;mode-line-modes
   				knavemacs/modeline--modal-indicator
+                                knavemacs/modeline--left-separator
   				knavemacs/modeline--bufname
   				(:eval (knavemacs/modeline-fill-for-alignment))
                                 knavemacs/modeline--right-display))
