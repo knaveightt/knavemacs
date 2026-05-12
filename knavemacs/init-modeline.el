@@ -14,6 +14,8 @@
 (defvar knavemacs/modeline-colors--indicator-insert-fg "#111111")
 (defvar knavemacs/modeline-colors--indicator-motion-bg "#999999")
 (defvar knavemacs/modeline-colors--indicator-motion-fg "#3311DD")
+(defvar knavemacs/modeline-colors--modified "#FDB91F")
+(defvar knavemacs/modeline-colors--unmodified "#48DD10")
 
 ;;
 ;;; N1 faces
@@ -99,8 +101,20 @@
        :background ,knavemacs/modeline-colors--mode-line-bg
   	   ))
   "Right Separator (Motion)"
-  :group 'knavemacs/modeline-faces)           ; use mode-line face instead
+  :group 'knavemacs/modeline-faces)
 
+;; modified indicator
+(defface knavemacs/modeline-faces--modified
+  `((t :foreground ,knavemacs/modeline-colors--modified
+  	   ))
+  "Modified indicator"
+  :group 'knavemacs/modeline-faces)
+
+(defface knavemacs/modeline-faces--unmodified
+  `((t :foreground ,knavemacs/modeline-colors--unmodified
+  	   ))
+  "Unmodified Indicator"
+  :group 'knavemacs/modeline-faces)
 
 ;;
 ;;; N2 define modules
@@ -138,11 +152,18 @@
   	        (propertize "" 'face 'knavemacs/modeline-faces--right-separator)))))
   "Modeline module to show a simple separator.")
 
-;; modeline module: buffer name
+;; modeline module: buffer name 
 (defvar-local knavemacs/modeline--bufname
   	'(:eval
   	  (propertize (buffer-name) 'face 'knavemacs/modeline-faces--bufname))
   "Modeline module to provide the buffer name.")
+
+;; modeline module: modified indicator
+(defvar-local knavemacs/modeline--modified-indicator
+    '(:eval
+      (if (buffer-modified-p)
+          (propertize " " 'face 'knavemacs/modeline-faces--modified)
+        (propertize " " 'face 'knavemacs/modeline-faces--unmodified))))
 
 ;; modeline module: right display
 (defvar-local knavemacs/modeline--right-display
@@ -192,6 +213,7 @@
                                          knavemacs/modeline--left-separator
                                          knavemacs/modeline--right-separator
   					 knavemacs/modeline--bufname
+                                         knavemacs/modeline--modified-indicator
                                          knavemacs/modeline--right-display))
   (put construct 'risky-local-variable t)) ;; required for modeline local vars
 
@@ -205,6 +227,7 @@
   				knavemacs/modeline--modal-indicator
                                 knavemacs/modeline--left-separator
   				knavemacs/modeline--bufname
+                                knavemacs/modeline--modified-indicator
   				(:eval (knavemacs/modeline-fill-for-alignment))
                                 knavemacs/modeline--right-separator
                                 knavemacs/modeline--right-display))
