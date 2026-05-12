@@ -6,6 +6,7 @@
 ;;
 ;;; N0 color definitions
 ;;
+(defvar knavemacs/modeline-colors--mode-line-bg (face-background 'mode-line))
 (defvar knavemacs/modeline-colors--text "#3311DD")
 (defvar knavemacs/modeline-colors--indicator-bg "#444444")
 (defvar knavemacs/modeline-colors--indicator-fg "#3311DD")
@@ -82,6 +83,24 @@
   "Left Separator (Motion)"
   :group 'knavemacs/modeline-faces)
 
+;; Right Separator
+(defface knavemacs/modeline-faces--right-separator
+  `((t :foreground ,knavemacs/modeline-colors--indicator-bg
+  	   ))
+  "Right Separator (Default)"
+  :group 'knavemacs/modeline-faces)
+(defface knavemacs/modeline-faces--right-separator-insert-mode
+  `((t :foreground ,knavemacs/modeline-colors--indicator-insert-bg
+  	   ))
+  "Right Separator (Insert)"
+  :group 'knavemacs/modeline-faces)
+(defface knavemacs/modeline-faces--right-separator-motion-mode
+  `((t :foreground ,knavemacs/modeline-colors--mode-line-bg
+       :background ,knavemacs/modeline-colors--mode-line-bg
+  	   ))
+  "Right Separator (Motion)"
+  :group 'knavemacs/modeline-faces)           ; use mode-line face instead
+
 
 ;;
 ;;; N2 define modules
@@ -108,6 +127,17 @@
   	        (propertize "" 'face 'knavemacs/modeline-faces--left-separator)))))
   "Modeline module to show a simple separator.")
 
+;; modeline module: right separator
+(defvar-local knavemacs/modeline--right-separator
+  	'(:eval
+  	  (when (mode-line-window-selected-p)
+            (if (multistate-insert-state-p)
+                (propertize "" 'face 'knavemacs/modeline-faces--right-separator-insert-mode)
+              (if (multistate-motion-state-p)
+                  (propertize "" 'face knavemacs/modeline-faces--right-separator-motion-mode)
+  	        (propertize "" 'face 'knavemacs/modeline-faces--right-separator)))))
+  "Modeline module to show a simple separator.")
+
 ;; modeline module: buffer name
 (defvar-local knavemacs/modeline--bufname
   	'(:eval
@@ -131,6 +161,7 @@
 (defun knavemacs/modeline-fill-for-alignment ()
   "Modeline module to provide filler space until right-aligned items are added to modeline."
   (let ((r-length (length (concat
+                           (format-mode-line knavemacs/modeline--right-separator)
                            (format-mode-line knavemacs/modeline--right-display)
                            ))))
     (propertize " "
@@ -159,6 +190,7 @@
 (dolist (construct '(
   					 knavemacs/modeline--modal-indicator
                                          knavemacs/modeline--left-separator
+                                         knavemacs/modeline--right-separator
   					 knavemacs/modeline--bufname
                                          knavemacs/modeline--right-display))
   (put construct 'risky-local-variable t)) ;; required for modeline local vars
@@ -174,6 +206,7 @@
                                 knavemacs/modeline--left-separator
   				knavemacs/modeline--bufname
   				(:eval (knavemacs/modeline-fill-for-alignment))
+                                knavemacs/modeline--right-separator
                                 knavemacs/modeline--right-display))
 ;  				knavemacs/modeline-kmacro-indicator))
 
