@@ -257,10 +257,6 @@ START and END define the region in the source buffer."
   (define-key ctl-x-map (kbd "b") #'ibuffer)
 
   ;; custom keymaps using SPC as a leader (normal state)
-  (define-key multistate-normal-state-map (kbd "C-c o c") #'org-capture)
-  (define-key multistate-normal-state-map (kbd "C-c o a") #'org-agenda)
-  (define-key multistate-normal-state-map (kbd "C-c o t") #'knavemacs/org-quick-time-stamp-inactive)
-  (define-key multistate-normal-state-map (kbd "C-c o l") #'org-store-link)
   ;; (define-key multistate-normal-state-map (kbd "C-c t t") #'tab-line-mode)
   ;; (define-key multistate-normal-state-map (kbd "C-c t T") #'tab-bar-mode)
   ;; (define-key multistate-normal-state-map (kbd "C-c t j") #'knavemacs/tab-line-pinned-switch-to-buffer)
