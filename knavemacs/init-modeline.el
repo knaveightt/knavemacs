@@ -16,6 +16,7 @@
 (defvar knavemacs/modeline-colors--indicator-motion-fg "#3311DD")
 (defvar knavemacs/modeline-colors--modified "#FDB91F")
 (defvar knavemacs/modeline-colors--unmodified "#48DD10")
+(defvar knavemacs/modeline-colors--readonly "#7D0A3D")
 
 ;;
 ;;; N1 faces
@@ -109,11 +110,17 @@
   	   ))
   "Modified indicator"
   :group 'knavemacs/modeline-faces)
-
 (defface knavemacs/modeline-faces--unmodified
   `((t :foreground ,knavemacs/modeline-colors--unmodified
   	   ))
   "Unmodified Indicator"
+  :group 'knavemacs/modeline-faces)
+
+;; readonly indicator
+(defface knavemacs/modeline-faces--readonly
+  `((t :foreground ,knavemacs/modeline-colors--readonly
+  	   ))
+  "Readonly indicator"
   :group 'knavemacs/modeline-faces)
 
 ;;
@@ -148,7 +155,7 @@
             (if (multistate-insert-state-p)
                 (propertize "" 'face 'knavemacs/modeline-faces--right-separator-insert-mode)
               (if (multistate-motion-state-p)
-                  (propertize "" 'face knavemacs/modeline-faces--right-separator-motion-mode)
+                  (propertize "" 'face 'knavemacs/modeline-faces--right-separator-motion-mode)
   	        (propertize "" 'face 'knavemacs/modeline-faces--right-separator)))))
   "Modeline module to show a simple separator.")
 
@@ -164,6 +171,13 @@
       (if (buffer-modified-p)
           (propertize " " 'face 'knavemacs/modeline-faces--modified)
         (propertize " " 'face 'knavemacs/modeline-faces--unmodified))))
+
+;; modeline module: readonly indicator
+(defvar-local knavemacs/modeline--readonly-indicator
+    '(:eval
+  	  (when buffer-read-only
+        (propertize " " 'face 'knavemacs/modeline-faces--readonly)))
+  "Modeline module to provide a readonly indicator for appropriate buffers")
 
 ;; modeline module: right display
 (defvar-local knavemacs/modeline--right-display
@@ -214,6 +228,7 @@
                                          knavemacs/modeline--right-separator
   					 knavemacs/modeline--bufname
                                          knavemacs/modeline--modified-indicator
+                                         knavemacs/modeline--readonly-indicator
                                          knavemacs/modeline--right-display))
   (put construct 'risky-local-variable t)) ;; required for modeline local vars
 
@@ -228,6 +243,7 @@
                                 knavemacs/modeline--left-separator
   				knavemacs/modeline--bufname
                                 knavemacs/modeline--modified-indicator
+                                knavemacs/modeline--readonly-indicator
   				(:eval (knavemacs/modeline-fill-for-alignment))
                                 knavemacs/modeline--right-separator
                                 knavemacs/modeline--right-display))
