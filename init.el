@@ -139,6 +139,9 @@
 ;; load "base" configurations
 (load-directory (expand-file-name "knavemacs/" user-emacs-directory))
 
+;; load mode-specific configurations
+(load-directory (expand-file-name "knavemacs/modes/" user-emacs-directory))
+
 ;; load external "core" packages
 (load-directory (expand-file-name "external/core/" user-emacs-directory))
 
