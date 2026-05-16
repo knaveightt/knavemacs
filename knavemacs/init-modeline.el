@@ -50,6 +50,13 @@
   "Bufname Face"
   :group 'knavemacs/modeline-faces)
 
+;; Major mode name
+(defface knavemacs/modeline-faces--major-mode-name
+  `((t :foreground ,knavemacs/modeline-colors--text
+  	   ))
+  "Major Mode Name Face"
+  :group 'knavemacs/modeline-faces)
+
 ;; Right Display
 (defface knavemacs/modeline-faces--right-display
   `((t :foreground ,knavemacs/modeline-colors--text
@@ -159,11 +166,25 @@
   	        (propertize "" 'face 'knavemacs/modeline-faces--right-separator)))))
   "Modeline module to show a simple separator.")
 
+;; modeline module: major mode icon
+(defvar-local knavemacs/modeline--major-mode-icon
+    '(:eval
+	  (when (mode-line-window-selected-p)
+        (nerd-icons-icon-for-mode major-mode)))
+  "Modeline module to provide an icon based on the major mode.")
+
 ;; modeline module: buffer name 
 (defvar-local knavemacs/modeline--bufname
   	'(:eval
   	  (propertize (buffer-name) 'face 'knavemacs/modeline-faces--bufname))
   "Modeline module to provide the buffer name.")
+
+;; modeline module: major mode name
+(defvar-local knavemacs/modeline--major-mode-name
+    '(:eval
+      (when (mode-line-window-selected-p)
+        (propertize (concat (format-mode-line mode-name) " ") 'face 'knavemacs/modeline-faces--major-mode-name)))
+  "Modeline module to provide the major mode name.")
 
 ;; modeline module: modified indicator
 (defvar-local knavemacs/modeline--modified-indicator
@@ -196,6 +217,9 @@
 (defun knavemacs/modeline-fill-for-alignment ()
   "Modeline module to provide filler space until right-aligned items are added to modeline."
   (let ((r-length (length (concat
+                           (format-mode-line knavemacs/modeline--major-mode-icon)
+                           " "
+                           (format-mode-line knavemacs/modeline--major-mode-name)
                            (format-mode-line knavemacs/modeline--right-separator)
                            (format-mode-line knavemacs/modeline--right-display)
                            ))))
@@ -226,6 +250,8 @@
   					 knavemacs/modeline--modal-indicator
                                          knavemacs/modeline--left-separator
                                          knavemacs/modeline--right-separator
+                                         knavemacs/modeline--major-mode-icon
+                                         knavemacs/modeline--major-mode-name
   					 knavemacs/modeline--bufname
                                          knavemacs/modeline--modified-indicator
                                          knavemacs/modeline--readonly-indicator
@@ -245,6 +271,9 @@
                                 knavemacs/modeline--modified-indicator
                                 knavemacs/modeline--readonly-indicator
   				(:eval (knavemacs/modeline-fill-for-alignment))
+                                knavemacs/modeline--major-mode-icon
+                                " "
+                                knavemacs/modeline--major-mode-name
                                 knavemacs/modeline--right-separator
                                 knavemacs/modeline--right-display))
 ;  				knavemacs/modeline-kmacro-indicator))
