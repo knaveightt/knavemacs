@@ -107,6 +107,7 @@
 (global-set-key (kbd "C-x ;") #'comment-line)
 (global-set-key (kbd "C-c d") #'global-eldoc-mode)
 (global-set-key (kbd "C-c m") #'menu-bar-open)
+(global-set-key (kbd "C-c C-m") #'menu-bar-mode)
 (global-set-key (kbd "RET") #'newline-and-indent)
 
 ;; ==================================================
@@ -136,8 +137,14 @@
     (when (string-match "[A-Za-z0-9_-]+\\.el$" file)
       (load (expand-file-name file directory)))))
 
-;; load "base" configurations
+;; load "base" configurations (some things like visuals have to be laoded first)
 (load-directory (expand-file-name "knavemacs/" user-emacs-directory))
+
+;; load custom modeline
+(load-directory (expand-file-name "knavemacs/modeline/" user-emacs-directory))
+
+;; load mode-specific configurations
+(load-directory (expand-file-name "knavemacs/modes/" user-emacs-directory))
 
 ;; load mode-specific configurations
 (load-directory (expand-file-name "knavemacs/modes/" user-emacs-directory))

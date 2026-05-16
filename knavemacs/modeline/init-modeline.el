@@ -6,7 +6,6 @@
 ;;
 ;;; N0 color definitions
 ;;
-(defvar knavemacs/modeline-colors--mode-line-bg (face-background 'mode-line))
 (defvar knavemacs/modeline-colors--text "#3311DD")
 (defvar knavemacs/modeline-colors--indicator-bg "#444444")
 (defvar knavemacs/modeline-colors--indicator-fg "#3311DD")
@@ -105,8 +104,8 @@
   "Right Separator (Insert)"
   :group 'knavemacs/modeline-faces)
 (defface knavemacs/modeline-faces--right-separator-motion-mode
-  `((t :foreground ,knavemacs/modeline-colors--mode-line-bg
-       :background ,knavemacs/modeline-colors--mode-line-bg
+  `((t :foreground ,(face-background 'mode-line)
+       :background ,(face-background 'mode-line)
   	   ))
   "Right Separator (Motion)"
   :group 'knavemacs/modeline-faces)
@@ -218,15 +217,13 @@
   "Modeline module to provide filler space until right-aligned items are added to modeline."
   (let ((r-length (length (concat
                            (format-mode-line knavemacs/modeline--major-mode-icon)
-                           " "
                            (format-mode-line knavemacs/modeline--major-mode-name)
                            (format-mode-line knavemacs/modeline--right-separator)
                            (format-mode-line knavemacs/modeline--right-display)
+                           " "
                            ))))
     (propertize " "
-                'display `(space :align-to (- right ,r-length))
-                ;'face 'knavemacs/modeline-faces--right-display
-                )))
+                'display `(space :align-to (- right ,r-length)))))
 
 (defun knavemacs/return-modal-state ()
   "Returns the current viper state, or a default string if void."

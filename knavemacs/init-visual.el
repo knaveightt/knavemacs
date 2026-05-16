@@ -6,7 +6,7 @@
 ;; --------------------------------
 
 ;; starting theme config
-(load-theme 'manoj-dark t)
+(load-theme 'modus-vivendi t)
 
 ;; further theme configuration
 ;(set-face-attribute 'fringe nil :background "#181a26")
