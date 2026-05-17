@@ -180,7 +180,7 @@ START and END define the region in the source buffer."
   (defun knavemacs/multistate-replace-region ()
     "Replaces selected region with first item in kill-ring"
     (interactive)
-    (delete-region)
+    (call-interactively 'delete-region)
     (yank))
   (defun knavemacs/modal--read-replacement-text ()
     "Asks the user for text in the minibuffer to replace the current region."
@@ -248,10 +248,7 @@ START and END define the region in the source buffer."
 
   ;; mapping of existing keymaps (mostly to SPC menu)
   ;; along with changes to make this efficient
-  (define-key multistate-normal-state-map (kbd "SPC x") ctl-x-map)
-  (define-key multistate-normal-state-map (kbd "SPC v") vc-prefix-map)
-  (define-key multistate-normal-state-map (kbd "SPC h") help-map)
-  (define-key multistate-normal-state-map (kbd "SPC p") project-prefix-map)
+  (define-key multistate-normal-state-map (kbd "SPC") ctl-x-map)
   (define-key multistate-normal-state-map (kbd "'") surround-keymap)
   (define-key ctl-x-map (kbd "s") #'(lambda () (interactive) (if (multistate-normal-state-p) (save-buffer) (save-some-buffers))))
   (define-key ctl-x-map (kbd "f") #'knavemacs/multistate-find-file) ;; needs to be called interactively
@@ -259,18 +256,6 @@ START and END define the region in the source buffer."
   (define-key ctl-x-map (kbd "j") #'dired-jump)
   (define-key ctl-x-map (kbd "b") #'ibuffer)
 
-  ;; custom keymaps using SPC as a leader (normal state)
-  (define-key multistate-normal-state-map (kbd "SPC o c") #'org-capture)
-  (define-key multistate-normal-state-map (kbd "SPC o a") #'org-agenda)
-  (define-key multistate-normal-state-map (kbd "SPC o t") #'knavemacs/org-quick-time-stamp-inactive)
-  (define-key multistate-normal-state-map (kbd "SPC o l") #'org-store-link)
-  (define-key multistate-normal-state-map (kbd "SPC t t") #'tab-line-mode)
-  (define-key multistate-normal-state-map (kbd "SPC t T") #'tab-bar-mode)
-  (define-key multistate-normal-state-map (kbd "SPC t j") #'knavemacs/tab-line-pinned-switch-to-buffer)
-  (define-key multistate-normal-state-map (kbd "SPC t r") #'knavemacs/tab-line-pinned-reset-buffers)
-  (define-key multistate-normal-state-map (kbd "SPC t p") #'knavemacs/tab-line-pinned-pin-buffer)
-  (define-key multistate-normal-state-map (kbd "SPC t u") #'knavemacs/tab-line-pinned-unpin-buffer)
-  
   ;; custom g keymap
   (define-key multistate-normal-state-map (kbd "g v") #'knavemacs/modal--jump-back-to-mark)
   (define-key multistate-normal-state-map (kbd "g u") #'universal-argument)
@@ -308,6 +293,42 @@ START and END define the region in the source buffer."
   (define-key multistate-normal-state-map (kbd "] t") #'knavemacs/tab-line-pinned-next-tab)
   (define-key multistate-normal-state-map (kbd "] b") #'switch-to-next-buffer)
   (define-key multistate-normal-state-map (kbd "] p") #'mc/mark-next-like-this)
+
+  ;; functions and hooks to change cursor in terminal
+  (defun knavemacs/terminal-change-cursor-color (color)
+    "Sets the terminal cursor colour by sending the appropriate escape sequence."
+    (interactive (list (read-color "Color (white): " nil :allow-empty)))
+    (when (string= color "")
+      (setq color "white"))
+    (send-string-to-terminal (concat "\033]12;" color "\007")))
+
+  (defun knavemacs/terminal-change-cursor-type (esc_code)
+    "Sets the terminal cursor type based on the escape code provided."
+    (interactive)
+    (send-string-to-terminal (concat "\x1b[" esc_code " q"))) 
+
+  (defun knavemacs/term-cursor-color-grey ()
+    (if (not (display-graphic-p))
+        (progn
+          (knavemacs/terminal-change-cursor-color "grey")
+          (knavemacs/terminal-change-cursor-type "2"))))
+
+  (defun knavemacs/term-cursor-color-red ()
+    (if (not (display-graphic-p))
+        (progn
+          (knavemacs/terminal-change-cursor-color "red")
+          (knavemacs/terminal-change-cursor-type "2"))))
+
+  (defun knavemacs/term-cursor-color-green ()
+    (if (not (display-graphic-p))
+        (progn
+          (knavemacs/terminal-change-cursor-color "green")
+          (knavemacs/terminal-change-cursor-type "6"))))
+
+  ;; hooks to change cursor color on different modes
+  (add-hook 'multistate-motion-state-enter-hook 'knavemacs/term-cursor-color-grey)
+  (add-hook 'multistate-normal-state-enter-hook 'knavemacs/term-cursor-color-red)
+  (add-hook 'multistate-insert-state-enter-hook 'knavemacs/term-cursor-color-green)
  
   ;; while motion state is default, however if an editable file is visited
   ;; then enter normal state instead

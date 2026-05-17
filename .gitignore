@@ -4,3 +4,6 @@ emacs-custom.el
 recentf
 savehist
 saveplace
+transient/
+projects
+auto-save-list/
