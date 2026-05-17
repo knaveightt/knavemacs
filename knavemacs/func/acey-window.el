@@ -55,3 +55,5 @@
   "Remove all temporary overlays used to display key labels in windows."
   (mapc 'delete-overlay knavemacs/acey-window-quick-window-overlays)
   (setq knavemacs/acey-window-quick-window-overlays nil))
+
+(global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)

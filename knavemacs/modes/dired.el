@@ -1,5 +1,7 @@
 (use-package dired
   :ensure nil
+  :bind (("C-o" . knavemacs/dired-open-display-direction)
+         ("C-i" . dired-kill-subdir))
   :custom
   (dired-dwim-target t)
   (dired-guess-shell-alist-user
@@ -59,5 +61,8 @@
                    (t (split-window (selected-window) nil 'right)))))
         (window--display-buffer buffer window 'window nil)
         window))
-    (knavemacs/quick-window-jump)))
+    (knavemacs/quick-window-jump))
+
+  :config
+  (global-set-key (kbd "M-p") #'knavemacs/window-dired-vc-root-left))
 

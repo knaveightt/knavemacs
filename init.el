@@ -94,12 +94,6 @@
 ;; ==================================================
 ;;; SECTION 4 Global Keybind Modifications
 ;; ==================================================
-;(define-key dired-mode-map (kbd "C-<return>") 'knavemacs/window-dired-open-directory)
-;(define-key dired-mode-map (kbd "C-k") 'kill-current-buffer)
-;(define-key dired-mode-map (kbd "C-o") 'knavemacs/dired-open-display-direction)
-;(define-key dired-mode-map (kbd "C-i") 'dired-kill-subdir)
-;(global-set-key (kbd "M-o") #'knavemacs/quick-window-jump)
-;(global-set-key (kbd "M-p") #'knavemacs/window-dired-vc-root-left)
 (global-set-key (kbd "S-TAB") #'completion-at-point)
 (global-set-key (kbd "S-<iso-lefttab>") #'completion-at-point)
 (global-set-key (kbd "M-g r") #'recentf)
@@ -146,8 +140,8 @@
 ;; load mode-specific configurations
 (load-directory (expand-file-name "knavemacs/modes/" user-emacs-directory))
 
-;; load mode-specific configurations
-(load-directory (expand-file-name "knavemacs/modes/" user-emacs-directory))
+;; load custom functions configurations
+(load-directory (expand-file-name "knavemacs/func/" user-emacs-directory))
 
 ;; load external "core" packages
 (load-directory (expand-file-name "external/core/" user-emacs-directory))
