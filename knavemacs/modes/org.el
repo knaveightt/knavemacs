@@ -29,8 +29,8 @@
 	    (agenda ""
 		    ((org-deadline-warning-days 7)
 		     (org-agenda-overriding-header "Scheduled TODOs")))
-	    (tags "+TODO=\"TODO\"-SCHEDULED={.+}|+SCHEDULED=\"<today>\""
-		  ((org-agenda-overriding-header "Today's Work")))
+	    (tags "+TODO=\"TODO\"-SCHEDULED={.+}"
+		  ((org-agenda-overriding-header "Unscheduled Work")))
 		(tags "+SCHEDULED<\"<today>\"-TODO=\"DONE\""
 		  ((org-agenda-overriding-header "Late Work")))
 	    (stuck "" ((org-agenda-overriding-header "Stuck Projects")))
@@ -50,11 +50,11 @@
   ;; capture templates
   (setq org-capture-templates
 	'(
-          ("t" "Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs")
-           "* %^{Enter Context} %^G\n** %^{Task Type|TODO|PROJECT} %?\n" :empty-lines-after 1)
+          ("p" "New Project" entry (file+olp "~/Documents/org/todos.org" "TODOs")
+           "* PROJECT %^{Enter Project} %^G\n** TODO%^{Enter Task} %?\n" :empty-lines-after 1)
 
-          ("q" "Quick Task" entry (file+olp "~/Documents/org/todos.org" "TODOs" "Quick Tasks")
-           "* TODO %?\n" :empty-lines-after 1)
+          ("t" "Quick Task" entry (file+olp "~/Documents/org/todos.org" "TODOs" "Quick Tasks")
+           "* TODO %?\nSCHEDULED: %t\n" :empty-lines-after 1)
 
           ("f" "Future Todo" entry (file+olp "~/Documents/org/todos.org" "TODOs" "Future Tasks")
            "* TODO %?\n" :empty-lines-after 1)
