@@ -256,14 +256,6 @@ START and END define the region in the source buffer."
   (define-key ctl-x-map (kbd "j") #'dired-jump)
   (define-key ctl-x-map (kbd "b") #'ibuffer)
 
-  ;; custom keymaps using SPC as a leader (normal state)
-  ;; (define-key multistate-normal-state-map (kbd "C-c t t") #'tab-line-mode)
-  ;; (define-key multistate-normal-state-map (kbd "C-c t T") #'tab-bar-mode)
-  ;; (define-key multistate-normal-state-map (kbd "C-c t j") #'knavemacs/tab-line-pinned-switch-to-buffer)
-  ;; (define-key multistate-normal-state-map (kbd "C-c t r") #'knavemacs/tab-line-pinned-reset-buffers)
-  ;; (define-key multistate-normal-state-map (kbd "C-c t p") #'knavemacs/tab-line-pinned-pin-buffer)
-  ;; (define-key multistate-normal-state-map (kbd "C-c t u") #'knavemacs/tab-line-pinned-unpin-buffer)
-  
   ;; custom g keymap
   (define-key multistate-normal-state-map (kbd "g v") #'knavemacs/modal--jump-back-to-mark)
   (define-key multistate-normal-state-map (kbd "g u") #'universal-argument)
