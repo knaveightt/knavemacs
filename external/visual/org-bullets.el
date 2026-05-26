@@ -5,8 +5,8 @@
   (add-hook 'org-mode-hook 'org-indent-mode)
   (add-hook 'org-mode-hook 'org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("◉" "☯" "○" "☯" "✸" "☯" "✿" "☯" "✜" "☯" "◆" "☯" "▶"))
-  (org-ellipsis " ⤵")
+  (org-bullets-bullet-list '("" "○" "●" "✿" "❀" "✜" "◆" "▶"))
+  (org-ellipsis " ")
   :config
   ;; a fix for color issues with org-indent mode
   (defun knavemacs/org-indent-fix-colors ()

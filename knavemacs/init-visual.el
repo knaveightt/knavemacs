@@ -4,19 +4,18 @@
 ;; --------------------------------
 ;; general visual theme definitions
 ;; --------------------------------
+;; font configuration when in graphical mode
+(add-to-list 'default-frame-alist
+	     '(font . "GeistMono NF 12"))
 
 ;; starting theme config
-(load-theme 'modus-vivendi t)
+(load-theme 'deeper-blue t)
 
 ;; further theme configuration
 ;(set-face-attribute 'fringe nil :background "#181a26")
 ;(set-fringe-mode '(0 . 8)) ; Hides the left fringe (0 width), sets right to 8
 (set-display-table-slot standard-display-table 'vertical-border ?\u2502) ; vert separator on terminal
 (set-display-table-slot standard-display-table 'truncation ?\u2192) ; character showing truncation on terminal
-
-;; font configuration when in graphical mode
-(add-to-list 'default-frame-alist
-	     '(font . "GeistMono NF 12"))
 
 ;; ------------------------------
 ;; line and line number behavior
