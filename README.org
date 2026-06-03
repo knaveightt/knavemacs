@@ -7,7 +7,7 @@ from a variety of sources, most notebly [[https://www.youtube.com/playlist?list=
 [[https://github.com/LionyxML/emacs-solo][Emacs-Solo from LionyxML]]. Of course there are several additions and
 customizations from myself as well. :)
 
-Just ensure the ~init.el~ file is in the ~/.config/emacs folder, and ensure
+Just ensure the ~init.el~ as well as the rest of the files are in the ~/.config/emacs folder, and ensure
 the dependencies below are all met, then you should be good to go.
 
 ** Dependencies
@@ -17,12 +17,10 @@ The following dependencies must be met for this configuration to run properly:
 - ~ripgrep~ must be installed
 - ~fzf~ must be installed
 - ~GeistMono~ Nerd Font must be installed with this configuration
-- included ~snippets~ folder moved to ~/Documents/data/snippets
-- Ensure the following items are created under ~/Documents/org/
-  - todos.org
-  - areas/ (note: this is a directory)
+- Ensure the following items are created for org functionality:
+  - "~/Documents/org/" (directory)
+  - "~/Documents/org/todos.org" 
+    (ensure this file has top-level org bullets for 'TODOs', 'Meeting Notes', and 'Work Notes')
+    (The 'TODOs' bullet should also have sub-bullets for 'Quick Tasks' and 'Future Tasks')
+  - "~/Documents/org/areas/" (directory)
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
-- on linux, have a notification system installed (e.g. dunst)
-  
-
-
