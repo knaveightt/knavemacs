@@ -158,15 +158,6 @@
 ;; load external "visual" packages
 (load-directory (expand-file-name "external/visual/" user-emacs-directory))
 
-;; load external "programming" packages
-;(load-directory (expand-file-name "knavemacs_programming/" user-emacs-directory))
-
-;; load external "visual" packages
-;(load-directory (expand-file-name "knavemacs_visual/" user-emacs-directory))
-
-;; load external modeline module (internally built)
-;(load-directory (expand-file-name "knavemacs_modeline/" user-emacs-directory))
-
 ;; ==================================================
 ;;; SECTION 7 Platform-Specific Configuration
 ;; ==================================================
@@ -175,7 +166,7 @@
 ;(if (eq system-type 'gnu/linux) (shell-command "notify-send 'Emacs Configuration Loaded'"))
 
 ;; platform specific load files
-;(setq platform-files (expand-file-name "platform" user-emacs-directory))
-;(add-to-list 'load-path platform-files)
-;(require 'knavemacs-platform)
+(setq platform-files (expand-file-name "platform" user-emacs-directory))
+(add-to-list 'load-path platform-files)
+(require 'knavemacs-platform)
 
