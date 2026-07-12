@@ -339,6 +339,10 @@ START and END define the region in the source buffer."
         ("C-z" . multistate-normal-state))
   (:map multistate-motion-state-map
         ("C-z" . multistate-emacs-state)
+        ("C-j" . windmove-down)
+        ("C-k" . windmove-up)
+        ("C-h" . windmove-left)
+        ("C-l" . windmove-right)
         ("SPC" . multistate-normal-state)
         ("q" . kill-buffer-and-window)
         ("J" . knavemacs/multistate-move-bottom-window)

@@ -1,4 +1,5 @@
 eln-cache/
+.cache/
 elpa/
 emacs-custom.el
 recentf

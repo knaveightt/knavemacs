@@ -9,7 +9,7 @@
 	     '(font . "GeistMono NF 12"))
 
 ;; starting theme config
-(load-theme 'deeper-blue t)
+(load-theme 'modus-vivendi-deuteranopia t)
 
 ;; further theme configuration
 ;(set-face-attribute 'fringe nil :background "#181a26")
