@@ -1,7 +1,7 @@
 eln-cache/
 .cache/
 elpa/
-emacs-custom.el
+init-custom.el
 recentf
 savehist
 saveplace
