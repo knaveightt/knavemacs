@@ -35,7 +35,7 @@
       backup-inhibited t)
 
 ;; custom file handling
-(setq custom-file (expand-file-name "emacs-custom.el" user-emacs-directory))
+(setq custom-file (expand-file-name "init-custom.el" user-emacs-directory))
 (load custom-file t)
 
 ;; recents file handling
