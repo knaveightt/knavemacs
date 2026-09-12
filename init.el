@@ -39,19 +39,20 @@
 (load custom-file t)
 
 ;; recents file handling
-(setq recentf-max-saved-items 300
+(setq recentf-save-file (expand-file-name "history/recentf" user-emacs-directory)
+      recentf-max-saved-items 300
       recentf-max-menu-items 15
       recentf-auto-cleanup (if (daemonp) 300 'never)
       recentf-exclude (list "^/\\(?:ssh\\|su\\|sudo\\)?:"))
 (recentf-mode 1)
 
 ;; saveplace file handling
-(setq save-place-file (expand-file-name "saveplace" user-emacs-directory)
+(setq save-place-file (expand-file-name "history/saveplace" user-emacs-directory)
       save-place-limit 600)
 (save-place-mode 1)
 
 ;; savehist file handling
-(setq savehist-file (expand-file-name "savehist" user-emacs-directory)
+(setq savehist-file (expand-file-name "history/savehist" user-emacs-directory)
       savehist-save-minibuffer-history t
       savehist-additional-variables '(kill-ring
 				      register-alist
