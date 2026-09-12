@@ -51,6 +51,9 @@
       save-place-limit 600)
 (save-place-mode 1)
 
+;; projects file handling
+(setq project-list-file (expand-file-name "history/projects" user-emacs-directory))
+
 ;; savehist file handling
 (setq savehist-file (expand-file-name "history/savehist" user-emacs-directory)
       savehist-save-minibuffer-history t
