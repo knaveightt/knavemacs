@@ -1,0 +1,22 @@
+* knavemacs-platform.el
+
+This file is read at the very end of the init.el file, for any
+platform or device specific configurations that need to be set before
+Knavemacs can be used.
+
+** Configurations
+
+In the configurations folder, there are different .el files that
+contain platform-specific configurations I may want to impose on my
+configuration.
+
+** Setting a Platform Configuration
+
+Since it is knavemacs-platform.el that the init.el file is expecting,
+all I need to do is copy over (i.e. overwrite) the
+knavemacs-platform.el file in the platform folder, with one of the
+platform-specific .el file in the configurations subdirectory. Make sure
+the file in the platform folder is still named knavemacs-platform.el.
+
+To revert back to the default configuration, just copy over the
+default knavemacs-platform.el file in the configurations directory.
