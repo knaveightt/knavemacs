@@ -7,7 +7,7 @@
 ;;==================================================
 
 ;; Disable/Enable starting UI elements
-(menu-bar-mode -1) ; I'm weird, I like seeing this in terminal mode
+(menu-bar-mode 1) ; I'm weird, I like seeing this in terminal mode
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
