@@ -97,4 +97,12 @@
 (require 'use-package)
 (setq use-package-hook-name-suffix nil)
 
+;; ==================================================
+;;; SECTION 5 Platform-Specific Configuration
+;; ==================================================
+
+;; platform specific load files
+(setq platform-files (expand-file-name "platform" user-emacs-directory))
+(add-to-list 'load-path platform-files)
+(require 'knavemacs-platform)
 
