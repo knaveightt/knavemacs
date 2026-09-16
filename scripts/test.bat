@@ -1,0 +1,1 @@
+..\runemacs.exe --init-directory=.
