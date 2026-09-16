@@ -341,6 +341,7 @@ START and END define the region in the source buffer."
         ("C-k" . windmove-up)
         ("C-h" . windmove-left)
         ("C-l" . windmove-right)
+		("C-b" . consult-buffer)
         ("SPC" . multistate-normal-state)
         ("q" . kill-buffer-and-window)
         ("J" . knavemacs/multistate-move-bottom-window)
