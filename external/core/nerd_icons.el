@@ -1,0 +1,34 @@
+;; ==================================================
+;; nerd_icons.el
+;; Nerd Icon Integration - see icons across many 
+;; different areas of emacs
+;;
+;; Part of Knavemacs configuration
+;;==================================================
+(use-package nerd-icons
+  :if knavemacs/BFlags--nerd-icons
+  :ensure t)
+
+(use-package nerd-icons-completion
+  :if knavemacs/BFlags--nerd-icons
+  :ensure t
+  :after vertico marginalia nerd-icons
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-dired
+  :if knavemacs/BFlags--nerd-icons
+  :ensure t
+  :init (add-hook 'dired-mode-hook #'nerd-icons-dired-mode))
+
+(use-package nerd-icons-ibuffer
+  :if knavemacs/BFlags--nerd-icons
+  :ensure t
+  :init (add-hook 'ibuffer-mode-hook #'nerd-icons-ibuffer-mode))
+
+;; (use-package nerd-icons-corfu
+;;   :ensure t
+;;   :after corfu
+;;   :config
+;;   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
