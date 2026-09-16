@@ -97,6 +97,9 @@
 (require 'use-package)
 (setq use-package-hook-name-suffix nil)
 
+;; load external "core" packages
+(load-directory (expand-file-name "external/core/" user-emacs-directory))
+
 ;; ==================================================
 ;;; SECTION 5 Platform-Specific Configuration
 ;; ==================================================
