@@ -150,8 +150,9 @@
 ;; modeline module: major mode icon
 (defvar-local knavemacs/modeline--major-mode-icon
     '(:eval
-	  (when (mode-line-window-selected-p)
-        (nerd-icons-icon-for-mode major-mode)))
+	  (when (and knavemacs/BFlags--nerd-icons
+                     (mode-line-window-selected-p))
+            (nerd-icons-icon-for-mode major-mode)))
   "Modeline module to provide an icon based on the major mode.")
 
 ;; modeline module: buffer name 
@@ -171,14 +172,18 @@
 (defvar-local knavemacs/modeline--modified-indicator
     '(:eval
       (if (buffer-modified-p)
-          (propertize " " 'face 'knavemacs/modeline-faces--modified)
-        (propertize " " 'face 'knavemacs/modeline-faces--unmodified))))
+          (if knavemacs/BFlags--nerd-icons
+              (propertize " " 'face 'knavemacs/modeline-faces--modified)
+            (propertize " (m)" 'face 'knavemacs/modeline-faces--modified))
+        (if knavemacs/BFlags--nerd-icons
+            (propertize " " 'face 'knavemacs/modeline-faces--unmodified)))))
 
 ;; modeline module: readonly indicator
 (defvar-local knavemacs/modeline--readonly-indicator
     '(:eval
-  	  (when buffer-read-only
-        (propertize " " 'face 'knavemacs/modeline-faces--readonly)))
+      (when buffer-read-only
+        (if knavemacs/BFlags--nerd-icons
+            (propertize " " 'face 'knavemacs/modeline-faces--readonly))))
   "Modeline module to provide a readonly indicator for appropriate buffers")
 
 ;; modeline module: right display
