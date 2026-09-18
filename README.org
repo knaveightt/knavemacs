@@ -15,7 +15,6 @@ The following dependencies must be met for this configuration to run properly:
 
 - ~git~ must be installed
 - ~ripgrep~ must be installed
-- ~fzf~ must be installed
 - ~GeistMono~ Nerd Font must be installed with this configuration
 - Ensure the following items are created for org functionality:
   - "~/Documents/org/" (directory)
@@ -24,3 +23,7 @@ The following dependencies must be met for this configuration to run properly:
     (The 'TODOs' bullet should also have sub-bullets for 'Quick Tasks' and 'Future Tasks')
   - "~/Documents/org/areas/" (directory)
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
+
+*** Things I'm considering
+- Put back C-x b as the buffer switch, and C-b as ibuffer
+- Behavior flags for all external packages to act as switches
