@@ -80,6 +80,9 @@
 ;; Load Startup Configurations (mode-switches, global keybinds, visual init)
 (load-directory (expand-file-name "internal/startup/" user-emacs-directory))
 
+;; Load Custom Modeline
+(load-directory (expand-file-name "internal/modeline/" user-emacs-directory))
+
 ;; --------------------------------------------------
 ;;; SECTION 4 Load External Configuration Files
 ;; --------------------------------------------------
