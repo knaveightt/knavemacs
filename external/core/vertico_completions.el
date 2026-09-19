@@ -6,6 +6,7 @@
 ;; Part of Knavemacs configuration
 ;;==================================================
 (use-package vertico
+  :if knavemacs/BFlags--mini-buf-comp
   :ensure t
   :bind (:map minibuffer-local-map
               ("C-h" . backward-kill-word)
@@ -19,12 +20,14 @@
   (vertico-mode))
 
 (use-package savehist
+  :if knavemacs/BFlags--mini-buf-comp
   :ensure t
   :after vertico
   :init
   (savehist-mode))
 
 (use-package marginalia
+  :if knavemacs/BFlags--mini-buf-comp
   :ensure t
   :after vertico
   :custom
@@ -33,6 +36,7 @@
   (marginalia-mode))
 
 (use-package orderless
+  :if knavemacs/BFlags--mini-buf-comp
   :ensure t
   :after vertico
   :custom
@@ -41,6 +45,7 @@
 
 ;; Example configuration for Consult - edited for use
 (use-package consult
+  :if knavemacs/BFlags--mini-buf-comp
   :ensure t
   :after vertico
   ;; Replace bindings. Lazily loaded by `use-package'.
