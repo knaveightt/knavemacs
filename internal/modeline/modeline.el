@@ -242,20 +242,21 @@
 ;;
 ;;; n5 modeline construction
 ;;
-(setq-default mode-line-format
-  			  '("%e"
-  				;mode-line-front-space
-                                ;mode-line-modes
-  				knavemacs/modeline--modal-indicator
-                                " "
-  				knavemacs/modeline--bufname
-                                knavemacs/modeline--modified-indicator
-                                knavemacs/modeline--readonly-indicator
-  				(:eval (knavemacs/modeline-fill-for-alignment))
-                                knavemacs/modeline--major-mode-icon
-                                " "
-                                knavemacs/modeline--major-mode-name
-                                knavemacs/modeline--right-separator
-                                knavemacs/modeline--right-display))
+(if knavemacs/BFlags--modeline
+    (setq-default mode-line-format
+  		  '("%e"
+                                        ;mode-line-front-space
+                                        ;mode-line-modes
+  		    knavemacs/modeline--modal-indicator
+                    " "
+  		    knavemacs/modeline--bufname
+                    knavemacs/modeline--modified-indicator
+                    knavemacs/modeline--readonly-indicator
+  		    (:eval (knavemacs/modeline-fill-for-alignment))
+                    knavemacs/modeline--major-mode-icon
+                    " "
+                    knavemacs/modeline--major-mode-name
+                    knavemacs/modeline--right-separator
+                    knavemacs/modeline--right-display)))
 ;  				knavemacs/modeline-kmacro-indicator))
 
