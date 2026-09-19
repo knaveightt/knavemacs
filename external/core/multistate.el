@@ -8,6 +8,7 @@
 ;;==================================================
 
 (use-package avy
+  :if knavemacs/BFlags--modal-editing
   :ensure t
   :config
   ;; define an avy action to kill a while line based on a selection
@@ -26,20 +27,25 @@
   	))
 
 (use-package expand-region
+  :if knavemacs/BFlags--modal-editing
   :ensure t)
 
 (use-package multiple-cursors
+  :if knavemacs/BFlags--modal-editing
   :ensure t)
 
 (use-package vundo
+  :if knavemacs/BFlags--modal-editing
   :ensure t
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols))
 
 (use-package surround
+  :if knavemacs/BFlags--modal-editing
   :ensure t)
 
 (use-package multistate
+  :if knavemacs/BFlags--modal-editing
   :ensure t
   :init
   ;; Create the different states
