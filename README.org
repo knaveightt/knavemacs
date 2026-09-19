@@ -24,5 +24,3 @@ The following dependencies must be met for this configuration to run properly:
   - "~/Documents/org/areas/" (directory)
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
 
-*** Things I'm considering
-- Behavior flags for all external packages to act as switches
