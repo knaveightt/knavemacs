@@ -83,6 +83,9 @@
 ;; Load Custom Modeline
 (load-directory (expand-file-name "internal/modeline/" user-emacs-directory))
 
+;; Load Custom Functions
+(load-directory (expand-file-name "internal/functions" user-emacs-directory))
+
 ;; --------------------------------------------------
 ;;; SECTION 4 Load External Configuration Files
 ;; --------------------------------------------------
