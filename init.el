@@ -86,6 +86,9 @@
 ;; Load Custom Functions
 (load-directory (expand-file-name "internal/functions" user-emacs-directory))
 
+;; Load Custom Configuration for specific modes
+(load-directory (expand-file-name "internal/modes" user-emacs-directory))
+
 ;; --------------------------------------------------
 ;;; SECTION 4 Load External Configuration Files
 ;; --------------------------------------------------
