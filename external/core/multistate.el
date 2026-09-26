@@ -291,10 +291,10 @@ START and END define the region in the source buffer."
   (define-key multistate-normal-state-map (kbd "| e") #'kmacro-end-macro)
   
   ;; custom bracket keymaps
-  (define-key multistate-normal-state-map (kbd "[ t") #'knavemacs/tab-line-pinned-prev-tab)
+  (define-key multistate-normal-state-map (kbd "[ t") #'knavemacs/tab-line-prev-tab)
   (define-key multistate-normal-state-map (kbd "[ b") #'switch-to-prev-buffer)
   (define-key multistate-normal-state-map (kbd "[ p") #'mc/mark-previous-like-this)
-  (define-key multistate-normal-state-map (kbd "] t") #'knavemacs/tab-line-pinned-next-tab)
+  (define-key multistate-normal-state-map (kbd "] t") #'knavemacs/tab-line-next-tab)
   (define-key multistate-normal-state-map (kbd "] b") #'switch-to-next-buffer)
   (define-key multistate-normal-state-map (kbd "] p") #'mc/mark-next-like-this)
 
@@ -390,7 +390,7 @@ START and END define the region in the source buffer."
         ("f" . knavemacs/modal--jump-to-char)
         ("F" . avy-goto-char-timer)
         ; g is a prefix key
-        ; G will be a prefix key for LSP guided actions
+        ("G" . knavemacs/tab-line-prompt-for-nth-tab)
         ("h" . backward-char)
         ("H" . beginning-of-line)
         ("i" . multistate-insert-state)
