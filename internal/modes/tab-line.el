@@ -18,6 +18,7 @@
   :bind (("C-x t a" . knavemacs/tab-line-pin-buffer) ; think 'a'dd
          ("C-x t c" . knavemacs/tab-line-unpin-buffer) ; think 'c'lose
          ("C-x t b" . knavemacs/tab-line-switch-to-buffer) ; think 'b'uffer 
+         ("C-x t SPC" . tab-line-mode)
          ("C-x t k" . knavemacs/tab-line-reset-buffers))
   :config
   ;; set the function and variables used to keep track of pinned buffers
