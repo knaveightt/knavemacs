@@ -8,6 +8,7 @@
 (use-package tab-bar
   :ensure nil
   :defer t
+  :bind (("C-x t T" . tab-bar-mode))
   :custom
   (tab-bar-close-button-show nil)
   (tab-bar-new-button-show nil)
