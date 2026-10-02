@@ -24,3 +24,9 @@ The following dependencies must be met for this configuration to run properly:
   - "~/Documents/org/areas/" (directory)
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
 
+** Remaining TODOs
+- [ ] add behavior flag or org-super-agenda
+- [ ] add external visual packages
+- [ ] add external programming packages
+- [ ] add new external productivity packages (obsidian)
+- [ ] consider gpt integration
