@@ -5,6 +5,7 @@
 ;; Part of Knavemacs configuration
 ;;==================================================
 (use-package org-bullets
+  :if knavemacs/BFlags--misc-visual
   :ensure t
   :init
   (add-hook 'org-mode-hook 'org-indent-mode)
