@@ -6,6 +6,7 @@
 ;; Part of Knavemacs configuration
 ;;==================================================
 (use-package org-super-agenda
+  :if knavemacs/BFlags--org-super-agenda
   :ensure t
   :config
   (org-super-agenda-mode t))
