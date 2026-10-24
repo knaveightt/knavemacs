@@ -26,5 +26,6 @@ The following dependencies must be met for this configuration to run properly:
 
 ** Remaining TODOs
 - [ ] add new external productivity packages (obsidian, org-roam, etc)
+- [ ] add vterm-like terminal
 - [ ] consider gpt integration
 
