@@ -14,3 +14,4 @@
 (setq knavemacs/BFlags--git t) ; defines loading packages related to versioning
 (setq knavemacs/BFlags--snippets t) ; defines loading of snippet packages
 (setq knavemacs/BFlags--completions t) ; defines loading of completion packages
+(setq knavemacs/BFlags--treemacs t) ; defines loading of treemacs-related packages
