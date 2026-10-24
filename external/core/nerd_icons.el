@@ -27,8 +27,3 @@
   :ensure t
   :init (add-hook 'ibuffer-mode-hook #'nerd-icons-ibuffer-mode))
 
-;; (use-package nerd-icons-corfu
-;;   :ensure t
-;;   :after corfu
-;;   :config
-;;   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))

@@ -12,3 +12,5 @@
 (setq knavemacs/BFlags--org-super-agenda t) ; defines if org-super-agenda is being used
 (setq knavemacs/BFlags--misc-visual t) ; defines various visual improvements using external packages
 (setq knavemacs/BFlags--git t) ; defines loading packages related to versioning
+(setq knavemacs/BFlags--snippets t) ; defines loading of snippet packages
+(setq knavemacs/BFlags--completions t) ; defines loading of completion packages
