@@ -109,6 +109,9 @@
 ;; load external "core" packages
 (load-directory (expand-file-name "external/core/" user-emacs-directory))
 
+;; load external "visual" packages
+(load-directory (expand-file-name "external/visual/" user-emacs-directory))
+
 ;; ==================================================
 ;;; SECTION 5 Platform-Specific Configuration
 ;; ==================================================

@@ -25,7 +25,7 @@ The following dependencies must be met for this configuration to run properly:
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
 
 ** Remaining TODOs
-- [ ] add behavior flag for org-super-agenda
+- [X] add behavior flag for org-super-agenda
 - [ ] add external visual packages (perhaps add dashboard)
 - [ ] add external programming packages (including nerd icons for completions)
 - [ ] add new external productivity packages (obsidian, org-roam, etc)
