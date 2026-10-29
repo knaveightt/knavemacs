@@ -15,3 +15,4 @@
 (setq knavemacs/BFlags--snippets t) ; defines loading of snippet packages
 (setq knavemacs/BFlags--completions t) ; defines loading of completion packages
 (setq knavemacs/BFlags--treemacs t) ; defines loading of treemacs-related packages
+(setq knavemacs/BFlags--alt-font nil) ; defines loading a different font (really for windows)
