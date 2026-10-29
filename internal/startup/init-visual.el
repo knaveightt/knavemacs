@@ -17,8 +17,11 @@
       ring-bell-function 'ignore)
 
 ;; font configuration when in graphical mode
-(add-to-list 'default-frame-alist
-	     '(font . "GeistMono NF 12"))
+(if knavemacs/BFlags--alt-font
+    (add-to-list 'default-frame-alist
+                 '(font . "JetBrainsMono NF 12"))
+  (add-to-list 'default-frame-alist
+	       '(font . "GeistMono NF 12")))
 
 ;; starting theme config
 (load-theme 'modus-vivendi-tinted t)
