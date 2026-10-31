@@ -25,6 +25,7 @@
 ;; error reporting levels
 (setq warning-minimum-level :error
       warning-suppress-types '((lexical-binding)))
+(add-to-list 'warning-suppress-types '(files missing-lexbind-cookie))
 
 ;; --------------------------------------------------
 ;;; SECTION 2 Auxiliary File Configuration
