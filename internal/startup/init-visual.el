@@ -24,7 +24,9 @@
 	       '(font . "GeistMono NF 12")))
 
 ;; starting theme config
-(load-theme 'modus-vivendi-tinted t)
+(if knavemacs/BFlags--alt-theme
+    (load-theme 'modus-operandi-tritanopia t)
+  (load-theme 'modus-vivendi-tinted t))
 
 ;; further theme configuration
 (set-display-table-slot standard-display-table 'vertical-border ?\u2502) ; vert separator on terminal

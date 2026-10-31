@@ -16,3 +16,4 @@
 (setq knavemacs/BFlags--completions t) ; defines loading of completion packages
 (setq knavemacs/BFlags--treemacs t) ; defines loading of treemacs-related packages
 (setq knavemacs/BFlags--alt-font nil) ; defines loading a different font (really for windows)
+(setq knavemacs/BFlags--alt-theme nil) ; defines loading of a different theme (really a light theme)
