@@ -53,6 +53,27 @@
       (call-interactively 'org-time-stamp-inactive))
     (insert " "))
 
+  ;; org variable and function for creating subject area files I use in this set
+  (defvar knavemacs/org-subject-file-string
+    (concat
+     "#+TITLE: XYZ\n"
+     "#+AUTHOR: John Osinski\n"
+     "#+DATE: [2000-01-01 Sat 12:01]\n"
+     "#+TAGS: XYZ\n\n"
+     "* Knowledge\n"
+     "* Task Library\n"
+     "* Meeting Notes\n"))
+
+  (defun knavemacs/org-create-area-file (subject)
+    "Create a file named SUBJECT.org and write 'Hello SUBJECT' into it."
+    (interactive "sEnter Subject: ")
+    (let* ((filename (concat subject ".org"))
+           (content (replace-regexp-in-string "XYZ" subject knavemacs/org-subject-file-string)))
+      (with-temp-file filename
+        (insert content))
+      (message "Successfully wrote to %s" filename)))
+  ;; (mapcar #'knavemacs/org-create-area-file '("TEST1" "TEST2" "TEST3"))
+
   ;; capture templates
   (setq org-capture-templates
 	'(
