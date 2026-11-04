@@ -68,7 +68,7 @@
     "Create a file named SUBJECT.org and write 'Hello SUBJECT' into it."
     (interactive "sEnter Subject: ")
     (let* ((filename (concat subject ".org"))
-           (content (replace-regexp-in-string "XYZ" subject knavemacs/org-subject-file-string)))
+           (content (replace-regexp-in-string "XYZ" subject knavemacs/org-subject-file-string 'fixedcase 'literal)))
       (with-temp-file filename
         (insert content))
       (message "Successfully wrote to %s" filename)))
