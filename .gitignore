@@ -8,3 +8,4 @@ saveplace
 transient/
 projects
 auto-save-list/
+*.db

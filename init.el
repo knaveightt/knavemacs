@@ -116,6 +116,9 @@
 ;; load external "programming" packages
 (load-directory (expand-file-name "external/programming/" user-emacs-directory))
 
+;; load external "productivity" packages
+(load-directory (expand-file-name "external/productivity/" user-emacs-directory))
+
 ;; ==================================================
 ;;; SECTION 5 Platform-Specific Configuration
 ;; ==================================================
