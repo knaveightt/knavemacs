@@ -18,9 +18,8 @@ The following dependencies must be met for this configuration to run properly:
 - ~GeistMono~ Nerd Font must be installed with this configuration
 - Ensure the following items are created for org functionality:
   - "~/Documents/org/" (directory)
-  - "~/Documents/org/todos.org" 
-    (ensure this file has top-level org bullets for 'TODOs', 'Meeting Notes', and 'Work Notes')
-    (The 'TODOs' bullet should also have sub-bullets for 'Quick Tasks' and 'Future Tasks')
+  - "~/Documents/org/backlog.org" 
+    (ensure this file has a top-level org bullet named 'Captured')
   - "~/Documents/org/areas/" (directory)
 - consider running ~nerd-icons-instal-fonts~ once after loading emacs
 
