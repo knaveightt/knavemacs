@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; blfags.el
 ;; Behavior Flags - variables that change significant

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; keybinds.el
 ;; Keybinds Initialization - global key map 

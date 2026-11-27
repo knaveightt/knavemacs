@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; org-bullets.el
 ;; Org Bullets - fancy org visuals

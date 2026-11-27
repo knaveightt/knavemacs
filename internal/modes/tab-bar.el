@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; tab-bar.el
 ;; Custom Tab Bar Functionality - redefine how

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; org-super-agenda.el
 ;; Org Super Agenda - an updated view with updated 

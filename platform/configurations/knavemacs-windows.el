@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Windows-sepecific settings and configuration
 (setq org-agenda-files (list "C:\\Users\\josinski\\OneDrive - JNJ\\org" "C:\\Users\\josinski\\OneDrive - JNJ\\org\\areas"))
 

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; tab-line.el
 ;; Custom Tab Line Functionality - redefine how

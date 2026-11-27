@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; org-roam.el
 ;; Org Roam - notetaking system.

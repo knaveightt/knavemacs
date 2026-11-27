@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; init-visual.el
 ;; Visual Initialization - configurations that define

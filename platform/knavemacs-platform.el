@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; Knavemacs Platform-Specific Configurations
 (message "Knavemacs Loaded!")
 

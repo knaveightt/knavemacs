@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; rainbow.el
 ;; Rainbow Delimiters - apply rainbox coloring to 

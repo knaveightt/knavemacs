@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; rainbow.el
 ;; Rainbow Mode - colorizer for in-buffer hex codes

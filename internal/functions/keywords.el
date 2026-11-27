@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; keywords.el
 ;; Keywords Highlighter - highlights keywords based

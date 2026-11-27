@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; vertico_completions.el
 ;; Completions Stack using Vertico - redefine how

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; nerd_icons.el
 ;; Nerd Icon Integration - see icons across many 

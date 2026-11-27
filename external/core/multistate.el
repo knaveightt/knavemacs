@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; multistate.el
 ;; Custom Modal Editing - borrowing from vim mostly,

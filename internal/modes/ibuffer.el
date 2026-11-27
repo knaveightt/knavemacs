@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; ibuffer.el
 ;; Ibuffer-specific configuration

@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 ;; ==================================================
 ;; acey-window.el
 ;; Acey Window - quick jump and switch to specific
