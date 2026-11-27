@@ -19,3 +19,4 @@
 (setq knavemacs/BFlags--alt-font nil) ; defines loading a different font (really for windows)
 (setq knavemacs/BFlags--alt-theme nil) ; defines loading of a different theme (really a light theme)
 (setq knavemacs/BFlags--org-roam t) ; defines loading of org-roam
+(setq knavemacs/BFlags--geiser t) ; defines enabling geiser support for emacs (scheme programming)
